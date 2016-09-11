@@ -1,0 +1,51 @@
+package pw.ewen.permission.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.Database;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+
+import java.util.Properties;
+
+import org.apache.tomcat.jdbc.pool.DataSource;
+
+@Configuration
+public class DatabaseConfig {
+
+	@Bean
+	public DataSource datasource(){
+		DataSource dSource = new DataSource();
+		dSource.setDriverClassName("com.mysql.jdbc.Driver");
+		dSource.setUrl("jdbc:mysql://localhost:3306/Permission?useSSL=false");
+		dSource.setUsername("root");
+		dSource.setPassword("801112");
+		return dSource;
+	}
+	
+	@Bean
+	public JpaVendorAdapter JpaVendorAdapter(){
+		HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+		adapter.setDatabase(Database.MYSQL);
+		adapter.setShowSql(true);
+		adapter.setGenerateDdl(true);
+		return adapter;
+	}
+	
+	@Bean
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory(
+			DataSource dataSource,
+			JpaVendorAdapter jpaVendorAdapter){
+		LocalContainerEntityManagerFactoryBean emfb = new LocalContainerEntityManagerFactoryBean();
+		emfb.setDataSource(dataSource);
+		emfb.setJpaVendorAdapter(jpaVendorAdapter);
+		emfb.setPackagesToScan("pw.ewen.permission.entity");
+//		Properties props = new Properties();
+//		props.setProperty("hibernate.ddl-auto", "create");
+//		emfb.setJpaProperties(props);
+		
+		emfb.afterPropertiesSet();
+		return emfb;
+	}
+}

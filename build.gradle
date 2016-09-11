@@ -22,5 +22,6 @@ repositories {
 // In this section you declare the dependencies for your production and test code
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    runtime("mysql:mysql-connector-java:5.1.39")
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }

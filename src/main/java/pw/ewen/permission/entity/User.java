@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -23,7 +24,7 @@ public class User implements Serializable {
 	
 	@Column(nullable = false)
 	private String name;
-	private Set<Role> roles;
+//	private Set<Role> roles;
 	
 	protected User(){}
 	
@@ -32,7 +33,7 @@ public class User implements Serializable {
 		ID = iD;
 		this.name = name;
 		
-		roles = new HashSet<>();
+//		roles = new HashSet<>();
 	}
 	public String getID() {
 		return ID;
@@ -46,11 +47,11 @@ public class User implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Set<Role> getRoles() {
-		return roles;
-	}
-	public void setRoles(Set<Role> roles) {
-		this.roles = roles;
-	}
+//	public Set<Role> getRoles() {
+//		return roles;
+//	}
+//	public void setRoles(Set<Role> roles) {
+//		this.roles = roles;
+//	}
 	
 }
