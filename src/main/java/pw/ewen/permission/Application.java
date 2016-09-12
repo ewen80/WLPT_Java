@@ -5,7 +5,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import pw.ewen.permission.entity.Role;
 import pw.ewen.permission.entity.User;
+import pw.ewen.permission.repository.RoleRepository;
 import pw.ewen.permission.repository.UserRepository;
 
 @SpringBootApplication
@@ -17,9 +19,13 @@ public class Application {
 	}
 	
 	@Bean
-	public CommandLineRunner demo(UserRepository repository){
+	public CommandLineRunner demo(UserRepository userRepo, RoleRepository roleRepo){
 		return (args) -> {
-			repository.save(new User("1", "a"));
+			Role role1 = roleRepo.save(new Role("role1"));
+			
+			userRepo.save(new User("user1", role1));
+			userRepo.save(new User("user2", role1));
+			userRepo.save(new User("user3", role1));
 		};
 	}
 

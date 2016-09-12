@@ -18,7 +18,7 @@ public class DatabaseConfig {
 	public DataSource datasource(){
 		DataSource dSource = new DataSource();
 		dSource.setDriverClassName("com.mysql.jdbc.Driver");
-		dSource.setUrl("jdbc:mysql://localhost:3306/Permission?useSSL=false");
+		dSource.setUrl("jdbc:mysql://localhost:3306/Permission?useSSL=false&userUnicode=true&characterEncoding=utf8");
 		dSource.setUsername("root");
 		dSource.setPassword("801112");
 		return dSource;

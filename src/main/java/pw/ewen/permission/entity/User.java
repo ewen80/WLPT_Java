@@ -8,50 +8,64 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
 /*
  * 系统用户
+ * 一个用户只能属于一个角色（后期可以扩展至属于多个角色）
  */
 @Entity
 public class User implements Serializable {
 	private static final long serialVersionUID = 5844614718392473692L;
-
-	@Id
-	private String ID;
 	
-	@Column(nullable = false)
+	private String ID;
 	private String name;
-//	private Set<Role> roles;
+	private Role role;
 	
 	protected User(){}
 	
-	public User(String iD, String name) {
-		super();
-		ID = iD;
+	public User (String name) {
 		this.name = name;
-		
-//		roles = new HashSet<>();
 	}
+	
+	public User(String name, Role role){
+		this(name);
+		this.role = role;
+	}
+	
+	@Id
+	@GeneratedValue(generator="UUID")
+	@GenericGenerator(name="UUID", strategy="uuid")
 	public String getID() {
 		return ID;
 	}
+
 	public void setID(String iD) {
 		ID = iD;
 	}
+	
+	@Column(nullable = false)
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
-//	public Set<Role> getRoles() {
-//		return roles;
-//	}
-//	public void setRoles(Set<Role> roles) {
-//		this.roles = roles;
-//	}
+	
+	@ManyToOne
+	@JoinColumn(name="role_ID")
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
+	
 	
 }
