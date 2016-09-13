@@ -1,4 +1,0 @@
-spring.datasource.url=jdbc:mysql://localhost:3306/Permission?useSSL=false
-spring.datasource.username=root
-spring.datasource.password=801112
-spring.jpa.hibernate.ddl-auto=create

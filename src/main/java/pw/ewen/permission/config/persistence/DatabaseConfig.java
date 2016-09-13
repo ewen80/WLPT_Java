@@ -1,7 +1,8 @@
-package pw.ewen.permission.config;
+package pw.ewen.permission.config.persistence;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.Database;
@@ -12,6 +13,7 @@ import java.util.Properties;
 import org.apache.tomcat.jdbc.pool.DataSource;
 
 @Configuration
+@EnableJpaRepositories(basePackages="pw.ewen.permission.repository")
 public class DatabaseConfig {
 
 	@Bean
@@ -41,8 +43,9 @@ public class DatabaseConfig {
 		emfb.setDataSource(dataSource);
 		emfb.setJpaVendorAdapter(jpaVendorAdapter);
 		emfb.setPackagesToScan("pw.ewen.permission.entity");
+		
 //		Properties props = new Properties();
-//		props.setProperty("hibernate.ddl-auto", "create");
+//		props.setProperty("SerializationFeature.FAIL_ON_EMPTY_BEANS", "false");
 //		emfb.setJpaProperties(props);
 		
 		emfb.afterPropertiesSet();

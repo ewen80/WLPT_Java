@@ -7,15 +7,17 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /*
  * 系统角色
  */
 @Entity
+@JsonIgnoreProperties(value={"users", "handler", "hibernateLazyInitializer"})
 public class Role implements Serializable {
 
 	/**
@@ -24,6 +26,7 @@ public class Role implements Serializable {
 	private static final long serialVersionUID = 1888955493407366629L;
 	private String ID;
 	private String name;
+	
 	
 	private Set<User> users;
 //	private Set<OperationRange> operationRanges;
