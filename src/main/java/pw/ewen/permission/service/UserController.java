@@ -3,6 +3,7 @@ package pw.ewen.permission.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,8 +22,13 @@ public class UserController {
 		this.userRepository = userRepository;
 	}
 	
-	@RequestMapping(value="getallusers", method=RequestMethod.GET, produces="application/json")
+	@RequestMapping(method=RequestMethod.GET, produces="application/json")
 	public List<User> getAllUsers(){
 		return userRepository.findAll();
 	}
+
+	@RequestMapping(method=RequestMethod.POST, produces="application/json")
+	public User save(@RequestBody User user){
+	    return this.userRepository.save(user);
+    }
 }

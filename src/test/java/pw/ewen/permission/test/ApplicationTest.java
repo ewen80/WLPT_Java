@@ -2,16 +2,18 @@ package pw.ewen.permission.test;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
-@EnableAutoConfiguration
-@ComponentScan(basePackages={"pw.ewen.permission"})
+//@Configuration
+//@EnableAutoConfiguration
+//@ComponentScan(basePackages={"pw.ewen.permission"})
+@SpringBootApplication(scanBasePackages="pw.ewen.permission")
 public class ApplicationTest {
 
 	public static void main(String[] args) throws ClassNotFoundException {
-		SpringApplication.run(ApplicationTest.class);
+		SpringApplication.run(ApplicationTest.class, args);
 	}
 	
 //	@Bean
