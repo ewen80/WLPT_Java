@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.3.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.1.RELEASE")
     }
 }
 
@@ -25,7 +25,7 @@ targetCompatibility = 1.8
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-data-jpa", "org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-devtools", "org.springframework.boot:spring-boot-starter-data-jpa", "org.springframework.boot:spring-boot-starter-web", "com.h2database:h2")
     runtime("mysql:mysql-connector-java:5.1.39")
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }

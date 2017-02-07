@@ -12,7 +12,7 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import javax.sql.DataSource;
 //import org.apache.tomcat.jdbc.pool.DataSource;
 
-@Configuration
+//@Configuration
 @EnableJpaRepositories(basePackages="pw.ewen.permission.repository")
 public class DatabaseConfig {
 
@@ -28,11 +28,12 @@ public class DatabaseConfig {
 	}
 	
 	@Bean
-	public JpaVendorAdapter JpaVendorAdapter(){
+	public JpaVendorAdapter jpaVendorAdapter(){
 		HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
-		adapter.setDatabase(Database.MYSQL);
+//		adapter.setDatabase(Database.MYSQL); //采用MYSQL数据库
+		adapter.setDatabase(Database.H2); //采用H2数据库
 		adapter.setShowSql(true);
-		adapter.setGenerateDdl(true);
+		adapter.setGenerateDdl(false);
 		return adapter;
 	}
 	
