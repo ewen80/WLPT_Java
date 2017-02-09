@@ -15,6 +15,14 @@ jar{
 	baseName = 'permission'
 	version = '0.1.0'
 }
+
+sourceSets{
+    main{
+        java{
+            exclude '**/DatabaseConfig.java'
+        }
+    }
+}
 // In this section you declare where to find the dependencies of your project
 repositories {
     mavenCentral()
@@ -25,7 +33,13 @@ targetCompatibility = 1.8
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
-    compile("org.springframework.boot:spring-boot-devtools", "org.springframework.boot:spring-boot-starter-data-jpa", "org.springframework.boot:spring-boot-starter-web", "org.springframework.boot:spring-boot-starter-security", "com.h2database:h2")
-    runtime("mysql:mysql-connector-java:5.1.39")
+    compile(
+            "org.springframework.boot:spring-boot-devtools",
+            "org.springframework.boot:spring-boot-starter-data-jpa",
+            "org.springframework.boot:spring-boot-starter-web",
+            "org.springframework.boot:spring-boot-starter-security",
+            "com.h2database:h2"
+    )
+//    runtime("mysql:mysql-connector-java:5.1.39")
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }

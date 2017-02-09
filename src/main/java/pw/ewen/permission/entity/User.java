@@ -29,6 +29,7 @@ public class User implements Serializable {
 	private String ID;
 	private String name;
 	private Role role;
+	private String password;
 	
 	protected User(){}
 	
@@ -59,6 +60,10 @@ public class User implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	@Column(nullable = false)
+	public String getPassword(){ return password;}
+	public void setPassword(String password){ this.password = password;}
 	
 	@ManyToOne
 	@JoinColumn(name="role_ID")

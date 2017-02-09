@@ -1,6 +1,6 @@
-/.gradle/
-/.idea/
-/.settings/
-/bin/
-/build/
-/gradle/
+/.gradle/*
+/.idea/*
+/.settings/*
+/bin/*
+/build/*
+/gradle/*
