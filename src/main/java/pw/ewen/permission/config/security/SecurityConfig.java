@@ -36,6 +36,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http.csrf().disable();
+        http.headers().frameOptions().disable();//Disable X-Frame-Options in Spring Security
+
+        http
+            .authorizeRequests().antMatchers("/h2console/**").permitAll()//对嵌入式数据库console不做安全检查
+                                .anyRequest().authenticated()
+                            .and()
+                                .httpBasic();
+        http.csrf().disable(); //关闭CSRF检查
+
     }
 }
