@@ -40,7 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         //TODO: 更换jwt认证方式  20170210
         //      采用BASIC AUTHENTICATION主要是为了方便快速开发
-        //      一旦认证成功会在服务器产生session，客户端产生cookie，每次request会带上cookie,无需每次都带basic auth HEAD认证头
         //      后期考虑换成JWT方式，因为session-cookie方式，只适合客户端是浏览器的情况
         http
             .authorizeRequests().antMatchers("/h2console/**").permitAll()//对嵌入式数据库console不做安全检查
