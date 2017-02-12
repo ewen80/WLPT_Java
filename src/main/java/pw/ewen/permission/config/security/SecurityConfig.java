@@ -48,6 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                 .httpBasic();
 
         http.csrf().disable(); //关闭CSRF检查
+        http.cors();//允许CORS跨域请求
 
     }
 }
