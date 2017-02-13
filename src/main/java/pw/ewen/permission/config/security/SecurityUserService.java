@@ -25,8 +25,8 @@ public class SecurityUserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findOne(username);
+    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+        User user = userRepository.findOne(userId);
         Role role = user.getRole();
         if(user != null){
             List<GrantedAuthority> authorities = new ArrayList<>();
@@ -37,6 +37,6 @@ public class SecurityUserService implements UserDetailsService {
             return new org.springframework.security.core.userdetails.User(user.getID(), user.getPassword(), authorities);
         }
 
-        throw new UsernameNotFoundException("User '" + username + "' not found");
+        throw new UsernameNotFoundException("User id: '" + userId + "' not found");
     }
 }

@@ -36,13 +36,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.headers().frameOptions().disable();//Disable X-Frame-Options in Spring Security
+        http.headers().frameOptions().disable();//Disable X-Frame-Options in Spring Security,用于H2 Console
 
         //TODO: 更换jwt认证方式  20170210
         //      采用BASIC AUTHENTICATION主要是为了方便快速开发
         //      后期考虑换成JWT方式，因为session-cookie方式，只适合客户端是浏览器的情况
         http
             .authorizeRequests().antMatchers("/h2console/**").permitAll()//对嵌入式数据库console不做安全检查
+                                .antMatchers("/authentication").permitAll()
                                 .anyRequest().authenticated()
                             .and()
                                 .httpBasic();
