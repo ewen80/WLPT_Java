@@ -1,4 +1,4 @@
-package pw.ewen.permission.entity;
+package pw.ewen.WLPT.entity;
 /*
  * 代表权限模块管理的资源
  *  

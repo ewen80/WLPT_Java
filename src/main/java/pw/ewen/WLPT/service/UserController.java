@@ -1,12 +1,12 @@
-package pw.ewen.permission.service;
+package pw.ewen.WLPT.service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import pw.ewen.permission.entity.User;
-import pw.ewen.permission.repository.UserRepository;
+import pw.ewen.WLPT.entity.User;
+import pw.ewen.WLPT.repository.UserRepository;
 
 @RestController
 @RequestMapping("/users")

@@ -1,4 +1,4 @@
-package pw.ewen.permission.config.mvc;
+package pw.ewen.WLPT.config.mvc;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

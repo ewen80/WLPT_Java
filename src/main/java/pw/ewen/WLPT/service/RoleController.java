@@ -1,11 +1,11 @@
-package pw.ewen.permission.service;
+package pw.ewen.WLPT.service;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import pw.ewen.permission.entity.Role;
-import pw.ewen.permission.repository.RoleRepository;
+import pw.ewen.WLPT.entity.Role;
+import pw.ewen.WLPT.repository.RoleRepository;
 
 import java.util.List;
 

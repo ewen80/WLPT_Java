@@ -1,11 +1,11 @@
-package pw.ewen.permission.service;
+package pw.ewen.WLPT.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
-import pw.ewen.permission.config.security.SecurityUserService;
-import pw.ewen.permission.repository.UserRepository;
+import pw.ewen.WLPT.config.security.SecurityUserService;
+import pw.ewen.WLPT.repository.UserRepository;
 import java.util.Base64;
 import java.util.HashMap;
 

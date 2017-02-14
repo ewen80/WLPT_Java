@@ -1,4 +1,4 @@
-package pw.ewen.permission.entity;
+package pw.ewen.WLPT.entity;
 import java.util.Set;
 import java.util.function.Predicate;
 import static java.util.stream.Collectors.toSet;

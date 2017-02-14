@@ -1,15 +1,12 @@
-package pw.ewen.permission.test;
+package pw.ewen.WLPT.test;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 
 //@Configuration
 //@EnableAutoConfiguration
-//@ComponentScan(basePackages={"pw.ewen.permission"})
-@SpringBootApplication(scanBasePackages="pw.ewen.permission")
+//@ComponentScan(basePackages={"pw.ewen.WLPT"})
+@SpringBootApplication(scanBasePackages="pw.ewen.WLPT")
 public class ApplicationTest {
 
 	public static void main(String[] args) throws ClassNotFoundException {

@@ -1,4 +1,4 @@
-package pw.ewen.permission.entity;
+package pw.ewen.WLPT.entity;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;

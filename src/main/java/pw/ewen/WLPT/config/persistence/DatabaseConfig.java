@@ -1,4 +1,4 @@
-package pw.ewen.permission.config.persistence;
+package pw.ewen.WLPT.config.persistence;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 //import org.apache.tomcat.jdbc.pool.DataSource;
 
 @Configuration
-@EnableJpaRepositories(basePackages="pw.ewen.permission.repository")
+@EnableJpaRepositories(basePackages="pw.ewen.WLPT.repository")
 public class DatabaseConfig {
 
 	@Bean
@@ -44,7 +44,7 @@ public class DatabaseConfig {
 		LocalContainerEntityManagerFactoryBean emfb = new LocalContainerEntityManagerFactoryBean();
 		emfb.setDataSource(dataSource);
 		emfb.setJpaVendorAdapter(jpaVendorAdapter);
-		emfb.setPackagesToScan("pw.ewen.permission.entity");
+		emfb.setPackagesToScan("pw.ewen.WLPT.entity");
 		
 //		Properties props = new Properties();
 //		props.setProperty("SerializationFeature.FAIL_ON_EMPTY_BEANS", "false");

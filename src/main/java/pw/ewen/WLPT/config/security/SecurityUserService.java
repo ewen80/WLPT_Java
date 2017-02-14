@@ -1,13 +1,13 @@
-package pw.ewen.permission.config.security;
+package pw.ewen.WLPT.config.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import pw.ewen.permission.entity.Role;
-import pw.ewen.permission.entity.User;
-import pw.ewen.permission.repository.UserRepository;
+import pw.ewen.WLPT.entity.Role;
+import pw.ewen.WLPT.entity.User;
+import pw.ewen.WLPT.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;

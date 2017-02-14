@@ -1,22 +1,14 @@
-package pw.ewen.permission.entity;
+package pw.ewen.WLPT.entity;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /*
  * 系统用户
@@ -30,6 +22,7 @@ public class User implements Serializable {
 	private String name;
 	private Role role;
 	private String password;
+	private String picture;
 	
 	protected User(){}
 	
@@ -64,7 +57,16 @@ public class User implements Serializable {
 	@Column(nullable = false)
 	public String getPassword(){ return password;}
 	public void setPassword(String password){ this.password = password;}
-	
+
+	@Column(nullable = true)
+	public String getPicture() {
+		return picture;
+	}
+
+	public void setPicture(String picture) {
+		this.picture = picture;
+	}
+
 	@ManyToOne
 	@JoinColumn(name="role_ID")
 	public Role getRole() {

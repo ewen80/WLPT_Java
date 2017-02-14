@@ -1,4 +1,4 @@
-package pw.ewen.permission.config.security;
+package pw.ewen.WLPT.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -8,9 +8,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import pw.ewen.permission.repository.UserRepository;
-
-import javax.sql.DataSource;
+import pw.ewen.WLPT.repository.UserRepository;
 
 /**
  * Created by wen on 17-2-8.
