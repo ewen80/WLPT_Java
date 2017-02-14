@@ -6,9 +6,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.permission.config.security.SecurityUserService;
 import pw.ewen.permission.repository.UserRepository;
-
-import java.security.MessageDigest;
 import java.util.Base64;
+import java.util.HashMap;
 
 /**
  * Created by wenliang on 17-2-13.
@@ -23,16 +22,18 @@ public class AuthenticationApi {
 
     //用户认证接口
     @RequestMapping(method= RequestMethod.PUT, produces="application/json")
-    public boolean checkAuthentication(@RequestBody String userId, String authBase64String){
+//    @RequestMapping()
+    public boolean checkAuthentication(@RequestBody HashMap<String,String> authInfo){
+
         UserDetailsService userService = new SecurityUserService(userRepository);
 
         UserDetails userDetails;
         try{
-            userDetails = userService.loadUserByUsername(userId);
+            userDetails = userService.loadUserByUsername(authInfo.get("userId"));
             String authString = userDetails.getUsername() + ":" + userDetails.getPassword();
             byte[] encodedBytes = Base64.getEncoder().encode(authString.getBytes());
             String encodedAuthString = new String(encodedBytes);
-            return authBase64String.equals(encodedAuthString);
+            return authInfo.get("authToken").equals(encodedAuthString);
 
         }catch (Exception exception){
             return false;
