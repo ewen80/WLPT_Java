@@ -41,7 +41,6 @@ public class User implements Serializable {
 	public String getID() {
 		return ID;
 	}
-
 	public void setID(String iD) {
 		ID = iD;
 	}
@@ -62,7 +61,6 @@ public class User implements Serializable {
 	public String getPicture() {
 		return picture;
 	}
-
 	public void setPicture(String picture) {
 		this.picture = picture;
 	}
@@ -72,7 +70,6 @@ public class User implements Serializable {
 	public Role getRole() {
 		return role;
 	}
-
 	public void setRole(Role role) {
 		this.role = role;
 	}
