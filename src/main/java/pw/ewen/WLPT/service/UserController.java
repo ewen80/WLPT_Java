@@ -31,7 +31,7 @@ public class UserController {
 	//获取用户（分页）
 	@RequestMapping(method = RequestMethod.GET, produces="application/json")
 	public Page<User> getUsersWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
-									   @RequestParam(value = "pageSize") int pageSize){
+									   @RequestParam(value = "pageSize", defaultValue = "20") int pageSize){
 		return userRepository.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
 	}
 
