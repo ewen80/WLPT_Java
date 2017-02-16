@@ -5,11 +5,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.entity.Role;
-import pw.ewen.WLPT.entity.User;
 import pw.ewen.WLPT.repository.RoleRepository;
 
 import java.util.List;
-
 
 @RestController
 @RequestMapping(value = "/roles")
