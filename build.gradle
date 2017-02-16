@@ -1,16 +1,30 @@
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.1.RELEASE")
     }
 }
 
+plugins {
+    id "at.comm_unity.gradle.plugins.jpamodelgen" version "1.1.2"
+}
+
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 
+//-------------------------------------------------------------------------------------------------
+// 用于生成JPA的 JPA Static Metamodel Classes,动态查询需要使用
+// Important!!! Following configuration of compile java arguments
+// should be ALWAYS present when using jpamodelgen plugin.
+compileJava.options.compilerArgs += ["-proc:none"]
+//-----------------------------------------------------------------------------------------------------
 jar{
 	baseName = 'wlpt'
 	version = '0.1.0'
