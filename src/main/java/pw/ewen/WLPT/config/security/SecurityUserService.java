@@ -15,6 +15,7 @@ import java.util.List;
 
 /**
  * Created by wenliang on 17-2-9.
+ * 用户服务（提供用户查找等服务）
  */
 public class SecurityUserService implements UserDetailsService {
 
