@@ -18,7 +18,7 @@ import org.hibernate.annotations.GenericGenerator;
 public class User implements Serializable {
 	private static final long serialVersionUID = 5844614718392473692L;
 	
-	private String ID;
+	private String id;
 	private String name;
 	private Role role;
 	private String password;
@@ -36,13 +36,11 @@ public class User implements Serializable {
 	}
 	
 	@Id
-	@GeneratedValue(generator="UUID")
-	@GenericGenerator(name="UUID", strategy="uuid")
-	public String getID() {
-		return ID;
+	public String getId() {
+		return id;
 	}
-	public void setID(String iD) {
-		ID = iD;
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 	@Column(nullable = false)

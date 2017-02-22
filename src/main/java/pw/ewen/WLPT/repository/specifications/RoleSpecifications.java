@@ -20,7 +20,7 @@ public class RoleSpecifications {
         return new Specification<Role>() {
             @Override
             public Predicate toPredicate(Root<Role> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                return cb.like(root.get(Role_.name), name);
+                return cb.like(root.get(Role_.name), "%"+name+"%");
             }
         };
     }

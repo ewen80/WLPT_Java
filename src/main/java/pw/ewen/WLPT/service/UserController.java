@@ -44,4 +44,13 @@ public class UserController {
 	public User save(@RequestBody User user){
 	    return this.userRepository.save(user);
     }
+
+    @RequestMapping(value = "/{userIds}", method=RequestMethod.DELETE, produces = "application/json")
+    public void delete(@PathVariable("userIds") String userIds){
+		String[] arrUserIds = userIds.split(",");
+		for(String id : arrUserIds){
+			this.userRepository.delete(id);
+		}
+
+	}
 }

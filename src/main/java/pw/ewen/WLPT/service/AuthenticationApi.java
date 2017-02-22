@@ -22,7 +22,6 @@ public class AuthenticationApi {
 
     //用户认证接口
     @RequestMapping(method= RequestMethod.PUT, produces="application/json")
-//    @RequestMapping()
     public boolean checkAuthentication(@RequestBody HashMap<String,String> authInfo){
 
         UserDetailsService userService = new SecurityUserService(userRepository);
