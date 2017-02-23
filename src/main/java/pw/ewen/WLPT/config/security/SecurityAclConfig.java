@@ -7,70 +7,92 @@ import org.springframework.cache.ehcache.EhCacheFactoryBean;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.acls.AclPermissionCacheOptimizer;
 import org.springframework.security.acls.AclPermissionEvaluator;
-import org.springframework.security.acls.domain.EhCacheBasedAclCache;
+import org.springframework.security.acls.domain.*;
 import org.springframework.security.acls.jdbc.BasicLookupStrategy;
 import org.springframework.security.acls.jdbc.JdbcMutableAclService;
+import org.springframework.security.acls.jdbc.LookupStrategy;
+import org.springframework.security.acls.model.AclCache;
+import org.springframework.security.acls.model.AclService;
+import org.springframework.security.acls.model.PermissionGrantingStrategy;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import javax.activation.DataSource;
+import javax.sql.DataSource;
+
 
 /**
  * Created by wen on 17-2-22.
  * Acl配置
  */
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityAclConfig {
-    @Autowired
-    AclPermissionCacheOptimizer aclPermissionCacheOptimizer;
-    @Autowired
-    AclPermissionEvaluator aclPermissionEvaluator;
-    @Autowired
-    DataSource dataSource;
-    @Autowired
-    CacheManager aclCacheManager;
-    @Autowired
-    Ehcache aclEhCacheFactoryBean;
-    @Autowired
-    EhCacheBasedAclCache aclCache;
 
     @Bean
-    MethodSecurityExpressionHandler getMethodSecurityExpressionHandler(){
-        DefaultMethodSecurityExpressionHandler defaultMethodSecurityExpressionHandler =  new DefaultMethodSecurityExpressionHandler();
-        defaultMethodSecurityExpressionHandler.setPermissionCacheOptimizer(aclPermissionCacheOptimizer);
-        defaultMethodSecurityExpressionHandler.setPermissionEvaluator(aclPermissionEvaluator);
-        return defaultMethodSecurityExpressionHandler;
+    PermissionEvaluator getAclPermissionEvaluator(AclService aclService){
+        return new AclPermissionEvaluator(aclService);
     }
 
     @Bean
-    JdbcMutableAclService getJdbcMutableAclService(){
-        new JdbcMutableAclService(dataSource,)
+    AclPermissionCacheOptimizer getAclPermissionCacheOptimizer(AclService aclService){
+        return new AclPermissionCacheOptimizer(aclService);
     }
 
     @Bean
-    BasicLookupStrategy getBasicLookupStrategy(){
-        return new BasicLookupStrategy(dataSource, )
+    JdbcMutableAclService getAclService(DataSource dataSource, LookupStrategy lookupStrategy, AclCache aclCache){
+        return new JdbcMutableAclService(dataSource, lookupStrategy, aclCache);
     }
 
     @Bean
-    EhCacheBasedAclCache getAclCache(){
-        return new EhCacheBasedAclCache()
+    BasicLookupStrategy getLookupStrategy(DataSource dataSource, AclCache aclCache,
+                                          AclAuthorizationStrategy aclAuthorizationStrategy,
+                                          AuditLogger auditLogger){
+        return new BasicLookupStrategy(dataSource, aclCache, aclAuthorizationStrategy, auditLogger);
     }
 
     @Bean
-    Ehcache getEhCacheFactoryBean(){
+    EhCacheBasedAclCache getAclCache(Ehcache ehcache, PermissionGrantingStrategy permissionGrantingStrategy,
+                                     AclAuthorizationStrategy aclAuthorizationStrategy){
+
+        return new EhCacheBasedAclCache(ehcache, permissionGrantingStrategy, aclAuthorizationStrategy);
+    }
+
+    @Bean
+    DefaultPermissionGrantingStrategy getPermissionGrantingStrategy(AuditLogger auditLogger){
+        return new DefaultPermissionGrantingStrategy(auditLogger);
+    }
+
+    @Bean
+    EhCacheFactoryBean getEhCache(CacheManager cacheManager){
         EhCacheFactoryBean ehCacheFactoryBean = new EhCacheFactoryBean();
-        ehCacheFactoryBean.setCacheManager(aclCacheManager);
+        ehCacheFactoryBean.setCacheManager(cacheManager);
         ehCacheFactoryBean.setCacheName("aclCache");
-        return ehCacheFactoryBean.getObject();
+        return ehCacheFactoryBean;
     }
 
     @Bean
-    CacheManager getAclCacheManager(){
-        return new EhCacheManagerFactoryBean().getObject();
+    EhCacheManagerFactoryBean getEhCacheManager(){
+        return new EhCacheManagerFactoryBean();
     }
+
+    @Bean
+    AuditLogger getAuditLogger(){
+        return new ConsoleAuditLogger();
+    }
+
+    @Bean
+    AclAuthorizationStrategy getAclAuthorizationStrategy(GrantedAuthority... auths){
+        return new AclAuthorizationStrategyImpl(auths);
+    }
+
+    @Bean
+    SimpleGrantedAuthority getGrantedAuthority(){
+        return new SimpleGrantedAuthority("ROLE_admin");
+    }
+
 }

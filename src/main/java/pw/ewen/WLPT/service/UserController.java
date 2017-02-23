@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.web.bind.annotation.*;
 
 import pw.ewen.WLPT.entity.User;
@@ -24,6 +26,7 @@ public class UserController {
 
 	//获取所有用户
 	@RequestMapping(value = "/all", method=RequestMethod.GET, produces="application/json")
+	@PostFilter("hasPermission(filterObject, 'read')")
 	public List<User> getAllUsers(){
 		return userRepository.findAll();
 	}
