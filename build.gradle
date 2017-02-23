@@ -49,10 +49,8 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-security",
             "org.springframework.boot:spring-boot-starter-cache",
             "org.springframework.security:spring-security-acl",
-            "com.h2database:h2"
-    )
-    runtime(
-//        "net.sf.ehcache:ehcache"
+            "com.h2database:h2",
+            "net.sf.ehcache:ehcache"
     )
 //    runtime("mysql:mysql-connector-java:5.1.39")
     testCompile("org.springframework.boot:spring-boot-starter-test")
