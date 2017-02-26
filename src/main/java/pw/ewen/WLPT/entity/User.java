@@ -18,8 +18,7 @@ import org.hibernate.annotations.GenericGenerator;
 public class User implements Serializable {
 	private static final long serialVersionUID = 5844614718392473692L;
 	
-//	private String id;
-	private long id;
+	private String id;
 	private String name;
 	private Role role;
 	private String password;
@@ -35,12 +34,6 @@ public class User implements Serializable {
 		this(name);
 		this.role = role;
 	}
-
-	@Id
-	@GeneratedValue
-	public long getId(){ return id;}
-	public void setId(long value){ id = value;}
-
 //	@Id
 //	public String getId() {
 //		return id;
@@ -48,6 +41,13 @@ public class User implements Serializable {
 //	public void setId(String id) {
 //		this.id = id;
 //	}
+	@Id
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
 	
 	@Column(nullable = false)
 	public String getName() {

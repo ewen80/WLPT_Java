@@ -1,11 +1,13 @@
 insert into role(id,name) values('admin','admin')
 insert into role(id,name) values('guest','guest')
-insert into user(id,name,password,role_id) values(100,'admin','admin','admin')
-insert into user(id,name,password,role_id) values(101,'guest','guest','guest')
+insert into user(id,name,password,role_id) values('admin','admin','admin','admin')
+insert into user(id,name,password,role_id) values('guest','guest','guest','guest')
+insert into resource(id,type,number) values(100,'resource1',50)
+insert into resource(id,type,number) values(101,'resource2',100)
 
 ------------------以下用于ACL测试-----------------------------------------------------------------------
 -- class
-insert into acl_class (id, class) values (10, 'ewen.pw.WLPT.entity.User');
+insert into acl_class (id, class) values (10, 'pw.ewen.WLPT.entity.Resource');
 
 -- SIDs
 insert into acl_sid (id, principal, sid) values (20, true, 'admin');
@@ -27,5 +29,5 @@ insert into acl_object_identity (id,object_id_identity,object_id_class,parent_ob
 insert into acl_entry(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)     values(30, 1, 20, 1, true, true, true);
 
 -- custom permission
-insert into acl_sid (id, principal, sid) values (23, true, 'admin1@example.com');
-insert into acl_entry(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)   values(31, 1, 23, 32, true, true, true);
+--insert into acl_sid (id, principal, sid) values (23, true, 'admin1@example.com');
+--insert into acl_entry(acl_object_identity, ace_order, sid, mask, granting, audit_success, audit_failure)   values(31, 1, 23, 32, true, true, true);

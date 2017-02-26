@@ -5,5 +5,4 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import pw.ewen.WLPT.entity.User;
 
 public interface UserRepository extends JpaRepository<User, String>, JpaSpecificationExecutor<User> {
-    User findOneById(long id);
 }

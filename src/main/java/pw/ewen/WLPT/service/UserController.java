@@ -26,7 +26,6 @@ public class UserController {
 
 	//获取所有用户
 	@RequestMapping(value = "/all", method=RequestMethod.GET, produces="application/json")
-	@PostFilter("hasPermission(filterObject, 'read')")
 	public List<User> getAllUsers(){
 		return userRepository.findAll();
 	}
