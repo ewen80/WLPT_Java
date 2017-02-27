@@ -10,10 +10,16 @@ import java.io.Serializable;
  * 资源范围类
  * 代表某个范围的资源集合
  */
-@Entity
-public class ResourceRange implements Serializable {
+public abstract class ResourceRange implements Serializable {
     private long id;
     private String filter;
+    private String sid;
+
+    protected ResourceRange(){}
+    public ResourceRange(long id, String filter) {
+        this.id = id;
+        this.filter = filter;
+    }
 
     @Id
     @GeneratedValue
@@ -24,15 +30,11 @@ public class ResourceRange implements Serializable {
     public String getFilter() {
         return filter;
     }
-
     public void setFilter(String filter) {
         this.filter = filter;
     }
 
-    protected ResourceRange(){}
-
-    public ResourceRange(long id, String filter) {
-        this.id = id;
-        this.filter = filter;
-    }
+    //角色ID
+    public String getSid() { return sid; }
+    public void setSid(String sid) { this.sid = sid; }
 }

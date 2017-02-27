@@ -10,18 +10,9 @@ import java.io.Serializable;
  *  
  */
 @Entity
-public  class Resource implements Serializable {
+public  class Resource implements Serializable, HasRangeObject<MyResourceRange> {
 	private long id;
-	private String type;
 	private int number;
-	
-	//资源类型
-	public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}
 
 	//资源唯一标志号
 	@Id
@@ -30,6 +21,21 @@ public  class Resource implements Serializable {
 	}
 	public void setId(long id){ this.id = id;}
 
+	//得到RangeClass
+	@Override
+	public Class<MyResourceRange> getRangeObjectClass() {
+		return MyResourceRange.class;
+	}
+
+	//Range对象名
+	public String getRangeTypeName() {
+		return rangeTypeName;
+	}
+	public void setRangeTypeName(String rangeTypeName) {
+		this.rangeTypeName = rangeTypeName;
+	}
+
+	//测试用
 	public int getNumber(){ return this.number;}
 	public void setNumber(int number){ this.number = number;}
 }
