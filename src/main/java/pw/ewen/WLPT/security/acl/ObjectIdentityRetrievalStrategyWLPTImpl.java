@@ -1,13 +1,18 @@
 package pw.ewen.WLPT.security.acl;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.security.acls.domain.IdentityUnavailableException;
+import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy;
 import pw.ewen.WLPT.entity.HasRangeObject;
 import pw.ewen.WLPT.entity.ResourceRange;
+import pw.ewen.WLPT.exception.security.NotFoundResourceRangeException;
+import pw.ewen.WLPT.security.UserContext;
 
 /**
  * Created by wen on 17-2-26.
@@ -16,25 +21,36 @@ import pw.ewen.WLPT.entity.ResourceRange;
  * 根据domain_object查找符合要求的object_range
  */
 public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRetrievalStrategy {
-    @Override
-    public ObjectIdentity getObjectIdentity(Object domainObject) {
-        //查找ResourceRepository中当前SID对应的ResourceRange
+    @Autowired
+    private UserContext userContext;
 
-        return null;
+    @Override
+    public ObjectIdentity getObjectIdentity(Object domainObject) throws IdentityUnavailableException {
+        //查找ResourceRepository中当前SID对应的ResourceRange
+        ResourceRange resourceRange = getResourceRange(domainObject);
+        if(resourceRange == null){
+            throw new IdentityUnavailableException("ResourceRange can not be null");
+        }else{
+            return new ObjectIdentityImpl(resourceRange);
+        }
+
     }
 
     //从domain object获得ResourceRange范围对象
-    private ResourceRange getResourceRange(Object domainObject) throws IllegalAccessException, InstantiationException {
+    private ResourceRange getResourceRange(Object domainObject)  {
         //根据domainObject获得对应的object_range类
+        String rangeFilter;
         //  只处理实现了HasRangeObject接口的类
         if(domainObject instanceof HasRangeObject){
             Class rangeClass = ((HasRangeObject) domainObject).getRangeObjectClass();
-            ResourceRange range = (ResourceRange)rangeClass.newInstance();
-        }
+            try {
+                return ((ResourceRange)rangeClass.newInstance()).getOne(domainObject, userContext.getCurrentUser().getId());
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
 
-        EvaluationContext context = new StandardEvaluationContext(domainObject);
-        SpelExpressionParser parser = new SpelExpressionParser();
-        Expression exp = parser.parseExpression(condition);
-        String result = exp.getValue(context, Boolean.class).toString();
+        }
+        return null;
+
     }
 }

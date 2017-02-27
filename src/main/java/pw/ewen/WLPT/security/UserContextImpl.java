@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Component;
 import pw.ewen.WLPT.entity.User;
 import pw.ewen.WLPT.repository.UserRepository;
 
@@ -14,6 +15,7 @@ import pw.ewen.WLPT.repository.UserRepository;
  * Created by wen on 17-2-26.
  * 当前登录用户上下文
  */
+@Component
 public class UserContextImpl implements UserContext {
     private final UserRepository userRepository;
     private final UserDetailsService userDetailsService;

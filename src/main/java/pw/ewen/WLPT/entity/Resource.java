@@ -10,7 +10,7 @@ import java.io.Serializable;
  *  
  */
 @Entity
-public  class Resource implements Serializable, HasRangeObject<MyResourceRange> {
+public  class Resource implements Serializable, HasRangeObject {
 	private long id;
 	private int number;
 
@@ -23,16 +23,8 @@ public  class Resource implements Serializable, HasRangeObject<MyResourceRange> 
 
 	//得到RangeClass
 	@Override
-	public Class<MyResourceRange> getRangeObjectClass() {
+	public Class getRangeObjectClass() {
 		return MyResourceRange.class;
-	}
-
-	//Range对象名
-	public String getRangeTypeName() {
-		return rangeTypeName;
-	}
-	public void setRangeTypeName(String rangeTypeName) {
-		this.rangeTypeName = rangeTypeName;
 	}
 
 	//测试用

@@ -4,6 +4,7 @@ import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import pw.ewen.WLPT.exception.security.NotFoundResourceRangeException;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,17 +14,18 @@ import java.io.Serializable;
 /**
  * Created by wen on 17-2-26.
  * 资源范围类
- * 代表某个范围的资源集合
+ * 代表某个范围的资源集合,只支持到用户id
  */
 public abstract class ResourceRange implements Serializable {
     private long id;
     private String filter;
-    private String sid;
+    private String userId;
 
     protected ResourceRange(){}
-    public ResourceRange(long id, String filter) {
+    public ResourceRange(long id, String filter, String userId) {
         this.id = id;
         this.filter = filter;
+        this.userId = userId;
     }
 
     @Id
@@ -39,10 +41,14 @@ public abstract class ResourceRange implements Serializable {
         this.filter = filter;
     }
 
-    //角色ID
-    public String getSid() { return sid; }
-    public void setSid(String sid) { this.sid = sid; }
+    //userId
+    public String getUserId() {
+        return userId;
+    }
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
-    //根据domain object 和 sid 筛选符合条件的唯一 resourceRange对象
-    public abstract ResourceRange getOne(Object domainObject, String userId);
+    //根据domain object 和 userId 筛选符合条件的唯一 resourceRange对象
+    public abstract  ResourceRange getOne(Object domainObject, String userId) throws NotFoundResourceRangeException;
 }
