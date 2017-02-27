@@ -10,4 +10,9 @@ public class MyResourceRange extends  ResourceRange {
     public MyResourceRange(long id, String filter) {
         super(id, filter);
     }
+
+    @Override
+    public ResourceRange getOne(Object domainObject) {
+        return null;
+    }
 }

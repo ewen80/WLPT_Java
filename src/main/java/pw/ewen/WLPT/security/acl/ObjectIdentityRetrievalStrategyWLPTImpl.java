@@ -31,6 +31,7 @@ public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRe
             Class rangeClass = ((HasRangeObject) domainObject).getRangeObjectClass();
             ResourceRange range = (ResourceRange)rangeClass.newInstance();
         }
+
         EvaluationContext context = new StandardEvaluationContext(domainObject);
         SpelExpressionParser parser = new SpelExpressionParser();
         Expression exp = parser.parseExpression(condition);

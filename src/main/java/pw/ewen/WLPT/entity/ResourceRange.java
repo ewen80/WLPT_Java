@@ -1,5 +1,10 @@
 package pw.ewen.WLPT.entity;
 
+import org.springframework.expression.EvaluationContext;
+import org.springframework.expression.Expression;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -37,4 +42,7 @@ public abstract class ResourceRange implements Serializable {
     //角色ID
     public String getSid() { return sid; }
     public void setSid(String sid) { this.sid = sid; }
+
+    //根据domain object 和 sid 筛选符合条件的唯一 resourceRange对象
+    public abstract ResourceRange getOne(Object domainObject, String userId);
 }

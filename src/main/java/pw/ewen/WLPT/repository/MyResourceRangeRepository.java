@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import pw.ewen.WLPT.entity.ResourceRange;
 
 /**
- * Created by wen on 17-2-26.
+ * Created by wenliang on 17-2-27.
  */
-public interface ResourceRangeRepository extends JpaRepository<ResourceRange, Long> {
+public interface MyResourceRangeRepository extends JpaRepository<ResourceRange, Long> {
 }
