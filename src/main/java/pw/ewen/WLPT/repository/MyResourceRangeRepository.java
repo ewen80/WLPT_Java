@@ -9,6 +9,5 @@ import java.util.List;
 /**
  * Created by wenliang on 17-2-27.
  */
-public interface MyResourceRangeRepository extends JpaRepository<ResourceRange, Long> {
-    List<MyResourceRange> findByUserId();
+public interface MyResourceRangeRepository extends ResourceRangeRepository {
 }

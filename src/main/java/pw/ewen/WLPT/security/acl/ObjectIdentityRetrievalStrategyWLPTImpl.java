@@ -1,17 +1,13 @@
 package pw.ewen.WLPT.security.acl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.expression.EvaluationContext;
-import org.springframework.expression.Expression;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.security.acls.domain.IdentityUnavailableException;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy;
+import org.springframework.stereotype.Component;
 import pw.ewen.WLPT.entity.HasRangeObject;
 import pw.ewen.WLPT.entity.ResourceRange;
-import pw.ewen.WLPT.exception.security.NotFoundResourceRangeException;
 import pw.ewen.WLPT.security.UserContext;
 
 /**
@@ -20,6 +16,7 @@ import pw.ewen.WLPT.security.UserContext;
  * 由于acl数据库中实际保存的是object_range，所以需要从domain_object到object_range进行转换
  * 根据domain_object查找符合要求的object_range
  */
+@Component
 public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRetrievalStrategy {
     @Autowired
     private UserContext userContext;
@@ -33,7 +30,6 @@ public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRe
         }else{
             return new ObjectIdentityImpl(resourceRange);
         }
-
     }
 
     //从domain object获得ResourceRange范围对象
@@ -48,7 +44,6 @@ public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRe
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
-
         }
         return null;
 

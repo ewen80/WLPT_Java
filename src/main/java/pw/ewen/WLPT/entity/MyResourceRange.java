@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Created by wenliang on 17-2-27.
+ * 测试资源类
  */
 @Entity
 public class MyResourceRange extends  ResourceRange {
@@ -24,22 +25,5 @@ public class MyResourceRange extends  ResourceRange {
         super(id, filter, userId);
     }
 
-    @Override
-    public ResourceRange getOne(Object domainObject, String userId) throws  NotFoundResourceRangeException {
-        //从ResourceRange仓储中获取所有userid和对应Type的filter
-        List<MyResourceRange> ranges =  myResourceRangeRepository.findByUserId();
-        //遍历所有filter进行判断表达式是否为true
-        ExpressionParser parser = new SpelExpressionParser();
-        EvaluationContext context = new StandardEvaluationContext(domainObject);
-        Expression exp;
-        for(MyResourceRange range : ranges){
-            exp = parser.parseExpression(range.getFilter());
-            Boolean result = exp.getValue(context, Boolean.class);
-            if(result){
-                return range;
-            }
-        }
-        throw  new NotFoundResourceRangeException("can not find MatchedResouceRange to object: " + domainObject.toString());
 
-    }
 }

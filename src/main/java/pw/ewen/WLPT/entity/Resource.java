@@ -3,6 +3,7 @@ package pw.ewen.WLPT.entity;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.io.Serializable;
 
 /*
@@ -22,6 +23,8 @@ public  class Resource implements Serializable, HasRangeObject {
 	public void setId(long id){ this.id = id;}
 
 	//得到RangeClass
+	//不要序列化
+	@Transient
 	@Override
 	public Class getRangeObjectClass() {
 		return MyResourceRange.class;

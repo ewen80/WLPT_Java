@@ -18,6 +18,7 @@ import org.springframework.security.acls.jdbc.JdbcMutableAclService;
 import org.springframework.security.acls.jdbc.LookupStrategy;
 import org.springframework.security.acls.model.AclCache;
 import org.springframework.security.acls.model.AclService;
+import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy;
 import org.springframework.security.acls.model.PermissionGrantingStrategy;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,8 +35,10 @@ import javax.sql.DataSource;
 public class SecurityAclConfig {
 
     @Bean
-    PermissionEvaluator getAclPermissionEvaluator(AclService aclService){
-        return new AclPermissionEvaluator(aclService);
+    PermissionEvaluator getAclPermissionEvaluator(AclService aclService, ObjectIdentityRetrievalStrategy objectIdentityRetrievalStrategy){
+        AclPermissionEvaluator aclPermissionEvaluator = new AclPermissionEvaluator(aclService);
+        aclPermissionEvaluator.setObjectIdentityRetrievalStrategy(objectIdentityRetrievalStrategy);
+        return aclPermissionEvaluator;
     }
 
     @Bean
