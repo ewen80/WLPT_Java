@@ -6,8 +6,11 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy;
 import org.springframework.stereotype.Component;
-import pw.ewen.WLPT.entity.HasRangeObject;
-import pw.ewen.WLPT.entity.ResourceRange;
+import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.WebApplicationContext;
+import pw.ewen.WLPT.domain.HasResourceRangeObject;
+import pw.ewen.WLPT.domain.ResourceRange;
+import pw.ewen.WLPT.repository.ResourceRangeRepository;
 import pw.ewen.WLPT.security.UserContext;
 
 /**
@@ -35,12 +38,16 @@ public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRe
     //从domain object获得ResourceRange范围对象
     private ResourceRange getResourceRange(Object domainObject)  {
         //根据domainObject获得对应的object_range类
-        String rangeFilter;
         //  只处理实现了HasRangeObject接口的类
-        if(domainObject instanceof HasRangeObject){
-            Class rangeClass = ((HasRangeObject) domainObject).getRangeObjectClass();
+        if(domainObject instanceof HasResourceRangeObject){
+            Class resourceRangeClass = ((HasResourceRangeObject) domainObject).getResourceRangeObjectClass();
             try {
-                return ((ResourceRange)rangeClass.newInstance()).getOne(domainObject, userContext.getCurrentUser().getId());
+                ResourceRange range = ((ResourceRange)resourceRangeClass.newInstance());
+                Class repositoryClass = range.getRepositoryClass();
+                WebApplicationContext wac = ContextLoader.getCurrentWebApplicationContext();
+                ResourceRangeRepository resourceRangeRepository = (ResourceRangeRepository)wac.getBean(repositoryClass.getName());
+
+                return range.getOne(domainObject, userContext.getCurrentUser().getId(), resourceRangeRepository);
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }

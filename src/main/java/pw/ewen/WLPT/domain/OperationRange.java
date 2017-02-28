@@ -1,4 +1,6 @@
-package pw.ewen.WLPT.entity;
+package pw.ewen.WLPT.domain;
+import pw.ewen.WLPT.domain.entity.MyResource;
+
 import java.util.Set;
 import java.util.function.Predicate;
 import static java.util.stream.Collectors.toSet;
@@ -9,7 +11,7 @@ import static java.util.stream.Collectors.toSet;
 public abstract class OperationRange {
 	
 	private String ID;
-	private Predicate<Resource> resourceSelector;
+	private Predicate<MyResource> resourceSelector;
 	private int operations;
 	
 	/**
@@ -17,14 +19,14 @@ public abstract class OperationRange {
 	 * @param rs 资源选择器
 	 * @param resourcesSet  待选择资源集合
 	 */
-	public OperationRange(Predicate<Resource> rs){
+	public OperationRange(Predicate<MyResource> rs){
 		this.resourceSelector = rs;
 	}
 	/**
 	 * 选择资源生成资源范围
 	 * @return 经过范围筛选后的资源列表
 	 */
-	public Set<Resource> selectResource(Set<Resource> resources){
+	public Set<MyResource> selectResource(Set<MyResource> resources){
 		return resources.stream().filter(resourceSelector).collect(toSet());
 	}
 	

@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-import pw.ewen.WLPT.entity.User;
+import pw.ewen.WLPT.domain.entity.User;
 import pw.ewen.WLPT.repository.UserRepository;
 
 /**

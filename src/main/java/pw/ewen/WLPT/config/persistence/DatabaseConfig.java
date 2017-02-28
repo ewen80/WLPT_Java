@@ -44,7 +44,7 @@ public class DatabaseConfig {
 		LocalContainerEntityManagerFactoryBean emfb = new LocalContainerEntityManagerFactoryBean();
 		emfb.setDataSource(dataSource);
 		emfb.setJpaVendorAdapter(jpaVendorAdapter);
-		emfb.setPackagesToScan("pw.ewen.WLPT.entity");
+		emfb.setPackagesToScan("pw.ewen.WLPT.domain");
 		
 //		Properties props = new Properties();
 //		props.setProperty("SerializationFeature.FAIL_ON_EMPTY_BEANS", "false");

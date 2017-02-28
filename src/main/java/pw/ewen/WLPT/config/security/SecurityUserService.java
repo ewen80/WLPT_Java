@@ -5,8 +5,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import pw.ewen.WLPT.entity.Role;
-import pw.ewen.WLPT.entity.User;
+import org.springframework.stereotype.Component;
+import pw.ewen.WLPT.domain.entity.Role;
+import pw.ewen.WLPT.domain.entity.User;
 import pw.ewen.WLPT.repository.UserRepository;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.List;
  * Created by wenliang on 17-2-9.
  * 用户服务（提供用户查找等服务）
  */
+@Component
 public class SecurityUserService implements UserDetailsService {
 
     private final UserRepository userRepository;

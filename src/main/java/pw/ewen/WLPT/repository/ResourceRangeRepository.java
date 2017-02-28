@@ -1,7 +1,6 @@
 package pw.ewen.WLPT.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import pw.ewen.WLPT.entity.ResourceRange;
+import pw.ewen.WLPT.domain.ResourceRange;
 
 import java.util.List;
 
@@ -9,6 +8,6 @@ import java.util.List;
  * Created by wenliang on 17-2-28.
  * 资源范围仓储接口
  */
-public interface ResourceRangeRepository extends JpaRepository<ResourceRange, Long> {
-    List<ResourceRange> findByUserId();
+public interface ResourceRangeRepository<T extends ResourceRange>{
+    List<T> findByUserId();
 }

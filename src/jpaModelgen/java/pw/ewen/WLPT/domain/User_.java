@@ -1,4 +1,7 @@
-package pw.ewen.WLPT.entity;
+package pw.ewen.WLPT.domain;
+
+import pw.ewen.WLPT.domain.entity.Role;
+import pw.ewen.WLPT.domain.entity.User;
 
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;

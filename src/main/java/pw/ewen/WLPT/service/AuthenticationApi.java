@@ -19,16 +19,15 @@ public class AuthenticationApi {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     //用户认证接口
     @RequestMapping(method= RequestMethod.PUT, produces="application/json")
     public boolean checkAuthentication(@RequestBody HashMap<String,String> authInfo){
-
-        UserDetailsService userService = new SecurityUserService(userRepository);
-
         UserDetails userDetails;
         try{
-            userDetails = userService.loadUserByUsername(authInfo.get("userId"));
+            userDetails = userDetailsService.loadUserByUsername(authInfo.get("userId"));
             String authString = userDetails.getUsername() + ":" + userDetails.getPassword();
             byte[] encodedBytes = Base64.getEncoder().encode(authString.getBytes());
             String encodedAuthString = new String(encodedBytes);

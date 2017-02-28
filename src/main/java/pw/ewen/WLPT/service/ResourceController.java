@@ -4,12 +4,11 @@ import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
-import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import pw.ewen.WLPT.entity.Resource;
+import pw.ewen.WLPT.domain.entity.MyResource;
 import pw.ewen.WLPT.repository.ResourceRepository;
 
 import java.util.List;
@@ -28,13 +27,13 @@ public class ResourceController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Resource> getAllResources(){
+    public List<MyResource> getAllResources(){
         return resourceRepository.findAll();
     }
 
     @RequestMapping(value = "/spel/{resourceId}", method = RequestMethod.GET)
     public String testSpel(@PathVariable("resourceId") long resourceId){
-        Resource resource = resourceRepository.findOne(resourceId);
+        MyResource resource = resourceRepository.findOne(resourceId);
 
         String condition = "number > 50";
 

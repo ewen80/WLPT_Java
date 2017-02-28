@@ -1,6 +1,5 @@
-package pw.ewen.WLPT.entity;
+package pw.ewen.WLPT.domain;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
@@ -11,7 +10,6 @@ import pw.ewen.WLPT.exception.security.NotFoundResourceRangeException;
 import pw.ewen.WLPT.repository.ResourceRangeRepository;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -20,17 +18,18 @@ import java.util.List;
  * 代表某个范围的资源集合,只支持到用户id
  */
 @MappedSuperclass
-public abstract class ResourceRange implements Serializable {
+public abstract class ResourceRange {
     private long id;
     private String filter;
-    private String userId;
-    private ResourceRangeRepository resourceRangeRepository;
+    private String userid;
 
-    protected ResourceRange(){}
+    public ResourceRange(){
+
+    }
     public ResourceRange(long id, String filter, String userId) {
         this.id = id;
         this.filter = filter;
-        this.userId = userId;
+        this.userid = userId;
     }
 
     @Id
@@ -47,27 +46,30 @@ public abstract class ResourceRange implements Serializable {
     }
 
     //userId
-    public String getUserId() {
-        return userId;
+    public String getUserid() {
+        return userid;
     }
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 
     //仓储对象
     //不要序列化
-    @Transient
-    public ResourceRangeRepository getResourceRangeRepository() {
-        return resourceRangeRepository;
-    }
-    public void setResourceRangeRepository(ResourceRangeRepository resourceRangeRepository) {
-        this.resourceRangeRepository = resourceRangeRepository;
-    }
+//    @Transient
+//    public ResourceRangeRepository getResourceRangeRepository() {
+//        return resourceRangeRepository;
+//    }
+//    public void setResourceRangeRepository(ResourceRangeRepository resourceRangeRepository) {
+//        this.resourceRangeRepository = resourceRangeRepository;
+//    }
 
-    //根据domain object 和 userId 筛选符合条件的唯一 resourceRange对象
-    public ResourceRange getOne(Object domainObject, String userId){
+    //获得仓储类型
+    public  abstract Class<?> getRepositoryClass();
+
+    //根据domain object 和 userid 筛选符合条件的唯一 resourceRange对象
+    public ResourceRange getOne(Object domainObject, String userId, ResourceRangeRepository resourceRangeRepository){
         //从ResourceRange仓储中获取所有userid和对应Type的filter
-        List<ResourceRange> ranges =  resourceRangeRepository.findByUserId();
+        List<? extends ResourceRange> ranges = resourceRangeRepository.findByUserId();
         //遍历所有filter进行判断表达式是否为true
         ExpressionParser parser = new SpelExpressionParser();
         EvaluationContext context = new StandardEvaluationContext(domainObject);

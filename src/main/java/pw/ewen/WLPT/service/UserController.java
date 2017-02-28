@@ -6,11 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.web.bind.annotation.*;
 
-import pw.ewen.WLPT.entity.User;
+import pw.ewen.WLPT.domain.entity.User;
 import pw.ewen.WLPT.repository.UserRepository;
 
 @RestController
