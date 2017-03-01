@@ -2,15 +2,11 @@ package pw.ewen.WLPT.security.acl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.IdentityUnavailableException;
-import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.ContextLoader;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.util.Assert;
 import pw.ewen.WLPT.domain.HasResourceRangeObject;
-import pw.ewen.WLPT.domain.ResourceRange;
-import pw.ewen.WLPT.repository.ResourceRangeRepository;
 import pw.ewen.WLPT.security.UserContext;
 
 /**
@@ -27,32 +23,33 @@ public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRe
     @Override
     public ObjectIdentity getObjectIdentity(Object domainObject) throws IdentityUnavailableException {
         //查找ResourceRepository中当前SID对应的ResourceRange
-        ResourceRange resourceRange = getResourceRange(domainObject);
-        if(resourceRange == null){
-            throw new IdentityUnavailableException("ResourceRange can not be null");
-        }else{
-            return new ObjectIdentityImpl(resourceRange);
-        }
+        Assert.isInstanceOf(HasResourceRangeObject.class, domainObject);
+
+//        ResourceRange resourceRange = getResourceRange((HasResourceRangeObject) domainObject);
+//        if(resourceRange == null){
+//            throw new IdentityUnavailableException("ResourceRange can not be null");
+//        }else{
+//            return new ObjectIdentityImpl(resourceRange);
+//        }
+        return null;
     }
 
     //从domain object获得ResourceRange范围对象
-    private ResourceRange getResourceRange(Object domainObject)  {
+//    private ResourceRange getResourceRange(HasResourceRangeObject domainObject)  {
         //根据domainObject获得对应的object_range类
-        //  只处理实现了HasRangeObject接口的类
-        if(domainObject instanceof HasResourceRangeObject){
-            Class resourceRangeClass = ((HasResourceRangeObject) domainObject).getResourceRangeObjectClass();
-            try {
-                ResourceRange range = ((ResourceRange)resourceRangeClass.newInstance());
-                Class repositoryClass = range.getRepositoryClass();
-                WebApplicationContext wac = ContextLoader.getCurrentWebApplicationContext();
-                ResourceRangeRepository resourceRangeRepository = (ResourceRangeRepository)wac.getBean(repositoryClass.getName());
+//        Class resourceRangeClass = (domainObject).getResourceRangeObjectClass();
+//        try {
+//            ResourceRange range = ((ResourceRange)resourceRangeClass.newInstance());
+//            Class repositoryClass = range.repositoryClass();
+//            //获取具体ResourceRange子类的仓储Bean
+//            WebApplicationContext wac = ContextLoader.getCurrentWebApplicationContext();
+//            ResourceRangeRepository resourceRangeRepository = (ResourceRangeRepository)wac.getBean(repositoryClass.getName());
 
-                return range.getOne(domainObject, userContext.getCurrentUser().getId(), resourceRangeRepository);
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
+//            return range.selectOne(domainObject, userContext.getCurrentUser().getId(), resourceRangeRepository);
+//        } catch (InstantiationException | IllegalAccessException e) {
+//            e.printStackTrace();
+//        }
 
-    }
+//        return null;
+//    }
 }

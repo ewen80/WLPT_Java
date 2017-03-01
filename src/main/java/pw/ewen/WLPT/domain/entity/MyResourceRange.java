@@ -1,12 +1,10 @@
 package pw.ewen.WLPT.domain.entity;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.Repository;
-import pw.ewen.WLPT.domain.HasResourceRangeRepository;
 import pw.ewen.WLPT.domain.ResourceRange;
 import pw.ewen.WLPT.repository.MyResourceRangeRepository;
 
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import java.io.Serializable;
 
 /**
@@ -16,12 +14,14 @@ import java.io.Serializable;
 @Entity
 public class MyResourceRange extends ResourceRange implements Serializable {
 
-    public MyResourceRange(long id, String filter, String userId, MyResourceRangeRepository myResourceRangeRepository) {
-        super(id, filter, userId, myResourceRangeRepository);
+    protected MyResourceRange(){ super();}
+    public MyResourceRange(long id, String filter, String userId) {
+        super(id, filter, userId);
     }
 
     @Override
-    public Class<MyResourceRangeRepository> getRepositoryClass() {
+    @Transient
+    public Class<MyResourceRangeRepository> repositoryClass() {
         return MyResourceRangeRepository.class;
     }
 }

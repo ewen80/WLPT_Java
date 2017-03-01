@@ -1,10 +1,7 @@
 package pw.ewen.WLPT.domain;
 
-import pw.ewen.WLPT.domain.entity.MyResourceRange;
-
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
 
 /**
  * Created by wen on 17-2-28.

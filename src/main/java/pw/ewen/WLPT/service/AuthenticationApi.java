@@ -3,9 +3,12 @@ package pw.ewen.WLPT.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.web.bind.annotation.*;
-import pw.ewen.WLPT.config.security.SecurityUserService;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import pw.ewen.WLPT.repository.UserRepository;
+
 import java.util.Base64;
 import java.util.HashMap;
 

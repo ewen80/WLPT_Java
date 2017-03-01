@@ -2,7 +2,7 @@ package pw.ewen.WLPT.repository.specifications;
 
 import org.springframework.data.jpa.domain.Specification;
 import pw.ewen.WLPT.domain.entity.User;
-import pw.ewen.WLPT.domain.User_;
+import pw.ewen.WLPT.domain.entity.User_;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;

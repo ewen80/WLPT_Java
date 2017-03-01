@@ -1,8 +1,10 @@
 package pw.ewen.WLPT.domain;
+
 import pw.ewen.WLPT.domain.entity.MyResource;
 
 import java.util.Set;
 import java.util.function.Predicate;
+
 import static java.util.stream.Collectors.toSet;
 
 /*

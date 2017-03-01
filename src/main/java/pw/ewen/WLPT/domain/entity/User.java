@@ -1,13 +1,7 @@
 package pw.ewen.WLPT.domain.entity;
-import pw.ewen.WLPT.domain.entity.Role;
 
+import javax.persistence.*;
 import java.io.Serializable;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 /*
  * 系统用户

@@ -2,8 +2,8 @@ insert into role(id,name) values('admin','admin')
 insert into role(id,name) values('guest','guest')
 insert into user(id,name,password,role_id) values('admin','admin','admin','admin')
 insert into user(id,name,password,role_id) values('guest','guest','guest','guest')
-insert into resource(id,type,number) values(100,'resource1',50)
-insert into resource(id,type,number) values(101,'resource2',100)
+insert into my_resource(id,number) values(100,50)
+insert into my_resource(id,number) values(101,100)
 
 ------------------以下用于ACL测试-----------------------------------------------------------------------
 -- class

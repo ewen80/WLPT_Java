@@ -1,7 +1,5 @@
 package pw.ewen.WLPT.domain;
 
-import org.springframework.data.repository.Repository;
-
 import java.io.Serializable;
 
 /**
