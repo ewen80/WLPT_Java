@@ -1,5 +1,6 @@
 package pw.ewen.WLPT.repository;
 
+import pw.ewen.WLPT.domain.Resource;
 import pw.ewen.WLPT.domain.ResourceRange;
 
 import java.util.List;
@@ -9,5 +10,5 @@ import java.util.List;
  * 资源范围仓储接口
  */
 public interface ResourceRangeRepository<T extends ResourceRange>{
-    List<T> findByUserId();
+    List<? extends ResourceRange> findByUserId(String userId);
 }

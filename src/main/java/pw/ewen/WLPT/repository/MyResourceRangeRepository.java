@@ -2,6 +2,7 @@ package pw.ewen.WLPT.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import pw.ewen.WLPT.domain.entity.MyResourceRange;
+import pw.ewen.WLPT.domain.entity.User;
 
 /**
  * Created by wenliang on 17-2-27.
@@ -9,3 +10,4 @@ import pw.ewen.WLPT.domain.entity.MyResourceRange;
 public interface MyResourceRangeRepository extends ResourceRangeRepository<MyResourceRange>, JpaRepository<MyResourceRange, Long> {
 
 }
+

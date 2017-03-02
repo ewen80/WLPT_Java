@@ -1,8 +1,10 @@
 package pw.ewen.WLPT.domain.entity;
 
+import pw.ewen.WLPT.domain.HasResourceRangeObject;
 import pw.ewen.WLPT.domain.Resource;
 
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import java.io.Serializable;
 
 /*
@@ -10,12 +12,10 @@ import java.io.Serializable;
  *  
  */
 @Entity
-public  class MyResource extends Resource implements Serializable {
-	//得到RangeClass
-	//不要序列化
-//	@Transient
-//	@Override
-//	public Class getResourceRangeObjectClass() {
-//		return MyResourceRange.class;
-//	}
+public  class MyResource extends Resource implements HasResourceRangeObject, Serializable {
+    @Override
+    @Transient
+    public Class getResourceRangeObjectClass() {
+        return MyResourceRange.class;
+    }
 }

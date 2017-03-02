@@ -4,6 +4,7 @@ import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,6 +28,7 @@ public class ResourceController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
+    @PostFilter("hasPermission(filterObject, 'read')")
     public List<MyResource> getAllResources(){
         return resourceRepository.findAll();
     }
