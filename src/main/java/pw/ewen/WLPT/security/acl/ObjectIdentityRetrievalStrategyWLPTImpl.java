@@ -36,7 +36,8 @@ public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRe
         //查找ResourceRepository中当前SID对应的ResourceRange
         Assert.isInstanceOf(HasResourceRangeObject.class, domainObject);
 
-        ResourceRange resourceRange = getResourceRange((HasResourceRangeObject) domainObject);
+        String currentUserRoleId = userContext.getCurrentUser().getRole().getID();
+        ResourceRange resourceRange = getResourceRange((HasResourceRangeObject) domainObject, currentUserRoleId);
         if(resourceRange == null){
             throw new IdentityUnavailableException("can not find mateched ResourceRange Object");
         }else{
@@ -49,7 +50,9 @@ public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRe
      * 从domain object获得ResourceRange范围对象
      * @Return 匹配的ResourceRange，如果没有匹配对象则返回一个固定ResourceRange(任何用户不能对此ResourceRange有权限)
      */
-    private ResourceRange getResourceRange(HasResourceRangeObject domainObject)  {
+    private ResourceRange getResourceRange(HasResourceRangeObject domainObject, String roleId)  {
+        Assert.notNull(roleId);
+
         //根据domainObject获得对应的object_range类
         Class resourceRangeClass = (domainObject).getResourceRangeObjectClass();
         try {
@@ -57,9 +60,9 @@ public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRe
             Class repositoryClass = range.repositoryClass();
             //获取具体ResourceRange子类的仓储Bean
             ResourceRangeRepository resourceRangeRepository = (ResourceRangeRepository)appContext.getBean(repositoryClass);
-            ResourceRange matchedRange = range.selectOne(domainObject, userContext.getCurrentUser().getId(), resourceRangeRepository);
+            ResourceRange matchedRange = range.selectOne(domainObject, roleId, resourceRangeRepository);
             //如果没有匹配到返回一个No_User_Matched_ResourceRange
-            matchedRange = matchedRange == null ? range.generate_No_User_Matched_ResourceRange() : matchedRange;
+            matchedRange = matchedRange == null ? range.generate_No_Role_Matched_ResourceRange() : matchedRange;
             return  matchedRange;
 
         } catch (InstantiationException | IllegalAccessException e) {

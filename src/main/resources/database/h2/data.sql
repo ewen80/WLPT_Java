@@ -4,8 +4,8 @@ insert into user(id,name,password,role_id) values('admin','admin','admin','admin
 insert into user(id,name,password,role_id) values('guest','guest','guest','guest')
 insert into my_resource(id,number) values(200,50)
 insert into my_resource(id,number) values(201,100)
-insert into my_resource_range(id,filter,user_id) values(100,'number > 60', 'admin')
-insert into my_resource_range(id,filter,user_id) values(101,'number < 60', 'guest')
+insert into my_resource_range(id,filter,role_id) values(100,'number > 60', 'admin')
+insert into my_resource_range(id,filter,role_id) values(101,'number < 60', 'guest')
 
 ------------------以下用于ACL测试-----------------------------------------------------------------------
 -- class

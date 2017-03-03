@@ -25,13 +25,13 @@ import java.util.List;
 public abstract class ResourceRange {
     private long id;
     private String filter;
-    private String userId;
+    private String roleId;
 
-    public ResourceRange(){   }
-    public ResourceRange(long id, String filter, String userId) {
+    protected ResourceRange(){   }
+    protected ResourceRange(long id, String filter, String roleId) {
         this.id = id;
         this.filter = filter;
-        this.userId = userId;
+        this.roleId = roleId;
     }
 
     @Id
@@ -47,12 +47,12 @@ public abstract class ResourceRange {
         this.filter = filter;
     }
 
-    //userId
-    public String getUserId() {
-        return userId;
+    //roleId
+    public String getRoleId() {
+        return roleId;
     }
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setRoleId(String roleId) {
+        this.roleId = roleId;
     }
 
     //获得仓储类型
@@ -60,16 +60,16 @@ public abstract class ResourceRange {
     public abstract  Class<?> repositoryClass();
 
     /**
-     * 根据domain object 和 userid 筛选符合条件的唯一 resourceRange对象
+     * 根据domain object 和 roleId 筛选符合条件的唯一 resourceRange对象
      * @param domainObject
-     * @param 用户Id
+     * @param 角色Id
      * @param 资源仓储类
      * @return 符合filter筛选条件的ResourceRange,如果没有匹配项返回 null
      */
     @Transient
-    public ResourceRange selectOne(Object domainObject, String userId, ResourceRangeRepository resourceRangeRepository){
-        //从ResourceRange仓储中获取所有userid和对应Type的filter
-        List<? extends  ResourceRange> ranges = resourceRangeRepository.findByUserId(userId);
+    public ResourceRange selectOne(Object domainObject, String roleId, ResourceRangeRepository resourceRangeRepository){
+        //从ResourceRange仓储中获取所有roleId和对应Type的filter
+        List<? extends  ResourceRange> ranges = resourceRangeRepository.findByRoleId(roleId);
         //遍历所有filter进行判断表达式是否为true
         ExpressionParser parser = new SpelExpressionParser();
         EvaluationContext context = new StandardEvaluationContext(domainObject);
@@ -98,5 +98,5 @@ public abstract class ResourceRange {
         return matchedResourceRange;
     }
 
-    public abstract ResourceRange generate_No_User_Matched_ResourceRange();
+    public abstract ResourceRange generate_No_Role_Matched_ResourceRange();
 }

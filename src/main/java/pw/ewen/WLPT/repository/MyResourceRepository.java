@@ -7,5 +7,5 @@ import pw.ewen.WLPT.domain.entity.MyResource;
 /**
  * Created by wen on 17-2-24.
  */
-public interface ResourceRepository extends JpaRepository<MyResource, Long>, JpaSpecificationExecutor<MyResource> {
+public interface MyResourceRepository extends JpaRepository<MyResource, Long>, JpaSpecificationExecutor<MyResource> {
 }

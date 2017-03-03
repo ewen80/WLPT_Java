@@ -10,5 +10,5 @@ import java.util.List;
  * 资源范围仓储接口
  */
 public interface ResourceRangeRepository<T extends ResourceRange>{
-    List<? extends ResourceRange> findByUserId(String userId);
+    List<? extends ResourceRange> findByRoleId(String userId);
 }

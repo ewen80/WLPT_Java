@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import pw.ewen.WLPT.domain.entity.MyResource;
-import pw.ewen.WLPT.repository.ResourceRepository;
+import pw.ewen.WLPT.repository.MyResourceRepository;
 
 import java.util.List;
 
@@ -21,9 +21,9 @@ import java.util.List;
 @RequestMapping(value = "/resources")
 //@PostFilter("hasPermission(filterObject, 'READ')")
 public class ResourceController {
-    private ResourceRepository resourceRepository;
+    private MyResourceRepository resourceRepository;
 
-    public ResourceController(ResourceRepository resourceRepository){
+    public ResourceController(MyResourceRepository resourceRepository){
         this.resourceRepository = resourceRepository;
     }
 

@@ -13,6 +13,14 @@ import java.io.Serializable;
  */
 @Entity
 public  class MyResource extends Resource implements HasResourceRangeObject, Serializable {
+    public MyResource(long id, int number) {
+        super(id, number);
+    }
+
+    protected MyResource() {
+        super();
+    }
+
     @Override
     @Transient
     public Class getResourceRangeObjectClass() {
