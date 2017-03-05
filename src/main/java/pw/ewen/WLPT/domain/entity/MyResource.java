@@ -17,7 +17,7 @@ public  class MyResource extends Resource implements HasResourceRangeObject, Ser
         super(id, number);
     }
 
-    protected MyResource() {
+    public MyResource() {
         super();
     }
 

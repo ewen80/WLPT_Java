@@ -91,7 +91,7 @@ public class SecurityAclConfig {
 
     @Bean
     SimpleGrantedAuthority getGrantedAuthority(){
-        return new SimpleGrantedAuthority("ROLE_admin");
+        return new SimpleGrantedAuthority("admin");
     }
 
 }

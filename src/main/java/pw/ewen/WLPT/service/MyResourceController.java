@@ -20,10 +20,10 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/resources")
 //@PostFilter("hasPermission(filterObject, 'READ')")
-public class ResourceController {
+public class MyResourceController {
     private MyResourceRepository resourceRepository;
 
-    public ResourceController(MyResourceRepository resourceRepository){
+    public MyResourceController(MyResourceRepository resourceRepository){
         this.resourceRepository = resourceRepository;
     }
 
@@ -31,18 +31,5 @@ public class ResourceController {
     @PostFilter("hasPermission(filterObject, 'read')")
     public List<MyResource> getAllResources(){
         return resourceRepository.findAll();
-    }
-
-    @RequestMapping(value = "/spel/{resourceId}", method = RequestMethod.GET)
-    public String testSpel(@PathVariable("resourceId") long resourceId){
-        MyResource resource = resourceRepository.findOne(resourceId);
-
-        String condition = "number > 50";
-
-        EvaluationContext context = new StandardEvaluationContext(resource);
-        SpelExpressionParser parser = new SpelExpressionParser();
-        Expression exp = parser.parseExpression(condition);
-        String result = exp.getValue(context, Boolean.class).toString();
-        return result;
     }
 }

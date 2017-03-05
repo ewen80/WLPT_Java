@@ -61,15 +61,15 @@ public abstract class ResourceRange {
 
     /**
      * 根据domain object 和 roleId 筛选符合条件的唯一 resourceRange对象
-     * @param domainObject
-     * @param 角色Id
-     * @param 资源仓储类
+     * @param roleId 角色Id
+     * @param resourceRangeRepository 资源仓储类
      * @return 符合filter筛选条件的ResourceRange,如果没有匹配项返回 null
      */
     @Transient
     public ResourceRange selectOne(Object domainObject, String roleId, ResourceRangeRepository resourceRangeRepository){
         //从ResourceRange仓储中获取所有roleId和对应Type的filter
         List<? extends  ResourceRange> ranges = resourceRangeRepository.findByRoleId(roleId);
+
         //遍历所有filter进行判断表达式是否为true
         ExpressionParser parser = new SpelExpressionParser();
         EvaluationContext context = new StandardEvaluationContext(domainObject);
@@ -99,4 +99,5 @@ public abstract class ResourceRange {
     }
 
     public abstract ResourceRange generate_No_Role_Matched_ResourceRange();
+
 }

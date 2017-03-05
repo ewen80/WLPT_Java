@@ -51,10 +51,10 @@ public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRe
      * @Return 匹配的ResourceRange，如果没有匹配对象则返回一个固定ResourceRange(任何用户不能对此ResourceRange有权限)
      */
     private ResourceRange getResourceRange(HasResourceRangeObject domainObject, String roleId)  {
-        Assert.notNull(roleId);
+//        Assert.notNull(roleId);
 
         //根据domainObject获得对应的object_range类
-        Class resourceRangeClass = (domainObject).getResourceRangeObjectClass();
+        Class resourceRangeClass = ((HasResourceRangeObject)domainObject).getResourceRangeObjectClass();
         try {
             ResourceRange range = ((ResourceRange)resourceRangeClass.newInstance());
             Class repositoryClass = range.repositoryClass();

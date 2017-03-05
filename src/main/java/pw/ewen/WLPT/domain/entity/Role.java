@@ -21,7 +21,7 @@ public class Role implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1888955493407366629L;
-	private String ID;
+	private String id;
 	private String name;
 	
 	
@@ -30,9 +30,9 @@ public class Role implements Serializable {
 	
 	protected Role(){}
 	
-	public Role(String name) {
+	public Role(String id, String name) {
 		this.name = name;
-		
+		this.id = id;
 		users = new HashSet<>();
 //		operationRanges = new HashSet<>();
 	}
@@ -41,11 +41,11 @@ public class Role implements Serializable {
 //	@GeneratedValue(generator="UUID")
 //	@GenericGenerator(name="UUID", strategy="uuid")
 	public String getID() {
-		return ID;
+		return id;
 	}
 	
 	public void setID(String iD) {
-		ID = iD;
+		id = iD;
 	}
 	
 	@Column(nullable = false)

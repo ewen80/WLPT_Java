@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Entity
 public class MyResourceRange extends ResourceRange implements Serializable {
 
-    protected MyResourceRange(){ super();}
+    public MyResourceRange(){ super();}
     public MyResourceRange(long id, String filter, String roleId) {
         super(id, filter, roleId);
     }
@@ -27,6 +27,6 @@ public class MyResourceRange extends ResourceRange implements Serializable {
 
     @Override
     public MyResourceRange generate_No_Role_Matched_ResourceRange() {
-        return new MyResourceRange(0, "no filter", "no role");
+        return new MyResourceRange(-1, "no filter", "no role");
     }
 }
