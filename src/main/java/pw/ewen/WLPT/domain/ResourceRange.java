@@ -68,7 +68,7 @@ public abstract class ResourceRange {
     @Transient
     public ResourceRange selectOne(Object domainObject, String roleId, ResourceRangeRepository resourceRangeRepository){
         //从ResourceRange仓储中获取所有roleId和对应Type的filter
-        List<? extends  ResourceRange> ranges = resourceRangeRepository.findByRoleId(roleId);
+        List ranges = resourceRangeRepository.findByRoleId(roleId);
 
         //遍历所有filter进行判断表达式是否为true
         ExpressionParser parser = new SpelExpressionParser();
@@ -76,16 +76,19 @@ public abstract class ResourceRange {
         Expression exp;
         int matchedRangesNumber = 0;
         ResourceRange matchedResourceRange = null;
-        for(ResourceRange range : ranges){
-            exp = parser.parseExpression(range.getFilter());
-            Boolean result = exp.getValue(context, Boolean.class);
-            if(result){
-                matchedRangesNumber++;
-                //只匹配第一条记录
-                if(matchedResourceRange == null){
-                    matchedResourceRange = range;
+        for(Object range : ranges){
+            if(range instanceof  ResourceRange){
+                exp = parser.parseExpression(((ResourceRange)range).getFilter());
+                Boolean result = exp.getValue(context, Boolean.class);
+                if(result){
+                    matchedRangesNumber++;
+                    //只匹配第一条记录
+                    if(matchedResourceRange == null){
+                        matchedResourceRange = (ResourceRange)range;
+                    }
                 }
             }
+
         }
         if(matchedRangesNumber > 1){
             //匹配到多条记录

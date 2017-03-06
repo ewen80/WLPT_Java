@@ -54,10 +54,10 @@ public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRe
 //        Assert.notNull(roleId);
 
         //根据domainObject获得对应的object_range类
-        Class resourceRangeClass = ((HasResourceRangeObject)domainObject).getResourceRangeObjectClass();
+        Class resourceRangeClass = domainObject.getResourceRangeObjectClass();
         try {
             ResourceRange range = ((ResourceRange)resourceRangeClass.newInstance());
-            Class repositoryClass = range.repositoryClass();
+            Class<?> repositoryClass = range.repositoryClass();
             //获取具体ResourceRange子类的仓储Bean
             ResourceRangeRepository resourceRangeRepository = (ResourceRangeRepository)appContext.getBean(repositoryClass);
             ResourceRange matchedRange = range.selectOne(domainObject, roleId, resourceRangeRepository);
