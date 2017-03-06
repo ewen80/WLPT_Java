@@ -15,9 +15,11 @@ import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import pw.ewen.WLPT.domain.entity.MyResource;
 import pw.ewen.WLPT.domain.entity.MyResourceRange;
 import pw.ewen.WLPT.domain.entity.Role;
+import pw.ewen.WLPT.repository.MyResourceRangeRepository;
 import pw.ewen.WLPT.security.PermissionService;
 
 import java.util.ArrayList;
@@ -39,6 +41,8 @@ public class PermissionServiceTest {
     private PermissionService permissionService;
     @Autowired
     private MutableAclService aclService;
+    @Autowired
+    private MyResourceRangeRepository myResourceRangeRepository;
 
     /**
      * 测试添加权限规则（规则不存在）
@@ -46,7 +50,7 @@ public class PermissionServiceTest {
     @Test
     @Transactional
     @WithMockUser(username = "user1", authorities = {"admin"})
-    public void insertPermissionWhenNotExist(){
+    public void savePermissionWhenNotExist(){
         Role role = new Role("role1", "role1");
         GrantedAuthoritySid sid = new GrantedAuthoritySid(role.getID());
         MyResourceRange rr = new MyResourceRange(199, "number = 200", role.getID());
@@ -63,30 +67,39 @@ public class PermissionServiceTest {
 
     /**
      * 测试添加权限规则（规则存在）
+     * 规则如果存在应该就是update
      */
-    public  void insertPermissionWhenExist(){
+    @Test
+    @Transactional
+    @WithMockUser(username="user1", authorities = {"admin"})
+    public  void savePermissionWhenExist(){
+        Role role = new Role("role1", "role1");
+        GrantedAuthoritySid sid = new GrantedAuthoritySid(role.getID());
+        MyResourceRange rr = new MyResourceRange(101, "number = 200", role.getID());
+        permissionService.savePermission(rr, sid, BasePermission.READ);
 
-    }
+        Acl acl = aclService.readAclById(new ObjectIdentityImpl(rr), Collections.singletonList(sid));
+        List<AccessControlEntry> aces = acl.getEntries();
 
-    /**
-     * 测试变更权限规则(规则不存在）
-     */
-    public void updatePermissionWhenNotExist(){
+        assertThat(aces).hasSize(1);
 
-    }
-
-    /**
-     * 测试变更权限规则（规则存在）
-     */
-    public void updatePermissionWhenExist(){
-
+        AccessControlEntry ace = aces.get(0);
+        assertThat(ace).extracting("Sid", "Permission", "Acl.ObjectIdentity").containsExactly(sid, BasePermission.READ, new ObjectIdentityImpl(rr));
     }
 
     /**
      * 测试删除权限规则（规则存在）
      */
+    @Test
+    @Transactional
+    @WithMockUser(username = "guest")
     public void deletePermissionWhenExist(){
+        MyResourceRange rr = myResourceRangeRepository.getOne(101L);
+        Assert.notNull(rr);
 
+        Role role = new Role("role1", "role1");
+        GrantedAuthoritySid sid = new GrantedAuthoritySid(role.getID());
+        permissionService.deletePermission(rr, );
     }
 
     /**
