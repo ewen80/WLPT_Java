@@ -19,21 +19,13 @@ public class User implements Serializable {
 	
 	protected User(){}
 	
-	public User (String name) {
+	public User(String id, String name, String password, Role role){
+		this.id = id;
 		this.name = name;
-	}
-	
-	public User(String name, Role role){
-		this(name);
+		this.password = password;
 		this.role = role;
 	}
-//	@Id
-//	public String getId() {
-//		return id;
-//	}
-//	public void setId(String id) {
-//		this.id = id;
-//	}
+
 	@Id
 	public String getId() {
 		return id;

@@ -13,12 +13,22 @@ import java.io.Serializable;
  */
 @Entity
 public  class MyResource extends Resource implements HasResourceRangeObject, Serializable {
-    public MyResource(long id, int number) {
-        super(id, number);
-    }
 
+    private int number;
+
+    public MyResource(int number) {
+        this.number = number;
+    }
     public MyResource() {
         super();
+    }
+
+    //测试用
+    public int getNumber() {
+        return number;
+    }
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     @Override

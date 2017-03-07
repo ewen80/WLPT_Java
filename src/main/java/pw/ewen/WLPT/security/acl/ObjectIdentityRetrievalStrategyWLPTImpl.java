@@ -13,6 +13,7 @@ import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 import pw.ewen.WLPT.domain.HasResourceRangeObject;
 import pw.ewen.WLPT.domain.ResourceRange;
+import pw.ewen.WLPT.domain.entity.NeverMatchedResourceRange;
 import pw.ewen.WLPT.repository.ResourceRangeRepository;
 import pw.ewen.WLPT.security.UserContext;
 
@@ -39,7 +40,7 @@ public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRe
         String currentUserRoleId = userContext.getCurrentUser().getRole().getID();
         ResourceRange resourceRange = getResourceRange((HasResourceRangeObject) domainObject, currentUserRoleId);
         if(resourceRange == null){
-            throw new IdentityUnavailableException("can not find mateched ResourceRange Object");
+            throw new IdentityUnavailableException("从Resource获取匹配的ResourceRange时出错，返回Null");
         }else{
             return new ObjectIdentityImpl(resourceRange);
         }
@@ -61,13 +62,13 @@ public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRe
             //获取具体ResourceRange子类的仓储Bean
             ResourceRangeRepository resourceRangeRepository = (ResourceRangeRepository)appContext.getBean(repositoryClass);
             ResourceRange matchedRange = range.selectOne(domainObject, roleId, resourceRangeRepository);
-            //如果没有匹配到返回一个No_User_Matched_ResourceRange
-            matchedRange = matchedRange == null ? range.generate_No_Role_Matched_ResourceRange() : matchedRange;
+            //如果没有匹配到返回一个Never_Matched_ResourceRange
+            //没有匹配到ResourceRange代表该Role对资源没有访问权
+            matchedRange = matchedRange == null ? new NeverMatchedResourceRange() : matchedRange;
             return  matchedRange;
 
         } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
+            throw new RuntimeException("实例化从Resource匹配到的ResourceRange时出错");
         }
-        return null;
     }
 }

@@ -28,14 +28,13 @@ public abstract class ResourceRange {
     private String roleId;
 
     protected ResourceRange(){   }
-    protected ResourceRange(long id, String filter, String roleId) {
-        this.id = id;
+    protected ResourceRange(String filter, String roleId) {
         this.filter = filter;
         this.roleId = roleId;
     }
 
     @Id
-//    @GeneratedValue
+    @GeneratedValue
     public long getId(){ return this.id;}
     public void setId(long value){ this.id = value;}
 
@@ -101,6 +100,10 @@ public abstract class ResourceRange {
         return matchedResourceRange;
     }
 
-    public abstract ResourceRange generate_No_Role_Matched_ResourceRange();
+//    /**
+//     * 一个没有任何sid匹配的ResourceRange(用于在资源没有匹配到资源范围时返回,acl中)
+//     * @return
+//     */
+//    public abstract ResourceRange generate_No_Role_Matched_ResourceRange();
 
 }
