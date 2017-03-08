@@ -3,32 +3,26 @@ package pw.ewen.WLPT.test.security.acl;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.jdbc.datasource.init.DataSourceInitializer;
-import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.jdbc.JdbcTestUtils;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
+import pw.ewen.WLPT.domain.NeverMatchedResourceRange;
 import pw.ewen.WLPT.domain.ResourceRange;
 import pw.ewen.WLPT.domain.entity.*;
 import pw.ewen.WLPT.repository.MyResourceRangeRepository;
 import pw.ewen.WLPT.repository.MyResourceRepository;
 import pw.ewen.WLPT.repository.RoleRepository;
 import pw.ewen.WLPT.repository.UserRepository;
+import pw.ewen.WLPT.security.PermissionService;
 import pw.ewen.WLPT.security.acl.ObjectIdentityRetrievalStrategyWLPTImpl;
 
 import javax.sql.DataSource;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -53,6 +47,8 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
     private UserRepository userRepository;
     @Autowired
     private ObjectIdentityRetrievalStrategyWLPTImpl objectIdentityRetrieval;
+    @Autowired
+    private PermissionService permissionService;
 
     //Class Test 数据是否准备好
     private boolean testInitialed = false;
@@ -96,16 +92,24 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
     /**
      * 测试角色对指定资源有全部访问权时，从资源获取资源范围策略是否正确
      */
-//    @Test
-//    @Transactional
-//    @WithMockUser(username = "poweruser")
-//    public void haveAllPermissionToResource(){
-//        MyResource resource = r_repository.getOne(202L);
-//        MyResourceRange rr_all = rr_repository.getOne(103L);
-//        ObjectIdentity oi = objectIdentityRetrieval.getObjectIdentity(resource);
-//
-//        assertThat(oi).isEqualTo(new ObjectIdentityImpl(rr_all));
-//    }
+    @Test
+    @Transactional
+    @WithMockUser(username = "admin", authorities = {"admin"})
+    public void haveAllPermissionToResource(){
+        //全匹配范围
+        ResourceRange matchAllResourceRange = new MyResourceRange();
+        matchAllResourceRange.setMatchAll(true);
+
+        Role role1 = new Role("role1", "role1");
+        GrantedAuthoritySid sid = new GrantedAuthoritySid(role1.getID());
+
+        permissionService.insertPermission(matchAllResourceRange, sid, BasePermission.READ);
+
+        MyResource resource = new MyResource(200);
+        ObjectIdentity oi = objectIdentityRetrieval.getObjectIdentity(resource);
+
+        assertThat(oi).isEqualTo(new ObjectIdentityImpl(matchAllResourceRange));
+    }
 
     /**
      * 测试角色对指定资源有部分访问权时，从资源获取资源范围策略是否正确

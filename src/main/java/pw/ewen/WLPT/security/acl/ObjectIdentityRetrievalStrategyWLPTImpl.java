@@ -5,19 +5,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.security.acls.domain.IdentityUnavailableException;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.model.ObjectIdentity;
-import org.springframework.security.acls.model.ObjectIdentityGenerator;
 import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-import org.springframework.web.context.ContextLoader;
-import org.springframework.web.context.WebApplicationContext;
 import pw.ewen.WLPT.domain.HasResourceRangeObject;
 import pw.ewen.WLPT.domain.ResourceRange;
-import pw.ewen.WLPT.domain.entity.NeverMatchedResourceRange;
+import pw.ewen.WLPT.domain.NeverMatchedResourceRange;
 import pw.ewen.WLPT.repository.ResourceRangeRepository;
 import pw.ewen.WLPT.security.UserContext;
-
-import java.io.Serializable;
 
 /**
  * Created by wen on 17-2-26.
@@ -52,8 +47,6 @@ public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRe
      * @Return 匹配的ResourceRange，如果没有匹配对象则返回一个固定ResourceRange(任何用户不能对此ResourceRange有权限)
      */
     private ResourceRange getResourceRange(HasResourceRangeObject domainObject, String roleId)  {
-//        Assert.notNull(roleId);
-
         //根据domainObject获得对应的object_range类
         Class resourceRangeClass = domainObject.getResourceRangeObjectClass();
         try {

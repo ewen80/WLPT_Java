@@ -26,6 +26,7 @@ public abstract class ResourceRange {
     private long id;
     private String filter;
     private String roleId;
+    private boolean matchAll = false;
 
     protected ResourceRange(){   }
     protected ResourceRange(String filter, String roleId) {
@@ -54,6 +55,14 @@ public abstract class ResourceRange {
         this.roleId = roleId;
     }
 
+    //本ResourceRange是否匹配所有Resource
+    public boolean isMatchAll() {
+        return matchAll;
+    }
+    public void setMatchAll(boolean matchAll) {
+        this.matchAll = matchAll;
+    }
+
     //获得仓储类型
     @Transient
     public abstract  Class<?> repositoryClass();
@@ -77,14 +86,21 @@ public abstract class ResourceRange {
         ResourceRange matchedResourceRange = null;
         for(Object range : ranges){
             if(range instanceof  ResourceRange){
-                exp = parser.parseExpression(((ResourceRange)range).getFilter());
-                Boolean result = exp.getValue(context, Boolean.class);
-                if(result){
-                    matchedRangesNumber++;
-                    //只匹配第一条记录
-                    if(matchedResourceRange == null){
-                        matchedResourceRange = (ResourceRange)range;
+                //范围是否是全匹配范围
+                if(!((ResourceRange) range).isMatchAll()) {
+                    exp = parser.parseExpression(((ResourceRange) range).getFilter());
+                    Boolean result = exp.getValue(context, Boolean.class);
+                    if (result) {
+                        matchedRangesNumber++;
+                        //只匹配第一条记录
+                        if (matchedResourceRange == null) {
+                            matchedResourceRange = (ResourceRange) range;
+                        }
                     }
+                }else{
+                    //如果是全匹配范围，则直接返回该范围
+                    return matchedResourceRange;
+
                 }
             }
 
