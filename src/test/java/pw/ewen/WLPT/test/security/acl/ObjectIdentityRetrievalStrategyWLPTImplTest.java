@@ -125,16 +125,26 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
     /**
      * 测试角色对指定资源有部分访问权时，从资源获取资源范围策略是否正确
      */
-//    @Test
-//    @Transactional
-//    @WithMockUser(username = "admin")
-//    public void havePartPermissionToResource(){
-//        MyResource r_number_equal_50 = r_repository.getOne(200L);
-//        MyResourceRange rr_number_less_than_60 = rr_repository.getOne(101L);
-//
-//        ObjectIdentity oi = objectIdentityRetrieval.getObjectIdentity(r_number_equal_50);
-//        assertThat(oi).isEqualTo(new ObjectIdentityImpl(rr_number_less_than_60));
-//    }
+    @Test
+    @Transactional
+    @WithMockUser(username = "admin", authorities = {"admin"})
+    public void havePartPermissionToResource(){
+        MyResource resource100 = new MyResource(100);
+        myResourceRepository.save(resource100);
+        MyResource resource200 = new MyResource(200);
+        myResourceRepository.save(resource200);
+
+        MyResourceRange rr_less_than_150 = new MyResourceRange("number < 150", "admin");
+        myResourceRangeRepository.save(rr_less_than_150);
+        MyResourceRange rr_more_than_150 = new MyResourceRange("number > 150","admin");
+        myResourceRangeRepository.save(rr_more_than_150);
+
+        ObjectIdentity oi1 = objectIdentityRetrieval.getObjectIdentity(resource100);
+        assertThat(oi1).isEqualTo(new ObjectIdentityImpl(rr_less_than_150));
+
+        ObjectIdentity oi2 = objectIdentityRetrieval.getObjectIdentity(resource200);
+        assertThat(oi2).isEqualTo(new ObjectIdentityImpl(rr_more_than_150));
+    }
 
 //    private void executeSqlScript(String scriptPath, DataSource dataSource){
 //        ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
