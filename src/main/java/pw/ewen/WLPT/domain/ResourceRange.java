@@ -1,13 +1,11 @@
 package pw.ewen.WLPT.domain;
 
-import org.springframework.data.repository.query.Param;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import pw.ewen.WLPT.exception.security.MatchedMultipleResourceRangeException;
-import pw.ewen.WLPT.exception.security.NotFoundResourceRangeException;
 import pw.ewen.WLPT.repository.ResourceRangeRepository;
 
 import javax.persistence.GeneratedValue;
@@ -99,8 +97,7 @@ public abstract class ResourceRange {
                     }
                 }else{
                     //如果是全匹配范围，则直接返回该范围
-                    return matchedResourceRange;
-
+                    return (ResourceRange)range;
                 }
             }
 

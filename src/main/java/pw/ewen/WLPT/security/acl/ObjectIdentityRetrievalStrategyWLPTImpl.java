@@ -9,8 +9,8 @@ import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import pw.ewen.WLPT.domain.HasResourceRangeObject;
-import pw.ewen.WLPT.domain.ResourceRange;
 import pw.ewen.WLPT.domain.NeverMatchedResourceRange;
+import pw.ewen.WLPT.domain.ResourceRange;
 import pw.ewen.WLPT.repository.ResourceRangeRepository;
 import pw.ewen.WLPT.security.UserContext;
 

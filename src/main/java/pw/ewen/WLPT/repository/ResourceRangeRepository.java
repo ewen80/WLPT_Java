@@ -1,6 +1,5 @@
 package pw.ewen.WLPT.repository;
 
-import pw.ewen.WLPT.domain.Resource;
 import pw.ewen.WLPT.domain.ResourceRange;
 
 import java.util.List;

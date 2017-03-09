@@ -1,6 +1,8 @@
 package pw.ewen.WLPT.test.security.acl;
 
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,7 +16,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import pw.ewen.WLPT.domain.NeverMatchedResourceRange;
 import pw.ewen.WLPT.domain.ResourceRange;
-import pw.ewen.WLPT.domain.entity.*;
+import pw.ewen.WLPT.domain.entity.MyResource;
+import pw.ewen.WLPT.domain.entity.MyResourceRange;
+import pw.ewen.WLPT.domain.entity.Role;
+import pw.ewen.WLPT.domain.entity.User;
 import pw.ewen.WLPT.repository.MyResourceRangeRepository;
 import pw.ewen.WLPT.repository.MyResourceRepository;
 import pw.ewen.WLPT.repository.RoleRepository;
@@ -50,16 +55,22 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
     @Autowired
     private PermissionService permissionService;
 
+    private Role role1;
+    private User user1;
+    private GrantedAuthoritySid sid1;
+
     //Class Test 数据是否准备好
     private boolean testInitialed = false;
 
     @Before
     public  void setup(){
         if(!testInitialed) {
-            Role role1 = new Role("role1", "role1");
+            role1 = new Role("role1", "role1");
             roleRepository.save(role1);
-            User user1 = new User("user1", "user1", "user1", role1);
+            user1 = new User("user1", "user1", "user1", role1);
             userRepository.save(user1);
+
+            sid1 = new GrantedAuthoritySid(role1.getID());
 
             testInitialed = true;
         }
@@ -97,13 +108,13 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
     @WithMockUser(username = "admin", authorities = {"admin"})
     public void haveAllPermissionToResource(){
         //全匹配范围
-        ResourceRange matchAllResourceRange = new MyResourceRange();
+        MyResourceRange matchAllResourceRange = new MyResourceRange();
+        matchAllResourceRange.setRoleId("admin");
         matchAllResourceRange.setMatchAll(true);
+        matchAllResourceRange = myResourceRangeRepository.save(matchAllResourceRange);
 
-        Role role1 = new Role("role1", "role1");
-        GrantedAuthoritySid sid = new GrantedAuthoritySid(role1.getID());
-
-        permissionService.insertPermission(matchAllResourceRange, sid, BasePermission.READ);
+        GrantedAuthoritySid adminSid = new GrantedAuthoritySid("admin");
+        permissionService.insertPermission(matchAllResourceRange, adminSid, BasePermission.READ);
 
         MyResource resource = new MyResource(200);
         ObjectIdentity oi = objectIdentityRetrieval.getObjectIdentity(resource);

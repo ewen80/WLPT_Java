@@ -5,11 +5,9 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import pw.ewen.WLPT.domain.Resource;
 import pw.ewen.WLPT.domain.ResourceRange;
 import pw.ewen.WLPT.exception.security.AuthorizationException;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,34 +33,57 @@ public class PermissionService {
         Assert.notNull(sid);
         Assert.notNull(permission);
 
-        if(isThisPermissionExist(resourceRange, sid, permission)){
-            //当前已经存在此规则，抛出异常
-            throw new AuthorizationException("不能插入已经存在的权限规则");
-        }
+        MutableAcl mutableAcl;
 
-        //当前没有此规则，可以插入
-        MutableAcl mutableAcl = aclService.createAcl(new ObjectIdentityImpl(resourceRange));
+        if(isThisResourceRangeExist(resourceRange)){
+            if(isThisPermissionExist(resourceRange, sid, permission)){
+                //当前已经存在此规则，抛出异常
+                throw new AuthorizationException("不能插入已经存在的权限规则");
+            }else{
+                //存在相同的ResourceRange
+                mutableAcl = (MutableAcl)aclService.readAclById(new ObjectIdentityImpl(resourceRange));
+            }
+        }else{
+            //当前没有此规则，可以插入
+            mutableAcl = aclService.createAcl(new ObjectIdentityImpl(resourceRange));
+        }
         mutableAcl.setOwner(sid);
         mutableAcl.setEntriesInheriting(false);
         mutableAcl.insertAce(0, permission, sid, true);
         aclService.updateAcl(mutableAcl);
+
+
     }
 
-
-    private boolean isThisPermissionExist(Object domainObject, Sid sid, Permission permission){
-        ObjectIdentityImpl oi = new ObjectIdentityImpl(domainObject);
-        try {
+    /**
+     * ACL中该ResourceRange是否存在记录
+     */
+    private boolean isThisResourceRangeExist(ResourceRange resourceRange){
+        ObjectIdentityImpl oi = new ObjectIdentityImpl(resourceRange);
+        try{
             Acl existedAcl = aclService.readAclById(oi);
-            Boolean isGranted =  existedAcl.isGranted(Collections.singletonList(permission), Collections.singletonList(sid), true);
-            if(isGranted) {
-                //当前已经存在此规则，抛出异常
-                return true;
-            }
+            return true;
         }catch(NotFoundException e){
-            //没有找到domainObject的acl
+            return false;
         }
+    }
 
-        return false;
+    private boolean isThisPermissionExist(ResourceRange resourceRange, Sid sid, Permission permission){
+        if(isThisResourceRangeExist(resourceRange)){
+            ObjectIdentityImpl oi = new ObjectIdentityImpl(resourceRange);
+            try{
+                Acl existedAcl = aclService.readAclById(oi);
+                Boolean isGranted =  existedAcl.isGranted(Collections.singletonList(permission), Collections.singletonList(sid), true);
+                if(isGranted) {
+                    //当前已经存在此规则
+                    return true;
+                }
+            }catch(NotFoundException e){
+            }
+            return false;
+        }else{
+            return false;
+        }
     }
 
     /**
