@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domain.entity.Role;
 import pw.ewen.WLPT.repository.RoleRepository;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/roles")
 public class RoleController {
@@ -18,10 +20,14 @@ public class RoleController {
         this.roleRepository = roleRepository;
     }
 
-//    @RequestMapping(value="/all", method=RequestMethod.GET, produces="application/json")
-//    public List<Role> getAllRoles(){
-//        return  this.roleRepository.findAll();
-//    }
+    /**
+     * 获取全部角色
+     * @return
+     */
+    @RequestMapping(value="/all", method=RequestMethod.GET, produces="application/json")
+    public List<Role> getAllRoles(){
+        return  this.roleRepository.findAll();
+    }
 
     /**
      * 获取角色（分页）

@@ -38,6 +38,7 @@ import static org.junit.Assert.fail;
  * 资源权限操作测试类
  */
 @RunWith(SpringJUnit4ClassRunner.class)
+@Transactional
 @SpringBootTest
 public class PermissionServiceTest {
 
@@ -69,6 +70,7 @@ public class PermissionServiceTest {
             testUser = new User("user1", "user1", "user1", testRole);
 //            userRepository.save(testUser);
             testSid = new GrantedAuthoritySid(testRole.getID());
+
             myResourceRange = new MyResourceRange("number = 200", testRole.getID());
             myResourceRangeRepository.save(myResourceRange);
 
@@ -76,24 +78,23 @@ public class PermissionServiceTest {
         }
     }
 
-    @After
-    public  void clean(){
-        if(testInitialed) {
+//    @After
+//    public  void clean(){
+//        if(testInitialed) {
 //            userRepository.delete("user1");
 //            roleRepository.delete("role1");
-
-            ObjectIdentity oi = new ObjectIdentityImpl(myResourceRange);
-            aclService.deleteAcl(oi, false);
-            myResourceRangeRepository.delete(myResourceRange);
-
+//
+//            ObjectIdentity oi = new ObjectIdentityImpl(myResourceRange);
+//            aclService.deleteAcl(oi, false);
+//            myResourceRangeRepository.delete(myResourceRange);
+//
 //            testInitialed = false;
-        }
-    }
+//        }
+//    }
     /**
      * 测试添加权限规则,ResourceRange不存在
      */
     @Test
-    @Transactional
     @WithMockUser(username = "admin", authorities = {"admin"})
     public void insertPermissionWhenNotExistSameResourceRange(){
         permissionService.insertPermission(myResourceRange, testSid, BasePermission.READ);
@@ -111,7 +112,6 @@ public class PermissionServiceTest {
      * 添加权限规则，ResourceRange已经存在，相同的Permission不存在
      */
     @Test
-    @Transactional
     @WithMockUser(username = "admin", authorities = {"admin"})
     public void insertPermissionWhenExistSameResourceRangeAndDifferentPermission(){
         permissionService.insertPermission(myResourceRange, testSid, BasePermission.READ);
@@ -127,7 +127,6 @@ public class PermissionServiceTest {
      * 规则如果存在抛出异常
      */
     @Test
-    @Transactional
     @WithMockUser(username="admin", authorities = {"admin"})
     public  void insertPermissionWhenExist(){
         permissionService.insertPermission(myResourceRange, testSid, BasePermission.READ);
@@ -142,7 +141,6 @@ public class PermissionServiceTest {
      * 测试删除权限规则（规则存在）
      */
     @Test
-    @Transactional
     @WithMockUser(username="admin", authorities = {"admin"})
     public void deletePermissionWhenExist(){
         permissionService.insertPermission(myResourceRange, testSid, BasePermission.READ);
@@ -155,7 +153,6 @@ public class PermissionServiceTest {
      * 测试删除权限规则（规则不存在）
      */
     @Test
-    @Transactional
     @WithMockUser(username="admin", authorities = {"admin"})
     public void deletePermissionWhenNotExist(){
         Role role = new Role("role1", "role1");
@@ -170,7 +167,6 @@ public class PermissionServiceTest {
      * 测试删除权限规则（规则不同）
      */
     @Test
-    @Transactional
     @WithMockUser(username="admin", authorities = {"admin"})
     public void deletePermissionWhenNotSame(){
         permissionService.insertPermission(myResourceRange, testSid, BasePermission.READ);

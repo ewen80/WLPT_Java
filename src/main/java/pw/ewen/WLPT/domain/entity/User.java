@@ -62,6 +62,17 @@ public class User implements Serializable {
 	public void setRole(Role role) {
 		this.role = role;
 	}
-	
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof  User){
+			if(this.id.equals(((User) obj).getId())){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+	}
 }
