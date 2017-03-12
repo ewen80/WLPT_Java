@@ -9,7 +9,7 @@ import javax.persistence.Id;
  * 保存当前系统中的资源类别列表
  */
 @Entity
-public class ResourceList {
+public class ResourceTypeList {
 
     private long id;
     private String className;

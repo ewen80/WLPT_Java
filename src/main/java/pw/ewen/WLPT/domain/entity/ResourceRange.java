@@ -21,14 +21,15 @@ public class ResourceRange {
     private long id;
     private String filter;
     private String roleId;
-    private String ResourceType;
+    private String resourceType;
     private boolean matchAll = false;
 
 
     public ResourceRange(){   }
-    public ResourceRange(String filter, String roleId) {
+    public ResourceRange(String filter, String roleId, String resourceType) {
         this.filter = filter;
         this.roleId = roleId;
+        this.resourceType = resourceType;
     }
 
     @Id
@@ -62,10 +63,10 @@ public class ResourceRange {
 
     //Resource的全类名
     public String getResourceType() {
-        return ResourceType;
+        return resourceType;
     }
     public void setResourceType(String resourceType) {
-        ResourceType = resourceType;
+        this.resourceType = resourceType;
     }
 
     //    //获得仓储类型
@@ -81,7 +82,7 @@ public class ResourceRange {
     @Transient
     public ResourceRange selectOne(Object domainObject, String roleId, ResourceRangeRepository resourceRangeRepository){
         //从ResourceRange仓储中获取所有roleId和对应Type的filter
-        List ranges = resourceRangeRepository.findByRoleId(roleId);
+        List ranges = resourceRangeRepository.findByRoleIdAndResourceType(roleId, domainObject.getClass().getTypeName());
 
         //遍历所有filter进行判断表达式是否为true
         ExpressionParser parser = new SpelExpressionParser();
