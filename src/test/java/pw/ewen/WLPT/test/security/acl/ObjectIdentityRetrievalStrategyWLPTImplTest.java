@@ -15,7 +15,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import pw.ewen.WLPT.domain.NeverMatchedResourceRange;
-import pw.ewen.WLPT.domain.ResourceRange;
+import pw.ewen.WLPT.domain.entity.ResourceRange;
 import pw.ewen.WLPT.domain.entity.MyResource;
 import pw.ewen.WLPT.domain.entity.MyResourceRange;
 import pw.ewen.WLPT.domain.entity.Role;

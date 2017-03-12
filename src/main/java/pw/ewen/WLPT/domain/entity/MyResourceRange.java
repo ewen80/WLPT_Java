@@ -1,6 +1,5 @@
 package pw.ewen.WLPT.domain.entity;
 
-import pw.ewen.WLPT.domain.ResourceRange;
 import pw.ewen.WLPT.repository.MyResourceRangeRepository;
 
 import javax.persistence.Entity;

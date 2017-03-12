@@ -1,4 +1,4 @@
-package pw.ewen.WLPT.domain;
+package pw.ewen.WLPT.domain.entity;
 
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
@@ -8,26 +8,25 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import pw.ewen.WLPT.exception.security.MatchedMultipleResourceRangeException;
 import pw.ewen.WLPT.repository.ResourceRangeRepository;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.List;
 
 /**
  * Created by wen on 17-2-26.
- * 资源范围抽象类
- * 代表某个范围的资源集合,只支持到用户id
+ * 资源范围类
+ * 代表某个范围的资源集合
  */
-@MappedSuperclass
-public abstract class ResourceRange {
+@Entity
+public class ResourceRange {
     private long id;
     private String filter;
     private String roleId;
+    private String ResourceType;
     private boolean matchAll = false;
 
-    protected ResourceRange(){   }
-    protected ResourceRange(String filter, String roleId) {
+
+    public ResourceRange(){   }
+    public ResourceRange(String filter, String roleId) {
         this.filter = filter;
         this.roleId = roleId;
     }
@@ -61,9 +60,17 @@ public abstract class ResourceRange {
         this.matchAll = matchAll;
     }
 
-    //获得仓储类型
-    @Transient
-    public abstract  Class<?> repositoryClass();
+    //Resource的全类名
+    public String getResourceType() {
+        return ResourceType;
+    }
+    public void setResourceType(String resourceType) {
+        ResourceType = resourceType;
+    }
+
+    //    //获得仓储类型
+//    @Transient
+//    public abstract  Class<?> repositoryClass();
 
     /**
      * 根据domain object 和 roleId 筛选符合条件的唯一 resourceRange对象
@@ -112,11 +119,4 @@ public abstract class ResourceRange {
 
         return matchedResourceRange;
     }
-
-//    /**
-//     * 一个没有任何sid匹配的ResourceRange(用于在资源没有匹配到资源范围时返回,acl中)
-//     * @return
-//     */
-//    public abstract ResourceRange generate_No_Role_Matched_ResourceRange();
-
 }
