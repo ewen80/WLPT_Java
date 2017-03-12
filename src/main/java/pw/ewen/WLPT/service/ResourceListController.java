@@ -2,7 +2,7 @@ package pw.ewen.WLPT.service;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pw.ewen.WLPT.domain.entity.ResourceList;
+import pw.ewen.WLPT.domain.entity.ResourceTypeList;
 import pw.ewen.WLPT.repository.ResourceListRepository;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class ResourceListController {
      * 获取所有资源列表
      * @return
      */
-    public List<ResourceList> getAllResourceList(){
+    public List<ResourceTypeList> getAllResourceList(){
         return resourceListRepository.findAll();
     }
 }

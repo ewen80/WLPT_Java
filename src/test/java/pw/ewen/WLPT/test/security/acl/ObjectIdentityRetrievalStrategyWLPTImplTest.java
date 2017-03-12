@@ -17,11 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import pw.ewen.WLPT.domain.NeverMatchedResourceRange;
 import pw.ewen.WLPT.domain.entity.ResourceRange;
 import pw.ewen.WLPT.domain.entity.MyResource;
-import pw.ewen.WLPT.domain.entity.MyResourceRange;
 import pw.ewen.WLPT.domain.entity.Role;
 import pw.ewen.WLPT.domain.entity.User;
-import pw.ewen.WLPT.repository.MyResourceRangeRepository;
 import pw.ewen.WLPT.repository.MyResourceRepository;
+import pw.ewen.WLPT.repository.ResourceRangeRepository;
 import pw.ewen.WLPT.repository.RoleRepository;
 import pw.ewen.WLPT.repository.UserRepository;
 import pw.ewen.WLPT.security.PermissionService;
@@ -45,7 +44,7 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
     @Autowired
     private MyResourceRepository myResourceRepository;
     @Autowired
-    private MyResourceRangeRepository myResourceRangeRepository;
+    private ResourceRangeRepository resourceRangeRepository;
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
@@ -71,8 +70,6 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
             userRepository.save(user1);
 
             sid1 = new GrantedAuthoritySid(role1.getID());
-
-            testInitialed = true;
         }
     }
 
@@ -108,10 +105,11 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
     @WithMockUser(username = "admin", authorities = {"admin"})
     public void haveAllPermissionToResource(){
         //全匹配范围
-        MyResourceRange matchAllResourceRange = new MyResourceRange();
+        ResourceRange matchAllResourceRange = new ResourceRange();
         matchAllResourceRange.setRoleId("admin");
+        matchAllResourceRange.setResourceType(MyResource.class.getTypeName());
         matchAllResourceRange.setMatchAll(true);
-        matchAllResourceRange = myResourceRangeRepository.save(matchAllResourceRange);
+        matchAllResourceRange = resourceRangeRepository.save(matchAllResourceRange);
 
         GrantedAuthoritySid adminSid = new GrantedAuthoritySid("admin");
         permissionService.insertPermission(matchAllResourceRange, adminSid, BasePermission.READ);
@@ -134,10 +132,10 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
         MyResource resource200 = new MyResource(200);
         myResourceRepository.save(resource200);
 
-        MyResourceRange rr_less_than_150 = new MyResourceRange("number < 150", "admin");
-        myResourceRangeRepository.save(rr_less_than_150);
-        MyResourceRange rr_more_than_150 = new MyResourceRange("number > 150","admin");
-        myResourceRangeRepository.save(rr_more_than_150);
+        ResourceRange rr_less_than_150 = new ResourceRange("number < 150", "admin", MyResource.class.getTypeName());
+        resourceRangeRepository.save(rr_less_than_150);
+        ResourceRange rr_more_than_150 = new ResourceRange("number > 150","admin", MyResource.class.getTypeName());
+        resourceRangeRepository.save(rr_more_than_150);
 
         ObjectIdentity oi1 = objectIdentityRetrieval.getObjectIdentity(resource100);
         assertThat(oi1).isEqualTo(new ObjectIdentityImpl(rr_less_than_150));
