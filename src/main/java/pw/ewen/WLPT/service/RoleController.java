@@ -6,9 +6,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domain.entity.Role;
+import pw.ewen.WLPT.domain.entity.User;
+import pw.ewen.WLPT.exception.domain.DeleteHaveUsersRoleException;
 import pw.ewen.WLPT.repository.RoleRepository;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/roles")
@@ -74,8 +77,17 @@ public class RoleController {
     @RequestMapping(value = "/{roleIds}", method=RequestMethod.DELETE, produces = "application/json")
     public void delete(@PathVariable("roleIds") String roleIds){
         String[] arrRoleIds = roleIds.split(",");
+        //检查角色下是否有用户，有则不允许删除
         for(String id : arrRoleIds){
-            this.roleRepository.delete(id);
+            Role role = this.roleRepository.findOne(id);
+            if(role != null ){
+                Set<User> users = role.getUsers();
+                if(users.isEmpty()){
+                    this.roleRepository.delete(id);
+                }else{
+                    throw new DeleteHaveUsersRoleException("试图删除角色:"+role.toString()+"失败，因为该角色下有用户");
+                }
+            }
         }
 
     }

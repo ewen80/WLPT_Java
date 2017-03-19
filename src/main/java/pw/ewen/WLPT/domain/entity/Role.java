@@ -61,16 +61,16 @@ public class Role implements Serializable {
 	public Set<User> getUsers() {
 		return users;
 	}
-
 	public void setUsers(Set<User> users) {
 		this.users = users;
 	}
 
-//	public Set<OperationRange> getOperationRanges() {
-//		return operationRanges;
-//	}
-//
-//	public void setOperationRanges(Set<OperationRange> operationRanges) {
-//		this.operationRanges = operationRanges;
-//	}	
+	@Override
+	public String toString() {
+		final StringBuffer sb = new StringBuffer("Role{");
+		sb.append("id='").append(id).append('\'');
+		sb.append(", name='").append(name).append('\'');
+		sb.append('}');
+		return sb.toString();
+	}
 }
