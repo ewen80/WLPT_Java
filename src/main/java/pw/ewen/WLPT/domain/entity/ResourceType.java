@@ -9,25 +9,17 @@ import javax.persistence.Id;
  * 保存当前系统中的资源类别列表
  */
 @Entity
-public class ResourceTypeList {
+public class ResourceType {
 
-    private long id;
     private String className;
     private String name;
     private String description;
-
-    @Id
-    @GeneratedValue
-    public long getId() {
-        return id;
-    }
-    public void setId(long id) {
-        this.id = id;
-    }
+    private boolean deleted = false;
 
     /**
      * 类的全名称
      */
+    @Id
     public String getClassName() {
         return className;
     }
@@ -53,5 +45,15 @@ public class ResourceTypeList {
     }
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * 软删除标记
+     */
+    public boolean isDeleted() {
+        return deleted;
+    }
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }
