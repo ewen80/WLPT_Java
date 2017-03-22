@@ -10,6 +10,7 @@ import pw.ewen.WLPT.domain.entity.Role;
 import pw.ewen.WLPT.domain.entity.User;
 import pw.ewen.WLPT.exception.domain.DeleteHaveUsersRoleException;
 import pw.ewen.WLPT.repository.ResourceTypeRepository;
+import static pw.ewen.WLPT.repository.specifications.ResourceTypeSpecifications.*;
 
 import java.util.Set;
 
@@ -27,15 +28,15 @@ public class ResourceTypeController {
     }
 
     /**
-     * 获取资源类型（分页）
+     * 获取有效（未删除）资源类型（分页）
      * @param pageIndex 第几页
      * @param pageSize  每页多少条
      */
     @RequestMapping(method = RequestMethod.GET, produces="application/json")
-    public Page<ResourceType> getResourcesWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
+    public Page<ResourceType> getAllAvailableResourcesWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
                                                    @RequestParam(value = "pageSize", defaultValue = "20") int pageSize){
 //        Specification<Role> spec = RoleSpecifications.hasName("ad");
-        return resourceTypeRepository.findAllValidResources(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
+        return resourceTypeRepository.findAll(allAvailable(), new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
     }
 
     /**
