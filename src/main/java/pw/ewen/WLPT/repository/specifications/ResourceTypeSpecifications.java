@@ -28,6 +28,12 @@ public class ResourceTypeSpecifications {
 
     //显示全部有效项
     public static Specification<ResourceType> allAvailable(){
-        return (root, query, cb) -> cb.equal(root.get(ResourceType_.deleted),false);
+//        return new Specification<ResourceType>() {
+//            @Override
+//            public Predicate toPredicate(Root<ResourceType> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+//                return cb.equal(root.get(ResourceType_.deleted),false);
+//            }
+//        };
+        return (root, query, cb) -> cb.isFalse(root.get(ResourceType_.deleted));
     }
 }
