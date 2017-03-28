@@ -6,13 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domain.entity.ResourceType;
-import pw.ewen.WLPT.domain.entity.Role;
-import pw.ewen.WLPT.domain.entity.User;
-import pw.ewen.WLPT.exception.domain.DeleteHaveUsersRoleException;
 import pw.ewen.WLPT.repository.ResourceTypeRepository;
-import static pw.ewen.WLPT.repository.specifications.ResourceTypeSpecifications.*;
-
-import java.util.Set;
 
 /**
  * Created by wen on 17-3-12.
