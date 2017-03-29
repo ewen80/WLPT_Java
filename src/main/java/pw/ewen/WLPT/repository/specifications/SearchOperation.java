@@ -7,7 +7,7 @@ package pw.ewen.WLPT.repository.specifications;
 public enum SearchOperation {
     EQUALITY, NEGATION, GREATER_THAN, GREATER_THAN_EQUALITY, LESS_THAN, LESS_THAN_EQUALITY, LIKE, STARTS_WITH, ENDS_WITH, CONTAINS;
 
-    public static final String[] SIMPLE_OPERATION_SET = { ":", "!", ">", "<", "~" };
+    public static final String[] SIMPLE_OPERATION_SET = { ":", "!", ">", ">=", "<", "<=", "~" };
 
     public static SearchOperation getSimpleOperation(String input) {
         switch (input) {
@@ -23,7 +23,7 @@ public enum SearchOperation {
                 return LESS_THAN;
             case "<:":  //小于等于
                 return LESS_THAN_EQUALITY;
-            case "~":
+            case "~":   //Like
                 return LIKE;
             default:
                 return null;

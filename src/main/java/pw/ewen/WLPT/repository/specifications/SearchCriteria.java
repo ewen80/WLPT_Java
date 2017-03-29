@@ -6,8 +6,14 @@ package pw.ewen.WLPT.repository.specifications;
  */
 public class SearchCriteria {
     private String key;
-    private String operation;
+    private SearchOperation operation;
     private Object value;
+
+    public SearchCriteria(String key, SearchOperation operation, Object value) {
+        this.key = key;
+        this.operation = operation;
+        this.value = value;
+    }
 
     public String getKey() {
         return key;
@@ -17,11 +23,11 @@ public class SearchCriteria {
         this.key = key;
     }
 
-    public String getOperation() {
+    public SearchOperation getOperation() {
         return operation;
     }
 
-    public void setOperation(String operation) {
+    public void setOperation(SearchOperation operation) {
         this.operation = operation;
     }
 
