@@ -21,30 +21,8 @@ public class ResourceTypeSpecification implements Specification<ResourceType> {
 
     @Override
     public Predicate toPredicate(Root<ResourceType> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-        if (criteria.getOperation().equalsIgnoreCase("%")) {    //包含
-            return cb.like(
-                    root.<String> get(criteria.getKey()), "%"+criteria.getValue()+"%");
+        switch (criteria.getOperation()){
+            case
         }
-        else if (criteria.getOperation().equalsIgnoreCase(":")) {  //等于
-            return cb.equal(
-                    root.<String> get(criteria.getKey()), criteria.getValue().toString());
-        }
-        else if (criteria.getOperation().equalsIgnoreCase("!:")) {   //不等于
-            if (root.get(criteria.getKey()).getJavaType() == String.class) {
-                return cb.notLike(
-                        root.<String>get(criteria.getKey()), "%"+criteria.getValue()+"%");
-            } else {
-                return cb.notEqual(root.get(criteria.getKey()), criteria.getValue());
-            }
-        }
-        else if(criteria.getOperation().equalsIgnoreCase("~")){ //startswith
-            return cb.substring(
-                    root.<String>get(criteria.getKey()), );
-        }
-        else if(criteria.getOperation().equalsIgnoreCase("^")){ //endwith
-
-        }
-        return null;
-
     }
 }
