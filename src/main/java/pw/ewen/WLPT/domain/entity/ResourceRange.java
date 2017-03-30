@@ -8,7 +8,10 @@ import org.springframework.expression.spel.support.StandardEvaluationContext;
 import pw.ewen.WLPT.exception.security.MatchedMultipleResourceRangeException;
 import pw.ewen.WLPT.repository.ResourceRangeRepository;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.List;
 
 /**

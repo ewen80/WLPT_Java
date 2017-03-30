@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domain.entity.User;
 import pw.ewen.WLPT.repository.UserRepository;
+import pw.ewen.WLPT.repository.specifications.UserSpecificationBuilder;
 
 import java.util.List;
 
@@ -30,7 +31,10 @@ public class UserController {
 	//获取用户（分页）
 	@RequestMapping(method = RequestMethod.GET, produces="application/json")
 	public Page<User> getUsersWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
-									   @RequestParam(value = "pageSize", defaultValue = "20") int pageSize){
+									   @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
+									   @RequestParam(value = "search" ) String search){
+		UserSpecificationBuilder builder = new UserSpecificationBuilder();
+		String operationSetExper =
 		return userRepository.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
 	}
 

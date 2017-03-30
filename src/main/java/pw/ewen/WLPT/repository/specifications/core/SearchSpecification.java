@@ -1,17 +1,11 @@
-package pw.ewen.WLPT.repository.specifications;
+package pw.ewen.WLPT.repository.specifications.core;
 
 import org.springframework.data.jpa.domain.Specification;
-import pw.ewen.WLPT.domain.entity.ResourceType;
-import pw.ewen.WLPT.domain.entity.ResourceType_;
-import pw.ewen.WLPT.domain.entity.Role;
-import pw.ewen.WLPT.domain.entity.Role_;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import static pw.ewen.WLPT.repository.specifications.SearchOperation.*;
 
 
 /**

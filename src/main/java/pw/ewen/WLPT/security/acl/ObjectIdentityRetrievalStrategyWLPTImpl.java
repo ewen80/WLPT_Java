@@ -6,7 +6,6 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 import pw.ewen.WLPT.domain.NeverMatchedResourceRange;
 import pw.ewen.WLPT.domain.entity.ResourceRange;
 import pw.ewen.WLPT.repository.ResourceRangeRepository;

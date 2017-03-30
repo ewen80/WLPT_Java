@@ -1,4 +1,4 @@
-package pw.ewen.WLPT.repository.specifications;
+package pw.ewen.WLPT.repository.specifications.core;
 
 /**
  * Created by wenliang on 17-3-28.
@@ -18,7 +18,6 @@ public class SearchCriteria {
     public String getKey() {
         return key;
     }
-
     public void setKey(String key) {
         this.key = key;
     }
@@ -26,7 +25,6 @@ public class SearchCriteria {
     public SearchOperation getOperation() {
         return operation;
     }
-
     public void setOperation(SearchOperation operation) {
         this.operation = operation;
     }
@@ -34,7 +32,6 @@ public class SearchCriteria {
     public Object getValue() {
         return value;
     }
-
     public void setValue(Object value) {
         this.value = value;
     }

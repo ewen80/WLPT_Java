@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import pw.ewen.WLPT.domain.entity.MyResource;
@@ -14,10 +13,9 @@ import pw.ewen.WLPT.domain.entity.User;
 import pw.ewen.WLPT.repository.MyResourceRepository;
 import pw.ewen.WLPT.repository.RoleRepository;
 import pw.ewen.WLPT.repository.UserRepository;
-import pw.ewen.WLPT.repository.specifications.MyResourceSpecification;
-import pw.ewen.WLPT.repository.specifications.SearchCriteria;
-import pw.ewen.WLPT.repository.specifications.SearchOperation;
-import pw.ewen.WLPT.repository.specifications.SearchSpecification;
+import pw.ewen.WLPT.repository.specifications.core.SearchCriteria;
+import pw.ewen.WLPT.repository.specifications.core.SearchOperation;
+import pw.ewen.WLPT.repository.specifications.core.SearchSpecification;
 
 import java.util.List;
 
@@ -86,8 +84,81 @@ public class TestResourceTypeSpecification {
     public void testGreaterThan(){
         SearchSpecification spec = new SearchSpecification(
                 new SearchCriteria("password", SearchOperation.GREATER_THAN, "15"));
-        List<MyResource> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
+        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
         assertThat(user1).isNotIn(results);
         assertThat(user2).isIn(results);
+    }
+
+    @Test
+    public void testGreaterThanEqual(){
+        SearchSpecification spec = new SearchSpecification(
+                new SearchCriteria("password", SearchOperation.GREATER_THAN_EQUALITY, "20"));
+        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
+        assertThat(user1).isNotIn(results);
+        assertThat(user2).isIn(results);
+    }
+
+    @Test
+    public void testLessThan(){
+        SearchSpecification spec = new SearchSpecification(
+                new SearchCriteria("password", SearchOperation.LESS_THAN, "16"));
+        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
+        assertThat(user2).isNotIn(results);
+        assertThat(user1).isIn(results);
+    }
+
+    @Test
+    public void testLessThanEqual(){
+        SearchSpecification spec = new SearchSpecification(
+                new SearchCriteria("password", SearchOperation.LESS_THAN_EQUALITY, "15"));
+        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
+        assertThat(user2).isNotIn(results);
+        assertThat(user1).isIn(results);
+    }
+
+    @Test
+    public void testLike1(){
+        SearchSpecification spec = new SearchSpecification(
+                new SearchCriteria("name", SearchOperation.LIKE, "user"));
+        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
+        assertThat(results).isEmpty();
+//        assertThat(user2).isNotIn(results);
+//        assertThat(user1).isNotIn(results);
+    }
+
+    @Test
+    public void testLike2(){
+        SearchSpecification spec = new SearchSpecification(
+                new SearchCriteria("name", SearchOperation.LIKE, "user%"));
+        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
+        assertThat(user2).isIn(results);
+        assertThat(user1).isIn(results);
+    }
+
+    @Test
+    public void testStartsWith(){
+        SearchSpecification spec = new SearchSpecification(
+                new SearchCriteria("name", SearchOperation.STARTS_WITH, "user"));
+        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
+        assertThat(user2).isIn(results);
+        assertThat(user1).isIn(results);
+    }
+
+    @Test
+    public void testEndsWith(){
+        SearchSpecification spec = new SearchSpecification(
+                new SearchCriteria("name", SearchOperation.ENDS_WITH, "er1"));
+        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
+        assertThat(user2).isNotIn(results);
+        assertThat(user1).isIn(results);
+    }
+
+    @Test
+    public void testContains(){
+        SearchSpecification spec = new SearchSpecification(
+                new SearchCriteria("name", SearchOperation.CONTAINS, "ser"));
+        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
+        assertThat(user2).isIn(results);
+        assertThat(user1).isIn(results);
     }
 }

@@ -3,7 +3,6 @@ package pw.ewen.WLPT.domain.entity;
 import pw.ewen.WLPT.domain.Resource;
 
 import javax.persistence.Entity;
-import javax.persistence.Transient;
 import java.io.Serializable;
 
 /*

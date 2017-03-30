@@ -29,7 +29,6 @@ public class ResourceTypeController {
     @RequestMapping(method = RequestMethod.GET, produces="application/json")
     public Page<ResourceType> getAllAvailableResourcesWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
                                                    @RequestParam(value = "pageSize", defaultValue = "20") int pageSize){
-//        Specification<Role> spec = RoleSpecifications.hasName("ad");
         return resourceTypeRepository.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
     }
 
