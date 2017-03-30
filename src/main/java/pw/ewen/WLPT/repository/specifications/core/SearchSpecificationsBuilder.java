@@ -10,7 +10,7 @@ import java.util.List;
  * Created by wenliang on 17-3-30.
  */
 public class SearchSpecificationsBuilder<T> {
-    private List<SearchCriteria> params;
+    private List<SearchCriteria> params = new ArrayList<SearchCriteria>();
 
     //生成builder原材料
     public SearchSpecificationsBuilder<T> with(

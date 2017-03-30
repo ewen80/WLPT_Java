@@ -1,15 +1,20 @@
 package pw.ewen.WLPT.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domain.entity.User;
 import pw.ewen.WLPT.repository.UserRepository;
 import pw.ewen.WLPT.repository.specifications.UserSpecificationBuilder;
+import pw.ewen.WLPT.repository.specifications.core.SearchOperation;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/users")
@@ -32,10 +37,22 @@ public class UserController {
 	@RequestMapping(method = RequestMethod.GET, produces="application/json")
 	public Page<User> getUsersWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
 									   @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
-									   @RequestParam(value = "search" ) String search){
+									   @RequestParam(value = "filter" ) String filter){
 		UserSpecificationBuilder builder = new UserSpecificationBuilder();
-		String operationSetExper =
-		return userRepository.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
+		String operationSetExper = StringUtils.join(SearchOperation.SIMPLE_OPERATION_SET, '|');
+		Pattern pattern = Pattern.compile(
+				"(\\w+?)(" + operationSetExper + ")(\\p{Punct}?)(\\w+?)(\\p{Punct}?),");
+		Matcher matcher = pattern.matcher(filter + ",");
+		while (matcher.find()) {
+			builder.with(
+					matcher.group(1), //字段
+					matcher.group(2),	//操作
+					matcher.group(4),	//值
+					matcher.group(3),	//前置操作符
+					matcher.group(5));	//后置操作符
+		}
+		Specification<User> spec = builder.build();
+		return userRepository.findAll(spec, new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
 	}
 
 	@RequestMapping(value="/{userId}", method=RequestMethod.GET, produces="application/json")

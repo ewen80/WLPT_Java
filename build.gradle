@@ -54,11 +54,16 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-cache",
             "org.springframework.security:spring-security-acl",
             "com.h2database:h2",
-            "net.sf.ehcache:ehcache"
+            "net.sf.ehcache:ehcache",
+            "org.apache.commons:commons-lang3:3.5"
     )
 //    runtime("mysql:mysql-connector-java:5.1.39")
-    testCompile("org.springframework.boot:spring-boot-starter-test",
-                "org.springframework.security:spring-security-test"
+    testCompile(
+                "io.rest-assured:rest-assured:3.0.2",
+                "io.rest-assured:spring-mock-mvc:3.0.2",
+                "org.springframework.boot:spring-boot-starter-test",
+                "org.springframework.security:spring-security-test",
+
     )
 }
 
