@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domain.entity.ResourceType;
 import pw.ewen.WLPT.repository.ResourceTypeRepository;
+import pw.ewen.WLPT.repository.specifications.ResourceTypeSpecificationBuilder;
 
 /**
  * Created by wen on 17-3-12.
@@ -22,14 +23,16 @@ public class ResourceTypeController {
     }
 
     /**
-     * 获取有效（未删除）资源类型（分页）
+     * 获取资源类型（分页，查询）
      * @param pageIndex 第几页
      * @param pageSize  每页多少条
      */
     @RequestMapping(method = RequestMethod.GET, produces="application/json")
-    public Page<ResourceType> getAllAvailableResourcesWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
-                                                   @RequestParam(value = "pageSize", defaultValue = "20") int pageSize){
-        return resourceTypeRepository.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
+    public Page<ResourceType> getResourcesWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
+                                                   @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
+                                                   @RequestParam(value = "filter", defaultValue = "") String filter){
+        ResourceTypeSpecificationBuilder builder = new ResourceTypeSpecificationBuilder();
+        return resourceTypeRepository.findAll(builder.build(filter), new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
     }
 
     /**

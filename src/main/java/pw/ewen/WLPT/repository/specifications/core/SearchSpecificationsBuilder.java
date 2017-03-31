@@ -1,10 +1,14 @@
 package pw.ewen.WLPT.repository.specifications.core;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
+import pw.ewen.WLPT.domain.entity.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by wenliang on 17-3-30.
@@ -13,7 +17,7 @@ public class SearchSpecificationsBuilder<T> {
     private List<SearchCriteria> params = new ArrayList<SearchCriteria>();
 
     //生成builder原材料
-    public SearchSpecificationsBuilder<T> with(
+    private SearchSpecificationsBuilder<T> with(
             String key, String operation, Object value, String prefix, String suffix) {
 
         SearchOperation op = SearchOperation.getSimpleOperation(operation);
@@ -37,7 +41,21 @@ public class SearchSpecificationsBuilder<T> {
     }
 
     //进行build
-    public Specification<T> build() {
+    public Specification<T> build(String filterString) {
+
+        String operationSetExper = StringUtils.join(SearchOperation.SIMPLE_OPERATION_SET, '|');
+        Pattern pattern = Pattern.compile(
+                "(\\w+?)(" + operationSetExper + ")(\\*?)(\\w+?)(\\*?),");
+        Matcher matcher = pattern.matcher(filterString + ",");
+        while (matcher.find()) {
+            this.with(
+                    matcher.group(1), //字段
+                    matcher.group(2),	//操作
+                    matcher.group(4),	//值
+                    matcher.group(3),	//前置操作符
+                    matcher.group(5));	//后置操作符
+        }
+
         if (params.size() == 0) {
             return null;
         }

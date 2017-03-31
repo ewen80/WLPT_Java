@@ -8,7 +8,7 @@ buildscript {
 }
 
 plugins {
-    id "at.comm_unity.gradle.plugins.jpamodelgen" version "1.1.2"
+//    id "at.comm_unity.gradle.plugins.jpamodelgen" version "1.1.2"
 }
 
 apply plugin: 'java'
@@ -32,9 +32,9 @@ sourceSets{
     }
 }
 
-jpaModelgen {
-    library = "org.hibernate:hibernate-jpamodelgen:5.2.6.Final"
-}
+//jpaModelgen {
+//    library = "org.hibernate:hibernate-jpamodelgen:5.2.6.Final"
+//}
 
 // In this section you declare where to find the dependencies of your project
 repositories {
@@ -71,5 +71,5 @@ dependencies {
 // 用于生成JPA的 JPA Static Metamodel Classes,动态查询需要使用
 // Important!!! Following configuration of compile java arguments
 // should be ALWAYS present when using jpamodelgen plugin.
-compileJava.options.compilerArgs += ["-proc:none"]
+//compileJava.options.compilerArgs += ["-proc:none"]
 //-----------------------------------------------------------------------------------------------------

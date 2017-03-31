@@ -33,26 +33,13 @@ public class UserController {
 		return userRepository.findAll();
 	}
 
-	//获取用户（分页）
+	//获取用户（分页,查询）
 	@RequestMapping(method = RequestMethod.GET, produces="application/json")
 	public Page<User> getUsersWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
 									   @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
-									   @RequestParam(value = "filter" ) String filter){
+									   @RequestParam(value = "filter", defaultValue = "") String filter){
 		UserSpecificationBuilder builder = new UserSpecificationBuilder();
-		String operationSetExper = StringUtils.join(SearchOperation.SIMPLE_OPERATION_SET, '|');
-		Pattern pattern = Pattern.compile(
-				"(\\w+?)(" + operationSetExper + ")(\\p{Punct}?)(\\w+?)(\\p{Punct}?),");
-		Matcher matcher = pattern.matcher(filter + ",");
-		while (matcher.find()) {
-			builder.with(
-					matcher.group(1), //字段
-					matcher.group(2),	//操作
-					matcher.group(4),	//值
-					matcher.group(3),	//前置操作符
-					matcher.group(5));	//后置操作符
-		}
-		Specification<User> spec = builder.build();
-		return userRepository.findAll(spec, new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
+		return userRepository.findAll(builder.build(filter), new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
 	}
 
 	@RequestMapping(value="/{userId}", method=RequestMethod.GET, produces="application/json")
