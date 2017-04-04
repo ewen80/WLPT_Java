@@ -12,6 +12,10 @@ public class SearchCriteria {
     public SearchCriteria(String key, SearchOperation operation, Object value) {
         this.key = key;
         this.operation = operation;
+        //如果value的值是"true"或者"false"，则将value转为Boolean型（必须是小写）
+        if(value.getClass().equals(String.class) && (value.equals("true") || value.equals("false"))){
+            value = Boolean.valueOf(value.toString());
+        }
         this.value = value;
     }
 

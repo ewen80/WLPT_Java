@@ -13,7 +13,7 @@ import pw.ewen.WLPT.repository.specifications.ResourceTypeSpecificationBuilder;
  * Created by wen on 17-3-12.
  */
 @RestController
-@RequestMapping(value = "/resourcetype")
+@RequestMapping(value = "/resourcetypes")
 public class ResourceTypeController {
     private ResourceTypeRepository resourceTypeRepository;
 

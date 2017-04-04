@@ -44,8 +44,6 @@ public class TestUserController {
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
-    @Autowired
-    private TestRestTemplate testRestTemplate;
 
     @Before
     public void init(){

@@ -106,8 +106,8 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
     public void haveAllPermissionToResource(){
         //全匹配范围
         ResourceRange matchAllResourceRange = new ResourceRange();
-        matchAllResourceRange.setRoleId("admin");
-        matchAllResourceRange.setResourceType(MyResource.class.getTypeName());
+//        matchAllResourceRange.setRoleId("admin");
+//        matchAllResourceRange.setResourceType(MyResource.class.getTypeName());
         matchAllResourceRange.setMatchAll(true);
         matchAllResourceRange = resourceRangeRepository.save(matchAllResourceRange);
 
@@ -132,9 +132,9 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
         MyResource resource200 = new MyResource(200);
         myResourceRepository.save(resource200);
 
-        ResourceRange rr_less_than_150 = new ResourceRange("number < 150", "admin", MyResource.class.getTypeName());
+        ResourceRange rr_less_than_150 = new ResourceRange("number < 150", this.role1, resource100.getResourceType());
         resourceRangeRepository.save(rr_less_than_150);
-        ResourceRange rr_more_than_150 = new ResourceRange("number > 150","admin", MyResource.class.getTypeName());
+        ResourceRange rr_more_than_150 = new ResourceRange("number > 150",this.role1, resource200.getResourceType());
         resourceRangeRepository.save(rr_more_than_150);
 
         ObjectIdentity oi1 = objectIdentityRetrieval.getObjectIdentity(resource100);

@@ -5,13 +5,11 @@ import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
+import pw.ewen.WLPT.domain.Resource;
 import pw.ewen.WLPT.exception.security.MatchedMultipleResourceRangeException;
 import pw.ewen.WLPT.repository.ResourceRangeRepository;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -23,15 +21,15 @@ import java.util.List;
 public class ResourceRange {
     private long id;
     private String filter;
-    private String roleId;
-    private String resourceType;
+    private Role role;
+    private ResourceType resourceType;
     private boolean matchAll = false;
 
 
     public ResourceRange(){   }
-    public ResourceRange(String filter, String roleId, String resourceType) {
+    public ResourceRange(String filter, Role role, ResourceType resourceType) {
         this.filter = filter;
-        this.roleId = roleId;
+        this.role = role;
         this.resourceType = resourceType;
     }
 
@@ -41,6 +39,7 @@ public class ResourceRange {
     public void setId(long value){ this.id = value;}
 
     //资源范围筛选依据（Spel）
+    @Column(nullable = false)
     public String getFilter() {
         return filter;
     }
@@ -48,12 +47,22 @@ public class ResourceRange {
         this.filter = filter;
     }
 
-    //roleId
-    public String getRoleId() {
-        return roleId;
+    @ManyToOne
+    @JoinColumn(name = "role_Id")
+    public Role getRole() {
+        return role;
     }
-    public void setRoleId(String roleId) {
-        this.roleId = roleId;
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "resourceType_Id")
+    public ResourceType getResourceType() {
+        return resourceType;
+    }
+    public void setResourceType(ResourceType resourceType) {
+        this.resourceType = resourceType;
     }
 
     //本ResourceRange是否匹配所有Resource
@@ -64,29 +73,16 @@ public class ResourceRange {
         this.matchAll = matchAll;
     }
 
-    //Resource的全类名
-    public String getResourceType() {
-        return resourceType;
-    }
-    public void setResourceType(String resourceType) {
-        this.resourceType = resourceType;
-    }
-
-    //    //获得仓储类型
-//    @Transient
-//    public abstract  Class<?> repositoryClass();
-
     /**
      * 根据domain object 和 roleId 筛选符合条件的唯一 resourceRange对象
-     * @param roleId 角色Id
+     * @param role 角色
      * @param resourceRangeRepository 资源仓储类
      * @return 符合filter筛选条件的ResourceRange,如果没有匹配项返回 null
      */
     @Transient
-    public ResourceRange selectOne(Object domainObject, String roleId, ResourceRangeRepository resourceRangeRepository){
-        //从ResourceRange仓储中获取所有roleId和对应Type的filter
-        List ranges = resourceRangeRepository.findByRoleIdAndResourceType(roleId, domainObject.getClass().getTypeName());
-
+    public ResourceRange matchRangeByResourceAndRole(Resource domainObject, Role role, ResourceRangeRepository resourceRangeRepository){
+        //从ResourceRange仓储中获取所有和当前角色以及指定资源对应的filter
+        List ranges = resourceRangeRepository.findByRoleAndResourceType_className(role, domainObject.getClass().getTypeName());
         //遍历所有filter进行判断表达式是否为true
         ExpressionParser parser = new SpelExpressionParser();
         EvaluationContext context = new StandardEvaluationContext(domainObject);

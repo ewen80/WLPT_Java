@@ -15,12 +15,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import pw.ewen.WLPT.domain.entity.MyResource;
-import pw.ewen.WLPT.domain.entity.ResourceRange;
-import pw.ewen.WLPT.domain.entity.Role;
-import pw.ewen.WLPT.domain.entity.User;
+import pw.ewen.WLPT.domain.entity.*;
 import pw.ewen.WLPT.exception.security.AuthorizationException;
 import pw.ewen.WLPT.repository.ResourceRangeRepository;
+import pw.ewen.WLPT.repository.ResourceTypeRepository;
 import pw.ewen.WLPT.repository.RoleRepository;
 import pw.ewen.WLPT.repository.UserRepository;
 import pw.ewen.WLPT.security.PermissionService;
@@ -51,6 +49,8 @@ public class PermissionServiceTest {
     private UserRepository userRepository;
     @Autowired
     private ResourceRangeRepository resourceRangeRepository;
+    @Autowired
+    private ResourceTypeRepository resourceTypeRepository;
 
     //Class Test 数据是否准备好
     private boolean testInitialed = false;
@@ -59,6 +59,7 @@ public class PermissionServiceTest {
     private User testUser;
     private GrantedAuthoritySid testSid;
     private ResourceRange resourceRange;
+    private ResourceType resourceType;
 
 
     @Before
@@ -70,26 +71,16 @@ public class PermissionServiceTest {
 //            userRepository.save(testUser);
             testSid = new GrantedAuthoritySid(testRole.getID());
 
-            resourceRange = new ResourceRange("number = 200", testRole.getID(), MyResource.class.getTypeName());
+            resourceType = new ResourceType("className1","name","");
+            resourceTypeRepository.save(resourceType);
+
+            resourceRange = new ResourceRange("number = 200", testRole, resourceType);
             resourceRangeRepository.save(resourceRange);
 
             testInitialed = true;
         }
     }
 
-//    @After
-//    public  void clean(){
-//        if(testInitialed) {
-//            userRepository.delete("user1");
-//            roleRepository.delete("role1");
-//
-//            ObjectIdentity oi = new ObjectIdentityImpl(myResourceRange);
-//            aclService.deleteAcl(oi, false);
-//            myResourceRangeRepository.delete(myResourceRange);
-//
-//            testInitialed = false;
-//        }
-//    }
     /**
      * 测试添加权限规则,ResourceRange不存在
      */
@@ -125,15 +116,11 @@ public class PermissionServiceTest {
      * 测试添加权限规则（规则存在）
      * 规则如果存在抛出异常
      */
-    @Test
+    @Test(expected = RuntimeException.class)
     @WithMockUser(username="admin", authorities = {"admin"})
     public  void insertPermissionWhenExist(){
         permissionService.insertPermission(resourceRange, testSid, BasePermission.READ);
-
-        try{
-            permissionService.insertPermission(resourceRange, testSid, BasePermission.READ);
-            fail("应该抛出AuthorizationException");
-        }catch(AuthorizationException ae){ }
+        permissionService.insertPermission(resourceRange, testSid, BasePermission.READ);
     }
 
     /**
@@ -156,7 +143,7 @@ public class PermissionServiceTest {
     public void deletePermissionWhenNotExist(){
         Role role = new Role("role1", "role1");
         GrantedAuthoritySid sid = new GrantedAuthoritySid(role.getID());
-        ResourceRange rr = new ResourceRange("number = 200", role.getID(), MyResource.class.getTypeName());
+        ResourceRange rr = new ResourceRange("number = 200", role, this.resourceType);
 
         Boolean result = permissionService.deletePermission(rr, sid, BasePermission.READ);
         Assert.isTrue(!result);

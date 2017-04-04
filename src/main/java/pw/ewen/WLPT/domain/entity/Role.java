@@ -26,14 +26,14 @@ public class Role implements Serializable {
 	
 	
 	private Set<User> users;
-//	private Set<OperationRange> operationRanges;
-	
+	private Set<ResourceRange>	resourceRanges;
+
 	protected Role(){}
-	
 	public Role(String id, String name) {
 		this.name = name;
 		this.id = id;
 		users = new HashSet<>();
+		this.resourceRanges = new HashSet<>();
 //		operationRanges = new HashSet<>();
 	}
 
@@ -64,6 +64,10 @@ public class Role implements Serializable {
 	public void setUsers(Set<User> users) {
 		this.users = users;
 	}
+
+	@OneToMany(mappedBy = "role")
+	public Set<ResourceRange> getResourceRanges() { return this.resourceRanges;}
+	public void setResourceRanges(Set<ResourceRange> resourceRanges) { this.resourceRanges = resourceRanges;}
 
 	@Override
 	public String toString() {

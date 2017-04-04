@@ -1,7 +1,12 @@
 package pw.ewen.WLPT.domain.entity;
 
+import pw.ewen.WLPT.domain.Resource;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by wen on 17-3-12.
@@ -14,6 +19,23 @@ public class ResourceType {
     private String name;
     private String description;
     private boolean deleted = false;
+    private Set<ResourceRange> resourceRanges;
+//    private Set<MyResource> resources;
+
+    protected ResourceType(){}
+
+    public ResourceType(String className, String name, String description, boolean deleted) {
+        this.className = className;
+        this.name = name;
+        this.description = description;
+        this.deleted = deleted;
+        this.resourceRanges = new HashSet<>();
+//        this.resources = new HashSet<>();
+    }
+
+    public ResourceType(String className,String name, String description){
+        this(className,name,description,false);
+    }
 
     /**
      * 类的全名称
@@ -55,4 +77,22 @@ public class ResourceType {
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
+
+    /**
+     * 资源范围
+     */
+    @OneToMany(mappedBy = "resourceType")
+    public Set<ResourceRange> getResourceRanges() { return this.resourceRanges;}
+    public void setResourceRanges(Set<ResourceRange> resourceRanges) { this.resourceRanges = resourceRanges;}
+
+//    /**
+//     * 该类型下的具体资源
+//     */
+//    @OneToMany(mappedBy = "resourceType")
+//    public Set<MyResource> getResources() {
+//        return resources;
+//    }
+//    public void setResources(Set<MyResource> resources) {
+//        this.resources = resources;
+//    }
 }

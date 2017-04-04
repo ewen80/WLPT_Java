@@ -1,8 +1,8 @@
 package pw.ewen.WLPT.domain;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import pw.ewen.WLPT.domain.entity.ResourceType;
+
+import javax.persistence.*;
 
 /**
  * Created by wen on 17-2-28.
@@ -10,6 +10,7 @@ import javax.persistence.MappedSuperclass;
  */
 @MappedSuperclass
 public abstract class Resource {
+
     private long id;
 
     protected Resource() {
@@ -22,4 +23,6 @@ public abstract class Resource {
         return this.id;
     }
     public void setId(long id){ this.id = id;}
+
+
 }

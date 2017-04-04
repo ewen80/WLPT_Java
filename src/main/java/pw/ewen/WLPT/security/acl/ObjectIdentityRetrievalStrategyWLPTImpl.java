@@ -7,7 +7,9 @@ import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy;
 import org.springframework.stereotype.Component;
 import pw.ewen.WLPT.domain.NeverMatchedResourceRange;
+import pw.ewen.WLPT.domain.Resource;
 import pw.ewen.WLPT.domain.entity.ResourceRange;
+import pw.ewen.WLPT.domain.entity.Role;
 import pw.ewen.WLPT.repository.ResourceRangeRepository;
 import pw.ewen.WLPT.security.UserContext;
 
@@ -23,14 +25,12 @@ public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRe
     private UserContext userContext;
     @Autowired
     private ResourceRangeRepository resourceRangeRepository;
-//    @Autowired
-//    private ApplicationContext appContext;
 
     @Override
     public ObjectIdentity getObjectIdentity(Object domainObject) {
         //查找ResourceRepository中当前SID对应的ResourceRange
-        String currentUserRoleId = userContext.getCurrentUser().getRole().getID();
-        ResourceRange resourceRange = getResourceRange(domainObject, currentUserRoleId);
+        Role currentUserRole = userContext.getCurrentUser().getRole();
+        ResourceRange resourceRange = getResourceRange(domainObject, currentUserRole);
         if(resourceRange == null){
             throw new IdentityUnavailableException("从Resource获取匹配的ResourceRange时出错，返回Null");
         }else{
@@ -43,12 +43,17 @@ public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRe
      * 从domain object获得ResourceRange范围对象
      * @Return 匹配的ResourceRange，如果没有匹配对象则返回一个固定ResourceRange(任何用户不能对此ResourceRange有权限)
      */
-    private ResourceRange getResourceRange(Object domainObject, String roleId)  {
+    private ResourceRange getResourceRange(Object domainObject, Role role)  {
         ResourceRange range = new ResourceRange();
-        ResourceRange matchedRange = range.selectOne(domainObject, roleId, resourceRangeRepository);
-        //如果没有匹配到返回一个Never_Matched_ResourceRange
-        //没有匹配到ResourceRange代表该Role对资源没有访问权
-        matchedRange = matchedRange == null ? new NeverMatchedResourceRange() : matchedRange;
-        return  matchedRange;
+        if(domainObject instanceof Resource){
+            ResourceRange matchedRange = range.matchRangeByResourceAndRole((Resource)domainObject, role, resourceRangeRepository);
+            //如果没有匹配到返回一个Never_Matched_ResourceRange
+            //没有匹配到ResourceRange代表该Role对资源没有访问权
+            matchedRange = matchedRange == null ? new NeverMatchedResourceRange() : matchedRange;
+            return  matchedRange;
+        }else{
+            throw new IllegalArgumentException("domainObject should be Resource Type");
+        }
+
     }
 }
