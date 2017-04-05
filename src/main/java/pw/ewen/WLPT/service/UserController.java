@@ -27,23 +27,27 @@ public class UserController {
 		this.userRepository = userRepository;
 	}
 
-	//获取所有用户
-	@RequestMapping(value = "/all", method=RequestMethod.GET, produces="application/json")
-	public List<User> getAllUsers(){
-		return userRepository.findAll();
-	}
+//	//获取所有用户
+//	@RequestMapping(value = "/all", method=RequestMethod.GET, produces="application/json")
+//	public List<User> getAllUsers(){
+//		return userRepository.findAll();
+//	}
 
 	//获取用户（分页,查询）
 	@RequestMapping(method = RequestMethod.GET, produces="application/json")
 	public Page<User> getUsersWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
 									   @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
 									   @RequestParam(value = "filter", defaultValue = "") String filter){
-		UserSpecificationBuilder builder = new UserSpecificationBuilder();
-		return userRepository.findAll(builder.build(filter), new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
+		if(filter.isEmpty()){
+			return userRepository.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
+		}else{
+			UserSpecificationBuilder builder = new UserSpecificationBuilder();
+			return userRepository.findAll(builder.build(filter), new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
+		}
 	}
 
 	@RequestMapping(value="/{userId}", method=RequestMethod.GET, produces="application/json")
-	public User getOneUser(@PathVariable("userId") String userId){
+	public User getOne(@PathVariable("userId") String userId){
 		return userRepository.findOne(userId);
 	}
 

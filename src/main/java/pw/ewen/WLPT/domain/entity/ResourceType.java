@@ -1,6 +1,8 @@
 package pw.ewen.WLPT.domain.entity;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import pw.ewen.WLPT.domain.Resource;
+import pw.ewen.WLPT.repository.ResourceTypeRepository;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -84,6 +86,18 @@ public class ResourceType {
     @OneToMany(mappedBy = "resourceType")
     public Set<ResourceRange> getResourceRanges() { return this.resourceRanges;}
     public void setResourceRanges(Set<ResourceRange> resourceRanges) { this.resourceRanges = resourceRanges;}
+
+    /**
+     * 根据Resource返回对应的ResourceType
+     * @param resource
+     * @param repository
+     * @return
+     */
+    @Autowired
+    public static ResourceType getFromResouce(Resource resource, ResourceTypeRepository repository){
+        String resourceTypeName = resource.getClass().getTypeName();
+        return repository.getOne(resourceTypeName);
+    }
 
 //    /**
 //     * 该类型下的具体资源

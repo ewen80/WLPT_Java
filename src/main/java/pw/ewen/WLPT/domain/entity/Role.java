@@ -43,7 +43,6 @@ public class Role implements Serializable {
 	public String getID() {
 		return id;
 	}
-	
 	public void setID(String iD) {
 		id = iD;
 	}
@@ -52,7 +51,6 @@ public class Role implements Serializable {
 	public String getName() {
 		return name;
 	}
-
 	public void setName(String name) {
 		this.name = name;
 	}

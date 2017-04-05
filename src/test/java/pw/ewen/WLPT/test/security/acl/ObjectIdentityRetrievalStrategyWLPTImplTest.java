@@ -15,14 +15,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import pw.ewen.WLPT.domain.NeverMatchedResourceRange;
-import pw.ewen.WLPT.domain.entity.MyResource;
-import pw.ewen.WLPT.domain.entity.ResourceRange;
-import pw.ewen.WLPT.domain.entity.Role;
-import pw.ewen.WLPT.domain.entity.User;
-import pw.ewen.WLPT.repository.MyResourceRepository;
-import pw.ewen.WLPT.repository.ResourceRangeRepository;
-import pw.ewen.WLPT.repository.RoleRepository;
-import pw.ewen.WLPT.repository.UserRepository;
+import pw.ewen.WLPT.domain.entity.*;
+import pw.ewen.WLPT.repository.*;
 import pw.ewen.WLPT.security.PermissionService;
 import pw.ewen.WLPT.security.acl.ObjectIdentityRetrievalStrategyWLPTImpl;
 
@@ -45,6 +39,8 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
     private MyResourceRepository myResourceRepository;
     @Autowired
     private ResourceRangeRepository resourceRangeRepository;
+    @Autowired
+    private ResourceTypeRepository resourceTypeRepository;
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
@@ -132,9 +128,11 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
         MyResource resource200 = new MyResource(200);
         myResourceRepository.save(resource200);
 
-        ResourceRange rr_less_than_150 = new ResourceRange("number < 150", this.role1, resource100.getResourceType());
+//        ResourceType rt = resourceTypeRepository.getOne(resource100.getClass().getTypeName());
+
+        ResourceRange rr_less_than_150 = new ResourceRange("number < 150", this.role1, ResourceType.getFromResouce(resource100,resourceTypeRepository));
         resourceRangeRepository.save(rr_less_than_150);
-        ResourceRange rr_more_than_150 = new ResourceRange("number > 150",this.role1, resource200.getResourceType());
+        ResourceRange rr_more_than_150 = new ResourceRange("number > 150",this.role1, ResourceType.getFromResouce(resource200,resourceTypeRepository));
         resourceRangeRepository.save(rr_more_than_150);
 
         ObjectIdentity oi1 = objectIdentityRetrieval.getObjectIdentity(resource100);

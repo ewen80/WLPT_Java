@@ -32,7 +32,12 @@ public class ResourceTypeController {
                                                    @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
                                                    @RequestParam(value = "filter", defaultValue = "") String filter){
         ResourceTypeSpecificationBuilder builder = new ResourceTypeSpecificationBuilder();
-        return resourceTypeRepository.findAll(builder.build(filter), new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
+        if(filter.isEmpty()){
+            return resourceTypeRepository.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
+        }else{
+            return resourceTypeRepository.findAll(builder.build(filter), new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
+        }
+
     }
 
     /**
