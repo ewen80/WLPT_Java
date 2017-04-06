@@ -3,7 +3,6 @@ package pw.ewen.WLPT.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import pw.ewen.WLPT.domain.entity.ResourceRange;
-import pw.ewen.WLPT.domain.entity.ResourceType;
 import pw.ewen.WLPT.domain.entity.Role;
 
 import java.util.List;

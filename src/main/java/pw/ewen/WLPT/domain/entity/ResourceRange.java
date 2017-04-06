@@ -16,6 +16,7 @@ import java.util.List;
  * Created by wen on 17-2-26.
  * 资源范围类
  * 代表某个范围的资源集合
+ * Role和ResourceType不能为空,MatachAll只是在基于Role和ResourceType的基础上匹配全部资源(即忽略filter字段)
  */
 @Entity
 public class ResourceRange {
@@ -39,7 +40,6 @@ public class ResourceRange {
     public void setId(long value){ this.id = value;}
 
     //资源范围筛选依据（Spel）
-    @Column(nullable = false)
     public String getFilter() {
         return filter;
     }
@@ -48,7 +48,7 @@ public class ResourceRange {
     }
 
     @ManyToOne
-    @JoinColumn(name = "role_Id")
+    @JoinColumn(name = "role_Id", nullable = false)
     public Role getRole() {
         return role;
     }
@@ -57,7 +57,7 @@ public class ResourceRange {
     }
 
     @ManyToOne
-    @JoinColumn(name = "resourceType_Id")
+    @JoinColumn(name = "resourceType_Id", nullable = false)
     public ResourceType getResourceType() {
         return resourceType;
     }

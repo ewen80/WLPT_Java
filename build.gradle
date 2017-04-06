@@ -59,8 +59,6 @@ dependencies {
     )
 //    runtime("mysql:mysql-connector-java:5.1.39")
     testCompile(
-                "io.rest-assured:rest-assured:3.0.2",
-                "io.rest-assured:spring-mock-mvc:3.0.2",
                 "org.springframework.boot:spring-boot-starter-test",
                 "org.springframework.security:spring-security-test",
 

@@ -26,12 +26,12 @@ public class ResourceRangeController {
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    public List<ResourceRange> getByResourceType(@RequestParam(value = "resourcetype", defaultValue = "") String resourceTypeClassName){
+    public List<ResourceRange> getByResourceType(@RequestParam(value = "resourceclassname", defaultValue = "") String resourceTypeClassName){
         if(resourceTypeClassName.isEmpty()){
             return resourceRangeRepository.findAll();
         }else{
             ResourceRangeSpecificationBuilder builder = new ResourceRangeSpecificationBuilder();
-            return resourceRangeRepository.findAll(builder.build("resourceType:"+resourceTypeClassName));
+            return resourceRangeRepository.findAll(builder.build("resourceType.className:"+resourceTypeClassName));
         }
 
     }

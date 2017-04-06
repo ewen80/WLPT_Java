@@ -3,8 +3,6 @@ package pw.ewen.WLPT.domain.entity;
 import pw.ewen.WLPT.domain.Resource;
 
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.io.Serializable;
 
 /*

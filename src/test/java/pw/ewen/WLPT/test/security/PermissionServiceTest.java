@@ -12,11 +12,14 @@ import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Acl;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import pw.ewen.WLPT.domain.entity.*;
-import pw.ewen.WLPT.exception.security.AuthorizationException;
+import pw.ewen.WLPT.domain.entity.ResourceRange;
+import pw.ewen.WLPT.domain.entity.ResourceType;
+import pw.ewen.WLPT.domain.entity.Role;
+import pw.ewen.WLPT.domain.entity.User;
 import pw.ewen.WLPT.repository.ResourceRangeRepository;
 import pw.ewen.WLPT.repository.ResourceTypeRepository;
 import pw.ewen.WLPT.repository.RoleRepository;
@@ -28,7 +31,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
 
 /**
  * Created by wen on 17-3-5.
@@ -36,6 +38,7 @@ import static org.junit.Assert.fail;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
+@DirtiesContext //spring test默认共享applicationContext,导致 Another unnamed CacheManager already exists in the same VM.错误(VM多次创建了ehcache)
 @SpringBootTest
 public class PermissionServiceTest {
 
@@ -52,9 +55,6 @@ public class PermissionServiceTest {
     @Autowired
     private ResourceTypeRepository resourceTypeRepository;
 
-    //Class Test 数据是否准备好
-    private boolean testInitialed = false;
-
     private Role testRole;
     private User testUser;
     private GrantedAuthoritySid testSid;
@@ -64,21 +64,19 @@ public class PermissionServiceTest {
 
     @Before
     public  void setup(){
-        if(!testInitialed) {
-            testRole = new Role("role1", "role1");
-//            roleRepository.save(testRole);
-            testUser = new User("user1", "user1", "user1", testRole);
-//            userRepository.save(testUser);
-            testSid = new GrantedAuthoritySid(testRole.getID());
+        testRole = new Role("role1", "role1");
+        roleRepository.save(testRole);
 
-            resourceType = new ResourceType("className1","name","");
-            resourceTypeRepository.save(resourceType);
+        testUser = new User("user1", "user1", "user1", testRole);
+        userRepository.save(testUser);
 
-            resourceRange = new ResourceRange("number = 200", testRole, resourceType);
-            resourceRangeRepository.save(resourceRange);
+        testSid = new GrantedAuthoritySid(testRole.getID());
 
-            testInitialed = true;
-        }
+        resourceType = new ResourceType("className1","name","");
+        resourceTypeRepository.save(resourceType);
+
+        resourceRange = new ResourceRange("number = 200", testRole, resourceType);
+        resourceRangeRepository.save(resourceRange);
     }
 
     /**

@@ -1,29 +1,37 @@
 package pw.ewen.WLPT.test.service;
 
-import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 import pw.ewen.WLPT.domain.entity.ResourceType;
 import pw.ewen.WLPT.repository.ResourceTypeRepository;
-import pw.ewen.WLPT.service.ResourceTypeController;
-import pw.ewen.WLPT.service.UserController;
 
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 /**
  * Created by wen on 17-4-2.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
+@Transactional
+@AutoConfigureMockMvc
+@WithMockUser(username = "admin")
 public class TestResourceTypeController {
 
     @Autowired
     private ResourceTypeRepository resourceTypeRepository;
+
+    @Autowired
+    private MockMvc mvc;
 
     @Before
     public void init(){
@@ -37,19 +45,10 @@ public class TestResourceTypeController {
      * 测试filter表达式中包含true,false是否能转为boolean型进行过滤
      */
     @Test
-    public void testBooleanEqual_CanConvertToBoolean(){
-//        String result =
-        RestAssuredMockMvc
-                .given()
-                    .standaloneSetup(new ResourceTypeController(resourceTypeRepository))
-                    .param("pageIndex", "0")
-                    .param("pageSize", "20")
-//                    .param("filter", "deleted:true")
-                .when()
-                    .get("/resourcetypes")
-//                    .print();
-                .then()
-                    .body("content.className", hasItem("a"));
+    public void testBooleanEqual_CanConvertToBoolean() throws Exception{
+
+        this.mvc.perform(get("/resourcetypes?filter={filter}", "deleted:true"))
+                .andExpect(jsonPath("$.content[*].className", containsInAnyOrder("a")));
     }
 
     /**
@@ -57,14 +56,8 @@ public class TestResourceTypeController {
      * 此处应该出现异常，因为deleted字段为boolean，True无法转为boolean型，所以当将字符串和boolean进行对比，系统报错。
      */
     @Test(expected = Exception.class)
-    public void testBooleanEqual_CanNotConvertToBoolean(){
-        RestAssuredMockMvc
-                .given()
-                    .standaloneSetup(new ResourceTypeController(resourceTypeRepository))
-                    .param("pageIndex", "0")
-                    .param("pageSize", "20")
-                    .param("filter", "deleted:True")
-                .when()
-                  .get("/resourcetypes");
+    public void testBooleanEqual_CanNotConvertToBoolean() throws Exception{
+        this.mvc.perform(get("/resourcetypes?filter={filter}", "deleted:True"));
+
     }
 }

@@ -1,6 +1,5 @@
 package pw.ewen.WLPT.test.security.acl;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +17,7 @@ import pw.ewen.WLPT.domain.NeverMatchedResourceRange;
 import pw.ewen.WLPT.domain.entity.*;
 import pw.ewen.WLPT.repository.*;
 import pw.ewen.WLPT.security.PermissionService;
+import pw.ewen.WLPT.security.UserContext;
 import pw.ewen.WLPT.security.acl.ObjectIdentityRetrievalStrategyWLPTImpl;
 
 import javax.sql.DataSource;
@@ -30,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
+@Transactional
 public class ObjectIdentityRetrievalStrategyWLPTImplTest {
     @Autowired
     private ApplicationContext context;
@@ -50,39 +51,31 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
     @Autowired
     private PermissionService permissionService;
 
+    @Autowired
+    private UserContext userContext;
+
     private Role role1;
     private User user1;
     private GrantedAuthoritySid sid1;
 
-    //Class Test 数据是否准备好
-    private boolean testInitialed = false;
-
     @Before
     public  void setup(){
-        if(!testInitialed) {
-            role1 = new Role("role1", "role1");
-            roleRepository.save(role1);
-            user1 = new User("user1", "user1", "user1", role1);
-            userRepository.save(user1);
+        role1 = new Role("role1", "role1");
+        roleRepository.save(role1);
+        user1 = new User("user1", "user1", "user1", role1);
+        userRepository.save(user1);
 
-            sid1 = new GrantedAuthoritySid(role1.getID());
-        }
+        sid1 = new GrantedAuthoritySid(role1.getID());
+
+        ResourceType rt = new ResourceType(MyResource.class.getName(), "MyResource", "");
+        resourceTypeRepository.save(rt);
+
     }
 
-    @After
-    public  void clean(){
-        if(testInitialed) {
-            userRepository.delete("user1");
-            roleRepository.delete("role1");
-
-            testInitialed = false;
-        }
-    }
     /**
      * 测试角色对指定资源没有访问权时，从资源获取资源范围策略是否正确
      */
     @Test
-    @Transactional
     @WithMockUser(username = "user1", authorities = {"role1"})
     public void haveNoPermissionToResource(){
         MyResource resource = new MyResource(100);
@@ -97,20 +90,20 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
      * 测试角色对指定资源有全部访问权时，从资源获取资源范围策略是否正确
      */
     @Test
-    @Transactional
     @WithMockUser(username = "admin", authorities = {"admin"})
     public void haveAllPermissionToResource(){
         //全匹配范围
+        MyResource resource = new MyResource(200);
+
         ResourceRange matchAllResourceRange = new ResourceRange();
-//        matchAllResourceRange.setRoleId("admin");
-//        matchAllResourceRange.setResourceType(MyResource.class.getTypeName());
+        matchAllResourceRange.setRole(this.userContext.getCurrentUser().getRole());
+        matchAllResourceRange.setResourceType(ResourceType.getFromResouce(resource, resourceTypeRepository));
         matchAllResourceRange.setMatchAll(true);
         matchAllResourceRange = resourceRangeRepository.save(matchAllResourceRange);
 
         GrantedAuthoritySid adminSid = new GrantedAuthoritySid("admin");
         permissionService.insertPermission(matchAllResourceRange, adminSid, BasePermission.READ);
 
-        MyResource resource = new MyResource(200);
         ObjectIdentity oi = objectIdentityRetrieval.getObjectIdentity(resource);
 
         assertThat(oi).isEqualTo(new ObjectIdentityImpl(matchAllResourceRange));
@@ -120,7 +113,6 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
      * 测试角色对指定资源有部分访问权时，从资源获取资源范围策略是否正确
      */
     @Test
-    @Transactional
     @WithMockUser(username = "admin", authorities = {"admin"})
     public void havePartPermissionToResource(){
         MyResource resource100 = new MyResource(100);
@@ -130,9 +122,9 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
 
 //        ResourceType rt = resourceTypeRepository.getOne(resource100.getClass().getTypeName());
 
-        ResourceRange rr_less_than_150 = new ResourceRange("number < 150", this.role1, ResourceType.getFromResouce(resource100,resourceTypeRepository));
+        ResourceRange rr_less_than_150 = new ResourceRange("number < 150", this.userContext.getCurrentUser().getRole(), ResourceType.getFromResouce(resource100,resourceTypeRepository));
         resourceRangeRepository.save(rr_less_than_150);
-        ResourceRange rr_more_than_150 = new ResourceRange("number > 150",this.role1, ResourceType.getFromResouce(resource200,resourceTypeRepository));
+        ResourceRange rr_more_than_150 = new ResourceRange("number > 150",this.userContext.getCurrentUser().getRole(), ResourceType.getFromResouce(resource200,resourceTypeRepository));
         resourceRangeRepository.save(rr_more_than_150);
 
         ObjectIdentity oi1 = objectIdentityRetrieval.getObjectIdentity(resource100);

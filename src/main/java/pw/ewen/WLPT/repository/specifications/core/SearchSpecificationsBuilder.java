@@ -3,7 +3,6 @@ package pw.ewen.WLPT.repository.specifications.core;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
-import pw.ewen.WLPT.domain.entity.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +44,7 @@ public class SearchSpecificationsBuilder<T> {
 
         String operationSetExper = StringUtils.join(SearchOperation.SIMPLE_OPERATION_SET, '|');
         Pattern pattern = Pattern.compile(
-                "(\\w+?)(" + operationSetExper + ")(\\*?)(\\w+?)(\\*?),");
+                "(\\S+?)(" + operationSetExper + ")(\\*?)(\\w+?)(\\*?),");
         Matcher matcher = pattern.matcher(filterString + ",");
         while (matcher.find()) {
             this.with(

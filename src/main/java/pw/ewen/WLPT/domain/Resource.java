@@ -1,8 +1,8 @@
 package pw.ewen.WLPT.domain;
 
-import pw.ewen.WLPT.domain.entity.ResourceType;
-
-import javax.persistence.*;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
 /**
  * Created by wen on 17-2-28.

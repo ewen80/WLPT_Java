@@ -1,20 +1,13 @@
 package pw.ewen.WLPT.service;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domain.entity.User;
 import pw.ewen.WLPT.repository.UserRepository;
 import pw.ewen.WLPT.repository.specifications.UserSpecificationBuilder;
-import pw.ewen.WLPT.repository.specifications.core.SearchOperation;
-
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/users")
