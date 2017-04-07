@@ -76,7 +76,9 @@ public class SecurityAclConfig {
 
     @Bean
     EhCacheManagerFactoryBean getEhCacheManager(){
-        return new EhCacheManagerFactoryBean();
+        EhCacheManagerFactoryBean cacheManagerFactoryBean =  new EhCacheManagerFactoryBean();
+        cacheManagerFactoryBean.setAcceptExisting(true);//此处不设置true，test会出现错误：spring testing: Another CacheManager with same name 'myCacheManager' already exists in the same VM
+        return cacheManagerFactoryBean;
     }
 
     @Bean

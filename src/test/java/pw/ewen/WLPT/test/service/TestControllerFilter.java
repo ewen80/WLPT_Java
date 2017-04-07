@@ -117,4 +117,10 @@ public class TestControllerFilter {
         this.mvc.perform(get("/users?filter={filter}", "name:*ser*"))
                 .andExpect(jsonPath("$.content[*].name", containsInAnyOrder("user1","user2")));
     }
+
+    @Test
+    public void testMultiFilters() throws Exception{
+        this.mvc.perform(get("/users?filter={filter}", "name:*ser*,name:user1"))
+                .andExpect(jsonPath("$.content[*].name", containsInAnyOrder("user1")));
+    }
 }

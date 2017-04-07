@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import pw.ewen.WLPT.domain.entity.MyResource;
@@ -160,5 +161,17 @@ public class TestResourceTypeSpecification {
         List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
         assertThat(user2).isIn(results);
         assertThat(user1).isIn(results);
+    }
+
+    @Test
+    public void testMultiFilters(){
+        SearchSpecification spec1 = new SearchSpecification(
+                new SearchCriteria("name", SearchOperation.EQUALITY, "user1"));
+        SearchSpecification spec2 = new SearchSpecification(
+                new SearchCriteria("name", SearchOperation.CONTAINS, "ser"));
+
+        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec1).and(spec2));
+        assertThat(user1).isIn(results);
+        assertThat(user2).isNotIn(results);
     }
 }

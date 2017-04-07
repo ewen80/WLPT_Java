@@ -38,7 +38,6 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
-@DirtiesContext //spring test默认共享applicationContext,导致 Another unnamed CacheManager already exists in the same VM.错误(VM多次创建了ehcache)
 @SpringBootTest
 public class PermissionServiceTest {
 
