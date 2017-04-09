@@ -5,8 +5,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import pw.ewen.WLPT.domain.DTO.ResourceRange.ResourceRangeDTO;
 import pw.ewen.WLPT.domain.entity.ResourceRange;
 import pw.ewen.WLPT.repository.ResourceRangeRepository;
+import pw.ewen.WLPT.repository.ResourceTypeRepository;
+import pw.ewen.WLPT.repository.RoleRepository;
 import pw.ewen.WLPT.repository.specifications.ResourceRangeSpecificationBuilder;
 
 import java.util.List;
@@ -19,20 +22,28 @@ import java.util.List;
 public class ResourceRangeController {
 
     private ResourceRangeRepository resourceRangeRepository;
+    private RoleRepository roleRepository;
+    private ResourceTypeRepository resourceTypeRepository;
 
     @Autowired
-    public ResourceRangeController(ResourceRangeRepository resourceRangeRepository) {
+    public ResourceRangeController(ResourceRangeRepository resourceRangeRepository, RoleRepository roleRepository, ResourceTypeRepository resourceTypeRepository) {
         this.resourceRangeRepository = resourceRangeRepository;
+        this.resourceTypeRepository = resourceTypeRepository;
+        this.roleRepository = roleRepository;
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public List<ResourceRange> getByResourceType(@RequestParam(value = "resourceclassname", defaultValue = "") String resourceTypeClassName){
         if(resourceTypeClassName.isEmpty()){
-            return resourceRangeRepository.findAll();
+            return this.resourceRangeRepository.findAll();
         }else{
             ResourceRangeSpecificationBuilder builder = new ResourceRangeSpecificationBuilder();
-            return resourceRangeRepository.findAll(builder.build("resourceType.className:"+resourceTypeClassName));
+            return this.resourceRangeRepository.findAll(builder.build("resourceType.className:"+resourceTypeClassName));
         }
+    }
 
+    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
+    public ResourceRange save(ResourceRangeDTO rangeDTO){
+        return this.resourceRangeRepository.save(rangeDTO.convertToResourceRange(this.roleRepository, this.resourceTypeRepository));
     }
 }

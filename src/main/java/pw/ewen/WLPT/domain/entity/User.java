@@ -1,5 +1,7 @@
 package pw.ewen.WLPT.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -56,6 +58,7 @@ public class User implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name="role_Id")
+	@JsonManagedReference
 	public Role getRole() {
 		return role;
 	}

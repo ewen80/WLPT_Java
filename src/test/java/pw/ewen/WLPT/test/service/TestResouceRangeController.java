@@ -17,9 +17,9 @@ import pw.ewen.WLPT.repository.ResourceRangeRepository;
 import pw.ewen.WLPT.repository.ResourceTypeRepository;
 import pw.ewen.WLPT.repository.RoleRepository;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 
@@ -77,5 +77,17 @@ public class TestResouceRangeController {
     public void testGetByResourceTypeName_NoMatch() throws Exception{
         this.mvc.perform(get("/resourceranges?resourceclassname={resourceType}", "className3"))
                 .andExpect(jsonPath("$[*].filter", hasSize(0)));
+    }
+
+    //测试正常的保存功能
+    @Test
+    public void testSave_common() throws Exception{
+
+        this.mvc.perform(post("/resourceranges")
+                            .param("filter","filter")
+                            .param("roleId","admin")
+                            .param("resourceTypeClassName","className1"))
+                .andExpect(jsonPath("$.id", notNullValue()))
+                .andExpect((jsonPath("$.filter", is("filter"))));
     }
 }

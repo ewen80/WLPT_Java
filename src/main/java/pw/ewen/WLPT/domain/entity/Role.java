@@ -1,6 +1,8 @@
 package pw.ewen.WLPT.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +16,7 @@ import java.util.Set;
  * 系统角色
  */
 @Entity
-@JsonIgnoreProperties(value={"users", "handler", "hibernateLazyInitializer"})
+//@JsonIgnoreProperties(value={"users", "handler", "hibernateLazyInitializer"})
 public class Role implements Serializable {
 
 	/**
@@ -23,18 +25,18 @@ public class Role implements Serializable {
 	private static final long serialVersionUID = 1888955493407366629L;
 	private String id;
 	private String name;
-	
-	
+
+	@JsonBackReference
 	private Set<User> users;
+	@JsonBackReference
 	private Set<ResourceRange>	resourceRanges;
 
 	protected Role(){}
 	public Role(String id, String name) {
 		this.name = name;
 		this.id = id;
-		users = new HashSet<>();
+		this.users = new HashSet<>();
 		this.resourceRanges = new HashSet<>();
-//		operationRanges = new HashSet<>();
 	}
 
 	@Id

@@ -1,5 +1,7 @@
 package pw.ewen.WLPT.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
@@ -49,6 +51,7 @@ public class ResourceRange {
 
     @ManyToOne
     @JoinColumn(name = "role_Id", nullable = false)
+    @JsonManagedReference
     public Role getRole() {
         return role;
     }
@@ -72,6 +75,7 @@ public class ResourceRange {
     public void setMatchAll(boolean matchAll) {
         this.matchAll = matchAll;
     }
+
 
     /**
      * 根据domain object 和 roleId 筛选符合条件的唯一 resourceRange对象
