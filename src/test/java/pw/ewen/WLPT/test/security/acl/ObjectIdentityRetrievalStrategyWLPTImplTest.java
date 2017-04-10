@@ -65,7 +65,7 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
         user1 = new User("user1", "user1", "user1", role1);
         userRepository.save(user1);
 
-        sid1 = new GrantedAuthoritySid(role1.getID());
+        sid1 = new GrantedAuthoritySid(role1.getId());
 
         ResourceType rt = new ResourceType(MyResource.class.getName(), "MyResource", "");
         resourceTypeRepository.save(rt);

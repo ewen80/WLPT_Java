@@ -35,7 +35,7 @@ public class SecurityUserService implements UserDetailsService {
             role = user.getRole();
             List<GrantedAuthority> authorities = new ArrayList<>();
             if(role != null){
-                authorities.add(new SimpleGrantedAuthority(role.getID()));
+                authorities.add(new SimpleGrantedAuthority(role.getId()));
             }
 
             return new org.springframework.security.core.userdetails.User(user.getId(), user.getPassword(), authorities);

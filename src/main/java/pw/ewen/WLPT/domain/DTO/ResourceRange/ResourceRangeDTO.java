@@ -1,12 +1,10 @@
 package pw.ewen.WLPT.domain.DTO.ResourceRange;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import pw.ewen.WLPT.domain.DTO.DTOConvert;
 import pw.ewen.WLPT.domain.entity.ResourceRange;
 import pw.ewen.WLPT.domain.entity.ResourceType;
 import pw.ewen.WLPT.domain.entity.Role;
-import pw.ewen.WLPT.repository.ResourceRangeRepository;
 import pw.ewen.WLPT.repository.ResourceTypeRepository;
 import pw.ewen.WLPT.repository.RoleRepository;
 
@@ -65,7 +63,7 @@ public class ResourceRangeDTO {
             dto.setFilter(range.getFilter());
             dto.setMatchAll(range.isMatchAll());
             dto.setResourceTypeClassName(range.getResourceType().getClassName());
-            dto.setRoleId(range.getRole().getID());
+            dto.setRoleId(range.getRole().getId());
             return dto;
         }
     }

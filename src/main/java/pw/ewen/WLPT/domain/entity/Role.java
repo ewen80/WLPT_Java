@@ -42,11 +42,11 @@ public class Role implements Serializable {
 	@Id
 //	@GeneratedValue(generator="UUID")
 //	@GenericGenerator(name="UUID", strategy="uuid")
-	public String getID() {
+	public String getId() {
 		return id;
 	}
-	public void setID(String iD) {
-		id = iD;
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 	@Column(nullable = false)

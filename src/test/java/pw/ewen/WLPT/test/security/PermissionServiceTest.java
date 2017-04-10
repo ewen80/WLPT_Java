@@ -12,7 +12,6 @@ import org.springframework.security.acls.model.AccessControlEntry;
 import org.springframework.security.acls.model.Acl;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -69,7 +68,7 @@ public class PermissionServiceTest {
         testUser = new User("user1", "user1", "user1", testRole);
         userRepository.save(testUser);
 
-        testSid = new GrantedAuthoritySid(testRole.getID());
+        testSid = new GrantedAuthoritySid(testRole.getId());
 
         resourceType = new ResourceType("className1","name","");
         resourceTypeRepository.save(resourceType);
@@ -139,7 +138,7 @@ public class PermissionServiceTest {
     @WithMockUser(username="admin", authorities = {"admin"})
     public void deletePermissionWhenNotExist(){
         Role role = new Role("role1", "role1");
-        GrantedAuthoritySid sid = new GrantedAuthoritySid(role.getID());
+        GrantedAuthoritySid sid = new GrantedAuthoritySid(role.getId());
         ResourceRange rr = new ResourceRange("number = 200", role, this.resourceType);
 
         Boolean result = permissionService.deletePermission(rr, sid, BasePermission.READ);

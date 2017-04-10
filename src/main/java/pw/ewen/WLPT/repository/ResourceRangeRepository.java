@@ -14,9 +14,9 @@ import java.util.List;
 public interface ResourceRangeRepository extends JpaRepository<ResourceRange, Long>, JpaSpecificationExecutor<ResourceRange>{
     /**
      * 根据角色和资源找出资源范围
-     * @param role
+     * @param roleId
      * @param resourceTypeClassName
      * @return
      */
-    List<ResourceRange> findByRoleAndResourceType_className(Role role, String resourceTypeClassName);
+    List<ResourceRange> findByRole_idAndResourceType_className(String roleId, String resourceTypeClassName);
 }

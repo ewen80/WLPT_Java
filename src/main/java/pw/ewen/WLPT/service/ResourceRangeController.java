@@ -43,7 +43,18 @@ public class ResourceRangeController {
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
-    public ResourceRange save(ResourceRangeDTO rangeDTO){
-        return this.resourceRangeRepository.save(rangeDTO.convertToResourceRange(this.roleRepository, this.resourceTypeRepository));
+    public ResourceRange save(ResourceRangeDTO dto){
+        return this.resourceRangeRepository.save(dto.convertToResourceRange(this.roleRepository, this.resourceTypeRepository));
+    }
+
+    /**
+     * ResourceRange是否重叠（相同Type和Role不能重复）
+     * @param dto
+     * @return
+     */
+    @RequestMapping(value = "/validators/resourcerangeOverlapping")
+    public Boolean checkResourceRangeOverlapping(ResourceRangeDTO dto){
+        List<ResourceRange> ranges = this.resourceRangeRepository.findByRole_idAndResourceType_className(dto.getRoleId(),dto.getResourceTypeClassName());
+        return null;
     }
 }

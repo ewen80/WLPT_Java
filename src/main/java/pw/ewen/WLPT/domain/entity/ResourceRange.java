@@ -1,6 +1,5 @@
 package pw.ewen.WLPT.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
@@ -86,7 +85,7 @@ public class ResourceRange {
     @Transient
     public ResourceRange matchRangeByResourceAndRole(Resource domainObject, Role role, ResourceRangeRepository resourceRangeRepository){
         //从ResourceRange仓储中获取所有和当前角色以及指定资源对应的filter
-        List ranges = resourceRangeRepository.findByRoleAndResourceType_className(role, domainObject.getClass().getTypeName());
+        List ranges = resourceRangeRepository.findByRole_idAndResourceType_className(role.getId(), domainObject.getClass().getTypeName());
         //遍历所有filter进行判断表达式是否为true
         ExpressionParser parser = new SpelExpressionParser();
         EvaluationContext context = new StandardEvaluationContext(domainObject);

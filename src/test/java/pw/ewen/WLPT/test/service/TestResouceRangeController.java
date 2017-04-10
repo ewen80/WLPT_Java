@@ -85,7 +85,7 @@ public class TestResouceRangeController {
 
         this.mvc.perform(post("/resourceranges")
                             .param("filter","filter")
-                            .param("roleId","admin")
+                            .param("roleId","role1")
                             .param("resourceTypeClassName","className1"))
                 .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect((jsonPath("$.filter", is("filter"))));
