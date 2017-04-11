@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -84,10 +85,12 @@ public class TestResouceRangeController {
     public void testSave_common() throws Exception{
 
         this.mvc.perform(post("/resourceranges")
-                            .param("filter","filter")
-                            .param("roleId","role1")
-                            .param("resourceTypeClassName","className1"))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content("{\"resourceTypeClassName\":\"className1\",\"filter\":\"a=1\",\"roleId\":\"role1\",\"matchAll\":\"false\"}"))
+//                            .param("filter","filter")
+//                            .param("roleId","role1")
+//                            .param("resourceTypeClassName","className1"))
                 .andExpect(jsonPath("$.id", notNullValue()))
-                .andExpect((jsonPath("$.filter", is("filter"))));
+                .andExpect((jsonPath("$.filter", is("a=1"))));
     }
 }

@@ -1,10 +1,7 @@
 package pw.ewen.WLPT.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domain.DTO.ResourceRange.ResourceRangeDTO;
 import pw.ewen.WLPT.domain.entity.ResourceRange;
 import pw.ewen.WLPT.repository.ResourceRangeRepository;
@@ -12,6 +9,7 @@ import pw.ewen.WLPT.repository.ResourceTypeRepository;
 import pw.ewen.WLPT.repository.RoleRepository;
 import pw.ewen.WLPT.repository.specifications.ResourceRangeSpecificationBuilder;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**
@@ -43,11 +41,14 @@ public class ResourceRangeController {
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
-    public ResourceRange save(ResourceRangeDTO dto){
-        return this.resourceRangeRepository.save(dto.convertToResourceRange(this.roleRepository, this.resourceTypeRepository));
+    public ResourceRangeDTO save(@RequestBody ResourceRangeDTO dto){
+        ResourceRange range =  this.resourceRangeRepository.save(dto.convertToResourceRange(this.roleRepository, this.resourceTypeRepository));
+        ResourceRangeDTO rangeDTO =  dto.convertFromResourceRange(range);
+        return rangeDTO;
     }
 
     /**
+     * TODO:下一个版本中加入该功能
      * ResourceRange是否重叠（相同Type和Role不能重复）
      * @param dto
      * @return

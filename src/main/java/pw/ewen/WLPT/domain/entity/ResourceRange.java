@@ -1,6 +1,8 @@
 package pw.ewen.WLPT.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
@@ -20,6 +22,9 @@ import java.util.List;
  * Role和ResourceType不能为空,MatachAll只是在基于Role和ResourceType的基础上匹配全部资源(即忽略filter字段)
  */
 @Entity
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class ResourceRange {
     private long id;
     private String filter;
@@ -50,7 +55,6 @@ public class ResourceRange {
 
     @ManyToOne
     @JoinColumn(name = "role_Id", nullable = false)
-    @JsonManagedReference
     public Role getRole() {
         return role;
     }

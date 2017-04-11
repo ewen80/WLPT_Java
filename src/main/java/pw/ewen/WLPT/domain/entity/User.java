@@ -1,6 +1,8 @@
 package pw.ewen.WLPT.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,6 +12,9 @@ import java.io.Serializable;
  * 一个用户只能属于一个角色（后期可以扩展至属于多个角色）
  */
 @Entity
+@JsonIdentityInfo(
+		generator = ObjectIdGenerators.PropertyGenerator.class,
+		property = "id")
 public class User implements Serializable {
 	private static final long serialVersionUID = 5844614718392473692L;
 	
@@ -58,7 +63,6 @@ public class User implements Serializable {
 
 	@ManyToOne
 	@JoinColumn(name="role_Id")
-	@JsonManagedReference
 	public Role getRole() {
 		return role;
 	}
