@@ -1,5 +1,7 @@
 package pw.ewen.WLPT.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import pw.ewen.WLPT.domain.Resource;
 import pw.ewen.WLPT.repository.ResourceTypeRepository;
@@ -7,6 +9,7 @@ import pw.ewen.WLPT.repository.ResourceTypeRepository;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,12 +18,13 @@ import java.util.Set;
  * 保存当前系统中的资源类别列表
  */
 @Entity
-public class ResourceType {
+public class ResourceType implements Serializable {
 
     private String className;
     private String name;
     private String description;
     private boolean deleted = false;
+    @JsonManagedReference(value = "type")
     private Set<ResourceRange> resourceRanges;
 //    private Set<MyResource> resources;
 

@@ -1,5 +1,6 @@
 package pw.ewen.WLPT.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -12,14 +13,15 @@ import java.io.Serializable;
  * 一个用户只能属于一个角色（后期可以扩展至属于多个角色）
  */
 @Entity
-@JsonIdentityInfo(
-		generator = ObjectIdGenerators.PropertyGenerator.class,
-		property = "id")
+//@JsonIdentityInfo(
+//		generator = ObjectIdGenerators.PropertyGenerator.class,
+//		property = "id")
 public class User implements Serializable {
 	private static final long serialVersionUID = 5844614718392473692L;
 	
 	private String id;
 	private String name;
+	@JsonBackReference(value = "user")
 	private Role role;
 	private String password;
 	private String picture;

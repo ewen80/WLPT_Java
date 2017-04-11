@@ -15,9 +15,9 @@ import java.util.Set;
  */
 @Entity
 //@JsonIgnoreProperties(value={"users", "handler", "hibernateLazyInitializer"})
-@JsonIdentityInfo(
-		generator = ObjectIdGenerators.PropertyGenerator.class,
-		property = "id")
+//@JsonIdentityInfo(
+//		generator = ObjectIdGenerators.PropertyGenerator.class,
+//		property = "id")
 public class Role implements Serializable {
 
 	/**
@@ -27,7 +27,9 @@ public class Role implements Serializable {
 	private String id;
 	private String name;
 
+	@JsonManagedReference(value = "user")
 	private Set<User> users;
+	@JsonManagedReference(value = "range")
 	private Set<ResourceRange>	resourceRanges;
 
 	protected Role(){}

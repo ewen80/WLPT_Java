@@ -1,5 +1,6 @@
 package pw.ewen.WLPT.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -13,6 +14,7 @@ import pw.ewen.WLPT.exception.security.MatchedMultipleResourceRangeException;
 import pw.ewen.WLPT.repository.ResourceRangeRepository;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -22,13 +24,15 @@ import java.util.List;
  * Role和ResourceType不能为空,MatachAll只是在基于Role和ResourceType的基础上匹配全部资源(即忽略filter字段)
  */
 @Entity
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
-public class ResourceRange {
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "id")
+public class ResourceRange implements Serializable {
     private long id;
     private String filter;
+    @JsonBackReference(value = "range")
     private Role role;
+    @JsonBackReference(value = "type")
     private ResourceType resourceType;
     private boolean matchAll = false;
 
