@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domains.DTOs.ResourceRange.ResourceRangeDTO;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
+import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.repositories.ResourceRangeRepository;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.RoleRepository;
@@ -46,7 +47,12 @@ public class ResourceRangeController {
         ResourceRange range = dto.convertToResourceRange(this.roleRepository, this.resourceTypeRepository);
         range =  this.service.save(range);
         return dto.convertFromResourceRange(range);
+    }
 
+    @RequestMapping(value = "/{resourceRangeIds}", method=RequestMethod.DELETE, produces = "application/json")
+    public void delete(@PathVariable("resourceRangeIds") String resourceRangeIds){
+        String[] arrResourceRangeIds = resourceRangeIds.split(",");
+        this.service.delete(arrResourceRangeIds);
     }
 
 }

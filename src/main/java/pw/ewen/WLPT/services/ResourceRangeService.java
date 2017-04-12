@@ -39,4 +39,10 @@ public class ResourceRangeService {
     public ResourceRange save(ResourceRange range){
         return this.resourceRangeRepository.save(range);
     }
+
+    public void delete(String[] resourceRangeIds){
+        for(String id : resourceRangeIds){
+            this.resourceRangeRepository.delete(Long.parseLong(id));
+        }
+    }
 }
