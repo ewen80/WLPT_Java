@@ -5,18 +5,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-import pw.ewen.WLPT.domain.entity.MyResource;
-import pw.ewen.WLPT.domain.entity.Role;
-import pw.ewen.WLPT.domain.entity.User;
-import pw.ewen.WLPT.repository.MyResourceRepository;
-import pw.ewen.WLPT.repository.RoleRepository;
-import pw.ewen.WLPT.repository.UserRepository;
-import pw.ewen.WLPT.repository.specifications.core.SearchCriteria;
-import pw.ewen.WLPT.repository.specifications.core.SearchOperation;
-import pw.ewen.WLPT.repository.specifications.core.SearchSpecification;
+import pw.ewen.WLPT.domains.entities.MyResource;
+import pw.ewen.WLPT.domains.entities.Role;
+import pw.ewen.WLPT.domains.entities.User;
+import pw.ewen.WLPT.repositories.MyResourceRepository;
+import pw.ewen.WLPT.repositories.RoleRepository;
+import pw.ewen.WLPT.repositories.UserRepository;
+import pw.ewen.WLPT.repositories.specifications.core.SearchCriteria;
+import pw.ewen.WLPT.repositories.specifications.core.SearchOperation;
+import pw.ewen.WLPT.repositories.specifications.core.SearchSpecification;
 
 import java.util.List;
 

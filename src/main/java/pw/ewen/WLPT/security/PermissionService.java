@@ -5,8 +5,8 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-import pw.ewen.WLPT.domain.entity.ResourceRange;
-import pw.ewen.WLPT.exception.security.AuthorizationException;
+import pw.ewen.WLPT.domains.entities.ResourceRange;
+import pw.ewen.WLPT.exceptions.security.AuthorizationException;
 
 import java.util.Collections;
 import java.util.List;

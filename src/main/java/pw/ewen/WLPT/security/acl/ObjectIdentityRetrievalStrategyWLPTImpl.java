@@ -6,11 +6,11 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.model.ObjectIdentity;
 import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy;
 import org.springframework.stereotype.Component;
-import pw.ewen.WLPT.domain.NeverMatchedResourceRange;
-import pw.ewen.WLPT.domain.Resource;
-import pw.ewen.WLPT.domain.entity.ResourceRange;
-import pw.ewen.WLPT.domain.entity.Role;
-import pw.ewen.WLPT.repository.ResourceRangeRepository;
+import pw.ewen.WLPT.domains.NeverMatchedResourceRange;
+import pw.ewen.WLPT.domains.Resource;
+import pw.ewen.WLPT.domains.entities.ResourceRange;
+import pw.ewen.WLPT.domains.entities.Role;
+import pw.ewen.WLPT.repositories.ResourceRangeRepository;
 import pw.ewen.WLPT.security.UserContext;
 
 /**
