@@ -1,4 +1,4 @@
-package pw.ewen.WLPT.security;
+package pw.ewen.WLPT.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
@@ -51,39 +51,6 @@ public class PermissionService {
         mutableAcl.setEntriesInheriting(false);
         mutableAcl.insertAce(0, permission, sid, true);
         aclService.updateAcl(mutableAcl);
-
-
-    }
-
-    /**
-     * ACL中该ResourceRange是否存在记录
-     */
-    private boolean isThisResourceRangeExist(ResourceRange resourceRange){
-        ObjectIdentityImpl oi = new ObjectIdentityImpl(resourceRange);
-        try{
-            Acl existedAcl = aclService.readAclById(oi);
-            return true;
-        }catch(NotFoundException e){
-            return false;
-        }
-    }
-
-    private boolean isThisPermissionExist(ResourceRange resourceRange, Sid sid, Permission permission){
-        if(isThisResourceRangeExist(resourceRange)){
-            ObjectIdentityImpl oi = new ObjectIdentityImpl(resourceRange);
-            try{
-                Acl existedAcl = aclService.readAclById(oi);
-                Boolean isGranted =  existedAcl.isGranted(Collections.singletonList(permission), Collections.singletonList(sid), true);
-                if(isGranted) {
-                    //当前已经存在此规则
-                    return true;
-                }
-            }catch(NotFoundException e){
-            }
-            return false;
-        }else{
-            return false;
-        }
     }
 
     /**
@@ -112,6 +79,37 @@ public class PermissionService {
             return false;
         }
     }
+
+    //ACL中该ResourceRange是否存在记录
+    private boolean isThisResourceRangeExist(ResourceRange resourceRange){
+        ObjectIdentityImpl oi = new ObjectIdentityImpl(resourceRange);
+        try{
+            Acl existedAcl = aclService.readAclById(oi);
+            return true;
+        }catch(NotFoundException e){
+            return false;
+        }
+    }
+
+    private boolean isThisPermissionExist(ResourceRange resourceRange, Sid sid, Permission permission){
+        if(isThisResourceRangeExist(resourceRange)){
+            ObjectIdentityImpl oi = new ObjectIdentityImpl(resourceRange);
+            try{
+                Acl existedAcl = aclService.readAclById(oi);
+                Boolean isGranted =  existedAcl.isGranted(Collections.singletonList(permission), Collections.singletonList(sid), true);
+                if(isGranted) {
+                    //当前已经存在此规则
+                    return true;
+                }
+            }catch(NotFoundException e){
+            }
+            return false;
+        }else{
+            return false;
+        }
+    }
+
+
 
     private int findAceIndex(List<AccessControlEntry> aces, Permission permission) throws RuntimeException{
         int matchedAceIndex = -1;

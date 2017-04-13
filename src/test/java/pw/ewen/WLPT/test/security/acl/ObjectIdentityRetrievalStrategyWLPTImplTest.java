@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pw.ewen.WLPT.domains.NeverMatchedResourceRange;
 import pw.ewen.WLPT.domains.entities.*;
 import pw.ewen.WLPT.repositories.*;
-import pw.ewen.WLPT.security.PermissionService;
+import pw.ewen.WLPT.services.PermissionService;
 import pw.ewen.WLPT.security.UserContext;
 import pw.ewen.WLPT.security.acl.ObjectIdentityRetrievalStrategyWLPTImpl;
 

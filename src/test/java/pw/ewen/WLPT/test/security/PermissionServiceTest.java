@@ -23,7 +23,7 @@ import pw.ewen.WLPT.repositories.ResourceRangeRepository;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.repositories.UserRepository;
-import pw.ewen.WLPT.security.PermissionService;
+import pw.ewen.WLPT.services.PermissionService;
 
 import java.util.Arrays;
 import java.util.Collections;
