@@ -1,63 +1,64 @@
 package pw.ewen.WLPT.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+import pw.ewen.WLPT.domains.DTOs.UserDTO;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.repositories.UserRepository;
 import pw.ewen.WLPT.repositories.specifications.UserSpecificationBuilder;
+import pw.ewen.WLPT.services.UserService;
 
-/**
- * TODO:移植逻辑到services层
- */
+import java.util.List;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
-	private UserRepository userRepository;
-	
+	private UserService userService;
 	@Autowired
-	public UserController(UserRepository userRepository){
-		this.userRepository = userRepository;
+	public UserController(UserService userService){
+	this.userService = userService;
 	}
 
-//	//获取所有用户
-//	@RequestMapping(value = "/all", method=RequestMethod.GET, produces="application/json")
-//	public List<User> getAllUsers(){
-//		return userRepository.findAll();
-//	}
-
+	class userDTOConverter implements Converter<User, UserDTO>{
+		@Override
+		public UserDTO convert(User source) {
+			return  UserDTO.convertFromUser(source);
+		}
+	}
 	//获取用户（分页,查询）
 	@RequestMapping(method = RequestMethod.GET, produces="application/json")
-	public Page<User> getUsersWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
-									   @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
-									   @RequestParam(value = "filter", defaultValue = "") String filter){
+	public Page<UserDTO> getUsersWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
+										  @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
+										  @RequestParam(value = "filter", defaultValue = "") String filter){
+		Page<User> userResults;
+		Page<UserDTO> dtoResult;
+
 		if(filter.isEmpty()){
-			return userRepository.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
+			userResults =  this.userService.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
 		}else{
 			UserSpecificationBuilder builder = new UserSpecificationBuilder();
-			return userRepository.findAll(builder.build(filter), new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
+			userResults =  this.userService.findAll(builder.build(filter), new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
 		}
+		return userResults.map(new userDTOConverter());
 	}
 
 	@RequestMapping(value="/{userId}", method=RequestMethod.GET, produces="application/json")
-	public User getOne(@PathVariable("userId") String userId){
-		return userRepository.findOne(userId);
+	public UserDTO getOne(@PathVariable("userId") String userId){
+		return UserDTO.convertFromUser(this.userService.findOne(userId));
 	}
 
 	@RequestMapping(method=RequestMethod.POST, produces="application/json")
-	public User save(@RequestBody User user){
-	    return this.userRepository.save(user);
+	public UserDTO save(@RequestBody User user){
+		return UserDTO.convertFromUser(this.userService.save(user));
     }
 
     @RequestMapping(value = "/{userIds}", method=RequestMethod.DELETE, produces = "application/json")
     public void delete(@PathVariable("userIds") String userIds){
-		String[] arrUserIds = userIds.split(",");
-		for(String id : arrUserIds){
-			this.userRepository.delete(id);
-		}
-
+		this.userService.delete(userIds);
 	}
 }

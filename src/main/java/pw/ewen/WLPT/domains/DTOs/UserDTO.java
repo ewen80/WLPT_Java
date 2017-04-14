@@ -23,7 +23,6 @@ public class UserDTO {
 
     private static class UserConverter implements DTOConvert<UserDTO, User>{
         private RoleRepository roleRepository;
-        private UserRepository userRepository;
 
         private User user;
 
@@ -32,15 +31,13 @@ public class UserDTO {
             this.user = user;
         }
 
-        public UserConverter(RoleRepository roleRepository, UserRepository userRepository) {
+        public UserConverter(RoleRepository roleRepository) {
             this.roleRepository = roleRepository;
-            this.userRepository = userRepository;
         }
 
         @Override
         public User doForward(UserDTO dto) {
             Assert.notNull(this.roleRepository);
-            Assert.notNull(this.userRepository);
 
             Role role = roleRepository.getOne(dto.getRoleId());
             User user = new User(dto.getId(), dto.getName(), dto.getPassword(), role);
@@ -58,6 +55,24 @@ public class UserDTO {
             dto.setRoleId(user.getRole().getId());
             return dto;
         }
+    }
+
+    /**
+     * 转化User对象为UserDTO对象
+     * @param user
+     * @return
+     */
+    public static UserDTO convertFromUser(User user){
+        UserConverter converter = new UserConverter(user);
+        return converter.doBackward(user);
+    }
+
+    /**
+     * 转化UserDTO对象为User对象
+     */
+    public User convertToUser(RoleRepository roleRepository){
+        UserConverter converter = new UserConverter(roleRepository);
+        return converter.doForward(this);
     }
 
     public String getId() {

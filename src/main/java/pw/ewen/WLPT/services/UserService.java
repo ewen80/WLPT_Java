@@ -26,8 +26,8 @@ public class UserService {
 
     /**
      * 返回翻页格式用户列表
-     * @param spec
-     * @param pr
+     * @param spec 过滤表达式
+     * @param pr    分页对象
      * @return
      */
     public Page<User> findAll(Specification<User> spec, PageRequest pr){
@@ -35,11 +35,32 @@ public class UserService {
     }
 
     /**
-     * 返回用户列表
-     * @param spec
+     * 返回翻页格式用户列表
+     * @param pr    分页对象
      * @return
      */
-    public List<User> findAll(Specifications<User> spec){
-        return this.userRepository.findAll(spec);
+    public Page<User> findAll(PageRequest pr){
+        return this.userRepository.findAll(pr);
+    }
+
+    /**
+     * 返回一个用户
+     * @param id
+     * @return 如果没有找到返回null
+     */
+    public User findOne(String id){
+        return this.userRepository.findOne(id);
+    }
+
+    public User save(User user){
+        return this.userRepository.save(user);
+    }
+
+    //TODO:不能直接删除,只能软删除
+    public void delete(String userIds){
+        String[] arrUserIds = userIds.split(",");
+        for(String id : arrUserIds){
+            this.userRepository.delete(id);
+        }
     }
 }

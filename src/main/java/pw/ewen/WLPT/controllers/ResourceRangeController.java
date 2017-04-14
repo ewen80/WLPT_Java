@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 /**
  * Created by wen on 17-4-3.
- * TODO:移植逻辑到services层
  */
 @RestController
 @RequestMapping(value = "/resourceranges")
@@ -34,9 +33,10 @@ public class ResourceRangeController {
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public List<ResourceRangeDTO> getByResourceType(@RequestParam(value = "resourceclassname", defaultValue = "") String resourceTypeClassName){
-        return service.getByResourceType(resourceTypeClassName).stream().
-                    map( range -> ResourceRangeDTO.convertFromResourceRange(range)).
-                    collect(Collectors.toList());
+        return service.getByResourceType(resourceTypeClassName)
+                .stream()
+                .map( range -> ResourceRangeDTO.convertFromResourceRange(range))
+                .collect(Collectors.toList());
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
