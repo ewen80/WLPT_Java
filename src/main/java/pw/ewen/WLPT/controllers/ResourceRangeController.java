@@ -2,13 +2,10 @@ package pw.ewen.WLPT.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import pw.ewen.WLPT.domains.DTOs.ResourceRange.ResourceRangeDTO;
+import pw.ewen.WLPT.domains.DTOs.ResourceRangeDTO;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
-import pw.ewen.WLPT.domains.entities.ResourceType;
-import pw.ewen.WLPT.repositories.ResourceRangeRepository;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.RoleRepository;
-import pw.ewen.WLPT.repositories.specifications.ResourceRangeSpecificationBuilder;
 import pw.ewen.WLPT.services.ResourceRangeService;
 
 import java.util.List;

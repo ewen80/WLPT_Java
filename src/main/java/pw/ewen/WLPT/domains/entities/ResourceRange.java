@@ -24,7 +24,7 @@ import java.util.List;
 //@JsonIdentityInfo(
 //        generator = ObjectIdGenerators.PropertyGenerator.class,
 //        property = "id")
-public class ResourceRange implements Serializable {
+public class ResourceRange {
     private long id;
     private String filter;
     @JsonBackReference(value = "range")

@@ -1,17 +1,18 @@
-package pw.ewen.WLPT.domains.DTOs.ResourceRange;
+package pw.ewen.WLPT.domains.DTOs;
 
 import org.springframework.util.Assert;
-import pw.ewen.WLPT.domains.DTOs.DTOConvert;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.RoleRepository;
 
+import java.io.Serializable;
+
 /**
  * Created by wen on 17-4-9.
  */
-public class ResourceRangeDTO {
+public class ResourceRangeDTO implements Serializable {
     private long id;
     private String filter;
     private String roleId;
