@@ -25,12 +25,7 @@ public class ResourceRangeDTO implements Serializable {
         private RoleRepository roleRepository;
         private ResourceTypeRepository resourceTypeRepository;
 
-        private ResourceRange range;
-
-
-        public ResourceRangeConverter(ResourceRange range){
-            this.range = range;
-        }
+        public ResourceRangeConverter(){}
 
         public ResourceRangeConverter(RoleRepository roleRepository, ResourceTypeRepository resourceTypeRepository) {
             this.roleRepository = roleRepository;
@@ -81,7 +76,7 @@ public class ResourceRangeDTO implements Serializable {
      * 转化ResourceRange对象为DTO对象
      */
     public static ResourceRangeDTO convertFromResourceRange(ResourceRange range){
-        ResourceRangeConverter converter = new ResourceRangeConverter(range);
+        ResourceRangeConverter converter = new ResourceRangeConverter();
         return converter.doBackward(range);
     }
 

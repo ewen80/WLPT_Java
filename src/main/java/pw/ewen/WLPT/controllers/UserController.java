@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domains.DTOs.UserDTO;
 import pw.ewen.WLPT.domains.entities.User;
+import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.repositories.UserRepository;
 import pw.ewen.WLPT.repositories.specifications.UserSpecificationBuilder;
 import pw.ewen.WLPT.services.UserService;
@@ -19,11 +20,15 @@ import java.util.List;
 public class UserController {
 
 	private UserService userService;
+	private RoleRepository roleRepository;
+
 	@Autowired
-	public UserController(UserService userService){
-	this.userService = userService;
+	public UserController(UserService userService, RoleRepository roleRepository){
+		this.roleRepository = roleRepository;
+		this.userService = userService;
 	}
 
+	//将user对象转为DTO对象的内部辅助类
 	class userDTOConverter implements Converter<User, UserDTO>{
 		@Override
 		public UserDTO convert(User source) {
@@ -49,11 +54,13 @@ public class UserController {
 
 	@RequestMapping(value="/{userId}", method=RequestMethod.GET, produces="application/json")
 	public UserDTO getOne(@PathVariable("userId") String userId){
-		return UserDTO.convertFromUser(this.userService.findOne(userId));
+		User user = this.userService.findOne(userId);
+		return user == null ? null : UserDTO.convertFromUser(user);
 	}
 
 	@RequestMapping(method=RequestMethod.POST, produces="application/json")
-	public UserDTO save(@RequestBody User user){
+	public UserDTO save(@RequestBody UserDTO dto){
+		User user = dto.convertToUser(this.roleRepository);
 		return UserDTO.convertFromUser(this.userService.save(user));
     }
 

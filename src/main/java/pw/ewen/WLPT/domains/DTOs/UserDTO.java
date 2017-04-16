@@ -24,11 +24,7 @@ public class UserDTO {
     private static class UserConverter implements DTOConvert<UserDTO, User>{
         private RoleRepository roleRepository;
 
-        private User user;
-
-
-        public UserConverter(User user){
-            this.user = user;
+        public UserConverter() {
         }
 
         public UserConverter(RoleRepository roleRepository) {
@@ -51,8 +47,11 @@ public class UserDTO {
             dto.setId(user.getId());
             dto.setName(user.getName());
             dto.setPassword(user.getPassword());
-            dto.setPicture(user.getPassword());
-            dto.setRoleId(user.getRole().getId());
+            dto.setPicture(user.getPicture());
+            if(user.getRole() != null){
+                dto.setRoleId(user.getRole().getId());
+            }
+
             return dto;
         }
     }
@@ -63,7 +62,7 @@ public class UserDTO {
      * @return
      */
     public static UserDTO convertFromUser(User user){
-        UserConverter converter = new UserConverter(user);
+        UserConverter converter = new UserConverter();
         return converter.doBackward(user);
     }
 

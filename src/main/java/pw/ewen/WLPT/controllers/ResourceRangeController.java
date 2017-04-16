@@ -35,7 +35,7 @@ public class ResourceRangeController {
     public List<ResourceRangeDTO> getByResourceType(@RequestParam(value = "resourceclassname", defaultValue = "") String resourceTypeClassName){
         return service.getByResourceType(resourceTypeClassName)
                 .stream()
-                .map( range -> ResourceRangeDTO.convertFromResourceRange(range))
+                .map( ResourceRangeDTO::convertFromResourceRange)
                 .collect(Collectors.toList());
     }
 
@@ -43,7 +43,7 @@ public class ResourceRangeController {
     public ResourceRangeDTO save(@RequestBody ResourceRangeDTO dto){
         ResourceRange range = dto.convertToResourceRange(this.roleRepository, this.resourceTypeRepository);
         range =  this.service.save(range);
-        return dto.convertFromResourceRange(range);
+        return ResourceRangeDTO.convertFromResourceRange(range);
     }
 
     @RequestMapping(value = "/{resourceRangeIds}", method=RequestMethod.DELETE, produces = "application/json")

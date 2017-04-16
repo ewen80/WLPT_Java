@@ -101,8 +101,8 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
         matchAllResourceRange.setMatchAll(true);
         matchAllResourceRange = resourceRangeRepository.save(matchAllResourceRange);
 
-        GrantedAuthoritySid adminSid = new GrantedAuthoritySid("admin");
-        permissionService.insertPermission(matchAllResourceRange, adminSid, BasePermission.READ);
+//        GrantedAuthoritySid adminSid = new GrantedAuthoritySid("admin");
+        permissionService.insertPermission(matchAllResourceRange, role1, BasePermission.READ);
 
         ObjectIdentity oi = objectIdentityRetrieval.getObjectIdentity(resource);
 
