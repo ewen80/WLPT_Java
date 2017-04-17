@@ -28,7 +28,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class TestResourceRangeService {
+public class ResourceRangeServiceTest {
 
     @Autowired
     private ResourceRangeService resourceRangeService;

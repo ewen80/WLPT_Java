@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //如果不添加@Transactional则@Before中的语句不会每次执行方法后自动反执行,会导致insert多次数据
 @Transactional
 @WithMockUser(value = "admin")
-public class TestControllerFilter {
+public class ControllerFilterTest {
 
     @Autowired
     private UserRepository userRepository;

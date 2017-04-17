@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
 @SpringBootTest
-public class TestResourceTypeSpecification {
+public class ResourceTypeSpecificationTest {
 
     @Autowired
     UserRepository userRepository;

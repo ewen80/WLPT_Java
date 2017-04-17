@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Transactional
 @AutoConfigureMockMvc
 @WithMockUser(username = "admin")
-public class TestResourceTypeController {
+public class ResourceTypeControllerTest {
 
     @Autowired
     private ResourceTypeRepository resourceTypeRepository;

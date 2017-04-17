@@ -12,5 +12,5 @@ import javax.transaction.Transactional;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
-public class TestUserService {
+public class UserServiceTest {
 }

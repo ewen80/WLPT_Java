@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @WithMockUser(value = "admin")
-public class TestResouceRangeController {
+public class ResouceRangeControllerTest {
 
     @Autowired
     private ResourceTypeRepository resourceTypeRepository;
