@@ -61,7 +61,7 @@ public class ResouceRangeControllerTest {
         ResourceRange rr2 = new ResourceRange("filter2", role2, rt2);
         rr2 = resourceRangeRepository.save(rr2);
         ResourceRange rr3 = new ResourceRange("filter3", role2, rt1);
-        rr2 = resourceRangeRepository.save(rr3);
+        rr3 = resourceRangeRepository.save(rr3);
     }
 
     /**

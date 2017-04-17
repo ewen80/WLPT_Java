@@ -1,4 +1,4 @@
-package pw.ewen.WLPT.test.security;
+package pw.ewen.WLPT.test.services;
 
 import org.junit.Before;
 import org.junit.Test;

@@ -35,7 +35,7 @@ public class PermissionController {
      */
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public List<PermissionWrapperDTO> getByResourceRangeAndRole(@RequestParam long resourceRangeId,
-                                                          @RequestParam String roleId){
+                                                                @RequestParam String roleId){
         List<PermissionWrapper> wrapperList = this.permissionService.getByResourceRangeAndRole(resourceRangeId, roleId);
         return wrapperList.stream()
                     .map( PermissionWrapperDTO::convertFromPermissionWrapper)

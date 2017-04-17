@@ -13,6 +13,7 @@ import pw.ewen.WLPT.exceptions.security.AuthorizationException;
 import pw.ewen.WLPT.repositories.ResourceRangeRepository;
 import pw.ewen.WLPT.repositories.RoleRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -49,15 +50,21 @@ public class PermissionService {
 
         ResourceRange range = this.resourceRangeRepository.getOne(resourceRangeId);
         Role role = this.roleRepository.getOne(roleId);
-        if( range != null && role != null) {
+        try{
+            //不能使用range != null 和 role != null 的形式，因为range和role都因为懒加载原因会被一个代理类代理，所以他们即使找不到也不会是null
+            range.getFilter();
+            role.getName();
+
             ObjectIdentityImpl oi = new ObjectIdentityImpl(range);
             Sid sid = new GrantedAuthoritySid(roleId);
             this.mutableAcl = (MutableAcl)aclService.readAclById(oi, Collections.singletonList(sid));
             List<AccessControlEntry> entries = this.mutableAcl.getEntries();
             for(AccessControlEntry entry : entries) {
-                PermissionWrapper wraper = new PermissionWrapper(range, role, entry.getPermission());
-                resultList.add(wraper);
+                PermissionWrapper wrapper = new PermissionWrapper(range, role, entry.getPermission());
+                resultList.add(wrapper);
             }
+
+        } catch (Exception e) {
         }
         return resultList;
     }
