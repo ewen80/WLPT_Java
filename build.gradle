@@ -21,6 +21,15 @@ jar{
 }
 
 sourceSets{
+    //集成测试相关配置
+    integrationTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/integration-test/java')
+        }
+        resources.srcDir file('src/integration-test/resources')
+    }
     main{
         java{
             exclude '**/DatabaseConfig.java'
@@ -41,8 +50,26 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
+}
+
+task integrationTest(type: Test) {
+    testClassesDir = sourceSets.integrationTest.output.classesDir
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    group = "verification"
+}
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+check.dependsOn integrationTest
+integrationTest.mustRunAfter test
+
+tasks.withType(Test) {
+    reports.html.destination = file("${reporting.baseDir}/${name}")
+}
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
@@ -59,9 +86,10 @@ dependencies {
     )
 //    runtime("mysql:mysql-connector-java:5.1.39")
     testCompile(
-                "org.springframework.boot:spring-boot-starter-test",
-                "org.springframework.security:spring-security-test",
-
+            "org.springframework.boot:spring-boot-starter-test",
+    )
+    integrationTestCompile(
+            "org.springframework.security:spring-security-test",
     )
 }
 

@@ -1,14 +1,9 @@
 package pw.ewen.WLPT.domains.DTOs;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.springframework.util.Assert;
-import pw.ewen.WLPT.domains.entities.ResourceRange;
-import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
-import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.RoleRepository;
-import pw.ewen.WLPT.repositories.UserRepository;
 
 /**
  * Created by wenliang on 17-4-14.

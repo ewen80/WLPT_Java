@@ -13,7 +13,6 @@ import pw.ewen.WLPT.exceptions.security.AuthorizationException;
 import pw.ewen.WLPT.repositories.ResourceRangeRepository;
 import pw.ewen.WLPT.repositories.RoleRepository;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,13 +39,22 @@ public class PermissionService {
         this.roleRepository = roleRepository;
     }
 
+    public int getCount(ObjectIdentity oi) {
+        try {
+             Acl acl = this.aclService.readAclById(oi);
+            return acl.getEntries().size();
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
     /**
      * 通过ResourceRange和Role获取PermissionWrappers
      * @param resourceRangeId ResourceRange对象的id值
      * @return
      */
     public List<PermissionWrapper> getByResourceRangeAndRole(long resourceRangeId, String roleId) {
-        List<PermissionWrapper> resultList = new ArrayList<PermissionWrapper>();
+        List<PermissionWrapper> resultList = new ArrayList<>();
 
         ResourceRange range = this.resourceRangeRepository.getOne(resourceRangeId);
         Role role = this.roleRepository.getOne(roleId);

@@ -11,7 +11,6 @@ import pw.ewen.WLPT.exceptions.security.MatchedMultipleResourceRangeException;
 import pw.ewen.WLPT.repositories.ResourceRangeRepository;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.List;
 
 /**

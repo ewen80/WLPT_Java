@@ -1,14 +1,11 @@
 package pw.ewen.WLPT.domains.DTOs;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.util.Assert;
 import pw.ewen.WLPT.domains.PermissionWrapper;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
-import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.repositories.ResourceRangeRepository;
-import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.RoleRepository;
 
 /**

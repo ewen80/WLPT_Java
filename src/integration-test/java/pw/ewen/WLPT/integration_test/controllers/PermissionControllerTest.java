@@ -1,6 +1,5 @@
-package pw.ewen.WLPT.test.controllers;
+package pw.ewen.WLPT.integration_test.controllers;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -20,22 +20,19 @@ import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.services.PermissionService;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 /**
  * Created by wenliang on 17-4-17.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
 @WithMockUser(value = "admin", authorities = "admin")
+@SpringBootTest
 public class PermissionControllerTest {
 
     @Autowired
@@ -73,12 +70,14 @@ public class PermissionControllerTest {
      */
     @Test
     public void getByResourceRangeAndRole_HaveResourceRange_And_HaveRole() throws Exception{
+        System.out.println("wen: Controller Start");
+
         this.permissionService.insertPermission(rr1, role1, BasePermission.READ);
         this.mvc.perform(get("/permissions?resourceRangeId={resourceRangeId}&roleId={roleId}", rr1.getId(), role1.getId()))
                 .andExpect(jsonPath("$[*].resourceRangeId",containsInAnyOrder(Math.toIntExact(rr1.getId()))));
 
-        System.out.println("end");
-        this.permissionService.deletePermission(rr1, role1, BasePermission.READ);
+        System.out.println("wen: Controller End");
+//        this.permissionService.deletePermission(rr1, role1, BasePermission.READ);
 
     }
 
@@ -88,27 +87,31 @@ public class PermissionControllerTest {
      */
     @Test
     public void getByResourceRangeAndRole_HaveNoRole() throws Exception {
+        System.out.println("wen: Controller Start");
+
         Role noRole = new Role("noRole", "noRoleName");
         this.permissionService.insertPermission(rr1, role1, BasePermission.READ);
 
         this.mvc.perform(get("/permissions?resourceRangeId={resourceRangeId}&roleId={roleId}", this.rr1.getId(), noRole.getId()))
                 .andExpect(jsonPath("$", hasSize(0)));
 
-        System.out.println("end");
-
-        this.permissionService.deletePermission(rr1, role1, BasePermission.READ);
+        System.out.println("wen: Controller End");
+//
+//        this.permissionService.deletePermission(rr1, role1, BasePermission.READ);
 
     }
 
     @Test
     public void getByResourceRangeAndRole_HaveNoResourceRange() throws  Exception {
+        System.out.println("wen: Controller Start");
+
         this.permissionService.insertPermission(rr1, role1, BasePermission.READ);
 
         this.mvc.perform(get("/permissions?resourceRangeId={resourceRangeId}&roleId={roleId}", 9999, this.role1.getId()))
                 .andExpect(jsonPath("$", hasSize(0)));
 
-        System.out.println("end");
-
-        this.permissionService.deletePermission(rr1, role1, BasePermission.READ);
+        System.out.println("wen: Controller End");
+//
+//        this.permissionService.deletePermission(rr1, role1, BasePermission.READ);
     }
 }

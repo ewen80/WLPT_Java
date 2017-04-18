@@ -9,11 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domains.DTOs.UserDTO;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.repositories.RoleRepository;
-import pw.ewen.WLPT.repositories.UserRepository;
 import pw.ewen.WLPT.repositories.specifications.UserSpecificationBuilder;
 import pw.ewen.WLPT.services.UserService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")

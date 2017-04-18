@@ -1,11 +1,10 @@
-package pw.ewen.WLPT.test.security.acl;
+package pw.ewen.WLPT.integration_test.security.acl;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.acls.domain.ObjectIdentityImpl;
@@ -16,9 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import pw.ewen.WLPT.domains.NeverMatchedResourceRange;
 import pw.ewen.WLPT.domains.entities.*;
 import pw.ewen.WLPT.repositories.*;
-import pw.ewen.WLPT.services.PermissionService;
 import pw.ewen.WLPT.security.UserContext;
 import pw.ewen.WLPT.security.acl.ObjectIdentityRetrievalStrategyWLPTImpl;
+import pw.ewen.WLPT.services.PermissionService;
 
 import javax.sql.DataSource;
 
@@ -32,8 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @Transactional
 public class ObjectIdentityRetrievalStrategyWLPTImplTest {
-    @Autowired
-    private ApplicationContext context;
+
     @Autowired
     private DataSource dataSource;
     @Autowired

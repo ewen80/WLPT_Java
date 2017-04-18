@@ -4,12 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.stereotype.Service;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.repositories.UserRepository;
-
-import java.util.List;
 
 /**
  * Created by wenliang on 17-4-14.
