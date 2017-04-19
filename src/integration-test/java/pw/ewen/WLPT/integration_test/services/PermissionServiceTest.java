@@ -7,10 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.GrantedAuthoritySid;
+import org.springframework.security.acls.domain.ObjectIdentityImpl;
+import org.springframework.security.acls.model.AccessControlEntry;
+import org.springframework.security.acls.model.Acl;
 import org.springframework.security.acls.model.MutableAclService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import pw.ewen.WLPT.domains.PermissionWrapper;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.domains.entities.ResourceType;
@@ -22,6 +26,8 @@ import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.repositories.UserRepository;
 import pw.ewen.WLPT.services.PermissionService;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -78,7 +84,6 @@ public class PermissionServiceTest {
     @Test
     @WithMockUser(username = "admin", authorities = "admin")
     public void getByResourceRangeAndRole() {
-        System.out.println("wen: PermissionService Start");
         permissionService.insertPermission(resourceRange, testRole, BasePermission.READ);
 
         List<PermissionWrapper> wrappers = permissionService.getByResourceRangeAndRole(resourceRange.getId(), testRole.getId());
@@ -86,90 +91,89 @@ public class PermissionServiceTest {
         assertThat((PermissionWrapper)wrappers.get(0))
                 .extracting("resourceRange", "role", "permission")
                 .containsExactly(resourceRange, testRole, BasePermission.READ);
-        System.out.println("wen: PermissionService End");
     }
 
-//    /**
-//     * 测试添加权限规则,ResourceRange不存在
-//     */
-//    @Test
-//    @WithMockUser(username = "admin", authorities = {"admin"})
-//    public void insertPermissionWhenNotExistSameResourceRange(){
-//
-//        permissionService.insertPermission(resourceRange, testRole, BasePermission.READ);
-//
-//        Acl acl = aclService.readAclById(new ObjectIdentityImpl(resourceRange), Collections.singletonList(testSid));
-//        List<AccessControlEntry> aces = acl.getEntries();
-//
-//        assertThat(aces).hasSize(1);
-//
-//        AccessControlEntry ace = aces.get(0);
-//        assertThat(ace).extracting("Sid", "Permission", "Acl.ObjectIdentity").containsExactly(testSid, BasePermission.READ, new ObjectIdentityImpl(resourceRange));
-//    }
-//
-//    /**
-//     * 添加权限规则，ResourceRange已经存在，相同的Permission不存在
-//     */
-//    @Test
-//    @WithMockUser(username = "admin", authorities = {"admin"})
-//    public void insertPermissionWhenExistSameResourceRangeAndDifferentPermission(){
-//        ResourceRange resourceRange1 = new ResourceRange("number = 100", testRole, resourceType);
-//        resourceRangeRepository.save(resourceRange1);
-//
-//        permissionService.insertPermission(resourceRange, testRole, BasePermission.READ);
-//        permissionService.insertPermission(resourceRange1, testRole, BasePermission.WRITE);
-//
-//        Acl acl = aclService.readAclById(new ObjectIdentityImpl(resourceRange));
-//        Boolean isGranted = acl.isGranted(Arrays.asList(BasePermission.WRITE,BasePermission.READ), Collections.singletonList(testSid), true);
-//        Assert.isTrue(isGranted);
-//    }
+    /**
+     * 测试添加权限规则,ResourceRange不存在
+     */
+    @Test
+    @WithMockUser(username = "admin", authorities = {"admin"})
+    public void insertPermissionWhenNotExistSameResourceRange(){
+
+        permissionService.insertPermission(resourceRange, testRole, BasePermission.READ);
+
+        Acl acl = aclService.readAclById(new ObjectIdentityImpl(resourceRange), Collections.singletonList(testSid));
+        List<AccessControlEntry> aces = acl.getEntries();
+
+        assertThat(aces).hasSize(1);
+
+        AccessControlEntry ace = aces.get(0);
+        assertThat(ace).extracting("Sid", "Permission", "Acl.ObjectIdentity").containsExactly(testSid, BasePermission.READ, new ObjectIdentityImpl(resourceRange));
+    }
+
+    /**
+     * 添加权限规则，ResourceRange已经存在，相同的Permission不存在
+     */
+    @Test
+    @WithMockUser(username = "admin", authorities = {"admin"})
+    public void insertPermissionWhenExistSameResourceRangeAndDifferentPermission(){
+        ResourceRange resourceRange1 = new ResourceRange("number = 100", testRole, resourceType);
+        resourceRangeRepository.save(resourceRange1);
+
+        permissionService.insertPermission(resourceRange, testRole, BasePermission.READ);
+        permissionService.insertPermission(resourceRange1, testRole, BasePermission.WRITE);
+
+        Acl acl = aclService.readAclById(new ObjectIdentityImpl(resourceRange));
+        Boolean isGranted = acl.isGranted(Arrays.asList(BasePermission.WRITE,BasePermission.READ), Collections.singletonList(testSid), true);
+        Assert.isTrue(isGranted);
+    }
 
     /**
      * 测试添加权限规则（规则存在）
      * 规则如果存在抛出异常
      */
-//    @Test(expected = RuntimeException.class)
-//    @WithMockUser(username="admin", authorities = {"admin"})
-//    public  void insertPermissionWhenExist(){
-//        permissionService.insertPermission(resourceRange, testRole, BasePermission.READ);
-//        permissionService.insertPermission(resourceRange, testRole, BasePermission.READ);
-//    }
+    @Test(expected = RuntimeException.class)
+    @WithMockUser(username="admin", authorities = {"admin"})
+    public  void insertPermissionWhenExist(){
+        permissionService.insertPermission(resourceRange, testRole, BasePermission.READ);
+        permissionService.insertPermission(resourceRange, testRole, BasePermission.READ);
+    }
 
-//    /**
-//     * 测试删除权限规则（规则存在）
-//     */
-//    @Test
-//    @WithMockUser(username="admin", authorities = {"admin"})
-//    public void deletePermissionWhenExist(){
-//        permissionService.insertPermission(resourceRange, testRole, BasePermission.READ);
-//
-//        Boolean result =  permissionService.deletePermission(resourceRange, testRole, BasePermission.READ);
-//        Assert.isTrue(result);
-//    }
-//
-//    /**
-//     * 测试删除权限规则（规则不存在）
-//     */
-//    @Test
-//    @WithMockUser(username="admin", authorities = {"admin"})
-//    public void deletePermissionWhenNotExist(){
-//        Role role = new Role("role1", "role1");
-////        GrantedAuthoritySid sid = new GrantedAuthoritySid(role.getId());
-//        ResourceRange rr = new ResourceRange("number = 200", role, this.resourceType);
-//
-//        Boolean result = permissionService.deletePermission(rr, role, BasePermission.READ);
-//        Assert.isTrue(!result);
-//    }
-//
-//    /**
-//     * 测试删除权限规则（规则不同）
-//     */
-//    @Test
-//    @WithMockUser(username="admin", authorities = {"admin"})
-//    public void deletePermissionWhenNotSame(){
-//        permissionService.insertPermission(resourceRange, testRole, BasePermission.READ);
-//
-//        Boolean result = permissionService.deletePermission(resourceRange, testRole, BasePermission.WRITE);
-//        Assert.isTrue(!result);
-//    }
+    /**
+     * 测试删除权限规则（规则存在）
+     */
+    @Test
+    @WithMockUser(username="admin", authorities = {"admin"})
+    public void deletePermissionWhenExist(){
+        permissionService.insertPermission(resourceRange, testRole, BasePermission.READ);
+
+        Boolean result =  permissionService.deletePermission(resourceRange, testRole, BasePermission.READ);
+        Assert.isTrue(result);
+    }
+
+    /**
+     * 测试删除权限规则（规则不存在）
+     */
+    @Test
+    @WithMockUser(username="admin", authorities = {"admin"})
+    public void deletePermissionWhenNotExist(){
+        Role role = new Role("role1", "role1");
+//        GrantedAuthoritySid sid = new GrantedAuthoritySid(role.getId());
+        ResourceRange rr = new ResourceRange("number = 200", role, this.resourceType);
+
+        Boolean result = permissionService.deletePermission(rr, role, BasePermission.READ);
+        Assert.isTrue(!result);
+    }
+
+    /**
+     * 测试删除权限规则（规则不同）
+     */
+    @Test
+    @WithMockUser(username="admin", authorities = {"admin"})
+    public void deletePermissionWhenNotSame(){
+        permissionService.insertPermission(resourceRange, testRole, BasePermission.READ);
+
+        Boolean result = permissionService.deletePermission(resourceRange, testRole, BasePermission.WRITE);
+        Assert.isTrue(!result);
+    }
 }

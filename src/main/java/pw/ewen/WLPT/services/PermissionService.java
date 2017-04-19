@@ -97,11 +97,14 @@ public class PermissionService {
         }else{
             //当前没有此规则，可以插入
             this.mutableAcl = aclService.createAcl(new ObjectIdentityImpl(resourceRange));
+
+            System.out.println("wen: acl in cache " + resourceRange.getClass().hashCode());
         }
         this.mutableAcl.setOwner(sid);
         this.mutableAcl.setEntriesInheriting(false);
         this.mutableAcl.insertAce(0, permission, sid, true);
         aclService.updateAcl(mutableAcl);
+        System.out.println("wen: acl out cache " + resourceRange.getClass().hashCode());
     }
 
     /**

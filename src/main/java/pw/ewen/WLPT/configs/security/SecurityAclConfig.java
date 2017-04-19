@@ -55,23 +55,8 @@ public class SecurityAclConfig {
     }
 
     @Bean
-    EhCacheBasedAclCache getAclCache(Ehcache ehcache, PermissionGrantingStrategy permissionGrantingStrategy,
-                                     AclAuthorizationStrategy aclAuthorizationStrategy){
-
-        return new EhCacheBasedAclCache(ehcache, permissionGrantingStrategy, aclAuthorizationStrategy);
-    }
-
-    @Bean
     DefaultPermissionGrantingStrategy getPermissionGrantingStrategy(AuditLogger auditLogger){
         return new DefaultPermissionGrantingStrategy(auditLogger);
-    }
-
-    @Bean
-    EhCacheFactoryBean getEhCache(CacheManager cacheManager){
-        EhCacheFactoryBean ehCacheFactoryBean = new EhCacheFactoryBean();
-        ehCacheFactoryBean.setCacheManager(cacheManager);
-        ehCacheFactoryBean.setCacheName("aclCache");
-        return ehCacheFactoryBean;
     }
 
     @Bean
