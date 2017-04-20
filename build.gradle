@@ -87,9 +87,10 @@ dependencies {
 //    runtime("mysql:mysql-connector-java:5.1.39")
     testCompile(
             "org.springframework.boot:spring-boot-starter-test",
+            "org.springframework.security:spring-security-test"
     )
     integrationTestCompile(
-            "org.springframework.security:spring-security-test",
+
     )
 }
 
