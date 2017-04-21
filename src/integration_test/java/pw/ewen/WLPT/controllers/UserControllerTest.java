@@ -1,4 +1,4 @@
-package pw.ewen.WLPT.integration_test.controllers;
+package pw.ewen.WLPT.controllers;
 
 /**
  * Created by wen on 17-4-14.

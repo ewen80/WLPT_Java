@@ -55,9 +55,14 @@ public class PermissionServiceTest {
     private ResourceTypeRepository resourceTypeRepository;
 
     private Role testRole;
+    private Role testRole1;
+
     private User testUser;
     private GrantedAuthoritySid testSid;
+
     private ResourceRange resourceRange;
+    private ResourceRange resourceRange1;
+
     private ResourceType resourceType;
 
 
@@ -65,6 +70,8 @@ public class PermissionServiceTest {
     public  void setup(){
         testRole = new Role("role1", "role1");
         roleRepository.save(testRole);
+        testRole1 = new Role("role2", "role2");
+        roleRepository.save(testRole1);
 
         testUser = new User("user1", "user1", "user1", testRole);
         userRepository.save(testUser);
@@ -76,6 +83,8 @@ public class PermissionServiceTest {
 
         resourceRange = new ResourceRange("number = 200", testRole, resourceType);
         resourceRangeRepository.save(resourceRange);
+        resourceRange1 = new ResourceRange("number > 1", testRole1, resourceType);
+        resourceRangeRepository.save(resourceRange1);
     }
 
     /**
@@ -88,7 +97,7 @@ public class PermissionServiceTest {
 
         List<PermissionWrapper> wrappers = permissionService.getByResourceRangeAndRole(resourceRange.getId(), testRole.getId());
         assertThat(wrappers).hasSize(1);
-        assertThat((PermissionWrapper)wrappers.get(0))
+        assertThat(wrappers.get(0))
                 .extracting("resourceRange", "role", "permission")
                 .containsExactly(resourceRange, testRole, BasePermission.READ);
     }
@@ -175,5 +184,23 @@ public class PermissionServiceTest {
 
         Boolean result = permissionService.deletePermission(resourceRange, testRole, BasePermission.WRITE);
         Assert.isTrue(!result);
+    }
+
+    /**
+     * 测试删除全部权限功能
+     */
+    @Test
+    @WithMockUser(username = "admin", authorities = "admin")
+    public void deleteAllPermissions() {
+        permissionService.insertPermission(resourceRange, testRole, BasePermission.READ);
+        permissionService.insertPermission(resourceRange, testRole, BasePermission.WRITE);
+        permissionService.insertPermission(resourceRange1, testRole1, BasePermission.READ);
+
+        permissionService.deleteAllPermissions(resourceRange, testRole);
+
+        List<PermissionWrapper> wrappers = permissionService.getByResourceRangeAndRole(resourceRange.getId(), testRole.getId());
+        assertThat(wrappers).hasSize(0);
+        wrappers = permissionService.getByResourceRangeAndRole(resourceRange1.getId(), testRole1.getId());
+        assertThat(wrappers).hasSize(1);
     }
 }

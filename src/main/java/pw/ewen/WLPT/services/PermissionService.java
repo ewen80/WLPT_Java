@@ -28,8 +28,6 @@ public class PermissionService {
     private ResourceRangeRepository resourceRangeRepository;
     private RoleRepository roleRepository;
 
-    private MutableAcl mutableAcl;
-
     @Autowired
     public PermissionService(MutableAclService aclService,
                              ResourceRangeRepository resourceRangeRepository,
@@ -39,14 +37,14 @@ public class PermissionService {
         this.roleRepository = roleRepository;
     }
 
-    public int getCount(ObjectIdentity oi) {
-        try {
-             Acl acl = this.aclService.readAclById(oi);
-            return acl.getEntries().size();
-        } catch (Exception e) {
-            return 0;
-        }
-    }
+//    public int getCount(ObjectIdentity oi) {
+//        try {
+//             Acl acl = this.aclService.readAclById(oi);
+//            return acl.getEntries().size();
+//        } catch (Exception e) {
+//            return 0;
+//        }
+//    }
 
     /**
      * 通过ResourceRange和Role获取PermissionWrappers
@@ -65,8 +63,8 @@ public class PermissionService {
 
             ObjectIdentityImpl oi = new ObjectIdentityImpl(range);
             Sid sid = new GrantedAuthoritySid(roleId);
-            this.mutableAcl = (MutableAcl)aclService.readAclById(oi, Collections.singletonList(sid));
-            List<AccessControlEntry> entries = this.mutableAcl.getEntries();
+            MutableAcl mutableAcl = (MutableAcl)aclService.readAclById(oi, Collections.singletonList(sid));
+            List<AccessControlEntry> entries = mutableAcl.getEntries();
             for(AccessControlEntry entry : entries) {
                 PermissionWrapper wrapper = new PermissionWrapper(range, role, entry.getPermission());
                 resultList.add(wrapper);
@@ -78,13 +76,14 @@ public class PermissionService {
     }
 
     /**
-     * 保存资源存取权限规则
+     * 新增资源存取权限规则
      */
     public void insertPermission(ResourceRange resourceRange, Role role, Permission permission){
         Assert.notNull(resourceRange);
         Assert.notNull(role);
         Assert.notNull(permission);
 
+        MutableAcl mutableAcl;
         Sid sid = new GrantedAuthoritySid(role.getId());
         if(isThisResourceRangeExist(resourceRange)){
             if(isThisPermissionExist(resourceRange, sid, permission)){
@@ -92,19 +91,16 @@ public class PermissionService {
                 throw new AuthorizationException("不能插入已经存在的权限规则");
             }else{
                 //存在相同的ResourceRange
-                this.mutableAcl = (MutableAcl)aclService.readAclById(new ObjectIdentityImpl(resourceRange));
+                mutableAcl = (MutableAcl)aclService.readAclById(new ObjectIdentityImpl(resourceRange));
             }
         }else{
             //当前没有此规则，可以插入
-            this.mutableAcl = aclService.createAcl(new ObjectIdentityImpl(resourceRange));
-
-            System.out.println("wen: acl in cache " + resourceRange.getClass().hashCode());
+            mutableAcl = aclService.createAcl(new ObjectIdentityImpl(resourceRange));
         }
-        this.mutableAcl.setOwner(sid);
-        this.mutableAcl.setEntriesInheriting(false);
-        this.mutableAcl.insertAce(0, permission, sid, true);
+        mutableAcl.setOwner(sid);
+        mutableAcl.setEntriesInheriting(false);
+        mutableAcl.insertAce(0, permission, sid, true);
         aclService.updateAcl(mutableAcl);
-        System.out.println("wen: acl out cache " + resourceRange.getClass().hashCode());
     }
 
     /**
@@ -116,15 +112,16 @@ public class PermissionService {
         Assert.notNull(role);
         Assert.notNull(permission);
 
+        MutableAcl mutableAcl;
         Sid sid = new GrantedAuthoritySid(role.getId());
         if(isThisPermissionExist(resourceRange, sid, permission)){
             //存在规则
             ObjectIdentityImpl oi = new ObjectIdentityImpl(resourceRange);
-            this.mutableAcl = (MutableAcl)aclService.readAclById(oi, Collections.singletonList(sid));
-            List<AccessControlEntry> aces = this.mutableAcl.getEntries();
+            mutableAcl = (MutableAcl)aclService.readAclById(oi, Collections.singletonList(sid));
+            List<AccessControlEntry> aces = mutableAcl.getEntries();
             try{
                 int matchedIndex = findAceIndex(aces, permission);
-                this.mutableAcl.deleteAce(matchedIndex);
+                mutableAcl.deleteAce(matchedIndex);
                 return true;
             }catch(RuntimeException e){
                 //没有找到规则
@@ -132,6 +129,19 @@ public class PermissionService {
             }
         }else{
             return false;
+        }
+    }
+
+    /**
+     * 删除ResourceRange和Role的所有权限
+     * @param resourceRange
+     * @param role
+     */
+    public void deleteAllPermissions(ResourceRange resourceRange, Role role){
+        List<PermissionWrapper> permissionWrappers = this.getByResourceRangeAndRole(resourceRange.getId(), role.getId());
+
+        for(PermissionWrapper wrapper : permissionWrappers) {
+            this.deletePermission(resourceRange, role, wrapper.getPermission());
         }
     }
 

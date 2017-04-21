@@ -1,4 +1,4 @@
-package pw.ewen.WLPT.integration_test.controllers;
+package pw.ewen.WLPT.controllers;
 
 import org.junit.Before;
 import org.junit.Test;
