@@ -1,5 +1,6 @@
 package pw.ewen.WLPT.controllers;
 
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.model.Permission;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pw.ewen.WLPT.domains.DTOs.PermissionWrapperDTO;
+import pw.ewen.WLPT.domains.DTOs.ResourceRangeDTO;
 import pw.ewen.WLPT.domains.PermissionWrapper;
 import pw.ewen.WLPT.domains.Resource;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
@@ -47,15 +49,29 @@ public class PermissionController {
 
     /**
      * 保存权限
-     * @param range
-     * @param role
-     * @param permissions
+     * @param resourceRangeId
+     * @param roleId
+     * @param permissions   逗号分割的权限字符串（读：R,写：W）
      */
-    public void save(ResourceRange range, Role role, Permission[] permissions){
-        this.permissionService.deleteAllPermissions(range, role);
+    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
+    public void save(@RequestParam long resourceRangeId,
+                     @RequestParam String roleId,
+                     @RequestParam String permissions)  {
 
-        for(Permission p : permissions) {
-            this.permissionService.insertPermission(range, role, p);
+        this.permissionService.deleteAllPermissions(resourceRangeId, roleId);
+
+        String[] arrPermissions = permissions.split(",");
+        for (String p : arrPermissions) {
+            Permission permission = null;
+            switch (p) {
+                case "R":
+                    permission = BasePermission.READ;
+                    break;
+                case "W":
+                    permission = BasePermission.WRITE;
+                    break;
+            }
+            this.permissionService.insertPermission(resourceRangeId, roleId, permission);
         }
     }
 }

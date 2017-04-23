@@ -30,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 @Transactional
+@WithMockUser(username = "admin", authorities = {"admin"})
 public class ObjectIdentityRetrievalStrategyWLPTImplTest {
 
     @Autowired
@@ -74,7 +75,6 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
      * 测试角色对指定资源没有访问权时，从资源获取资源范围策略是否正确
      */
     @Test
-    @WithMockUser(username = "user1", authorities = {"role1"})
     public void haveNoPermissionToResource(){
         MyResource resource = new MyResource(100);
         myResourceRepository.save(resource);
@@ -88,8 +88,7 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
      * 测试角色对指定资源有全部访问权时，从资源获取资源范围策略是否正确
      */
     @Test
-    @WithMockUser(username = "admin", authorities = {"admin"})
-    public void haveAllPermissionToResource(){
+    public void haveAllPermissionToResource() throws Exception{
         //全匹配范围
         MyResource resource = new MyResource(200);
 
@@ -100,7 +99,7 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
         matchAllResourceRange = resourceRangeRepository.save(matchAllResourceRange);
 
 //        GrantedAuthoritySid adminSid = new GrantedAuthoritySid("admin");
-        permissionService.insertPermission(matchAllResourceRange, role1, BasePermission.READ);
+        permissionService.insertPermission(matchAllResourceRange.getId(), role1.getId(), BasePermission.READ);
 
         ObjectIdentity oi = objectIdentityRetrieval.getObjectIdentity(resource);
 
@@ -111,7 +110,6 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
      * 测试角色对指定资源有部分访问权时，从资源获取资源范围策略是否正确
      */
     @Test
-    @WithMockUser(username = "admin", authorities = {"admin"})
     public void havePartPermissionToResource(){
         MyResource resource100 = new MyResource(100);
         myResourceRepository.save(resource100);

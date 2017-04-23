@@ -11,6 +11,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+import pw.ewen.WLPT.domains.PermissionWrapper;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.domains.entities.Role;
@@ -19,8 +20,14 @@ import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.services.PermissionService;
 
+import javax.persistence.EntityNotFoundException;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -31,6 +38,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureMockMvc
 @Transactional
 @SpringBootTest
+@WithMockUser(value = "admin", authorities = "admin")
 public class PermissionControllerTest {
 
     @Autowired
@@ -67,9 +75,8 @@ public class PermissionControllerTest {
      * @throws Exception
      */
     @Test
-    @WithMockUser(value = "admin", authorities = "admin")
     public void HaveResourceRangeAndRole() throws Exception{
-        this.permissionService.insertPermission(this.rr1, this.role1, BasePermission.READ);
+        this.permissionService.insertPermission(this.rr1.getId(), this.role1.getId(), BasePermission.READ);
         this.mvc.perform(get("/permissions?resourceRangeId={resourceRangeId}&roleId={roleId}", rr1.getId(), role1.getId()))
                 .andExpect(jsonPath("$[*].resourceRangeId",containsInAnyOrder(Math.toIntExact(rr1.getId()))));
     }
@@ -79,11 +86,10 @@ public class PermissionControllerTest {
      * @throws Exception
      */
     @Test
-    @WithMockUser(value = "admin", authorities = "admin")
     public void NoRole() throws Exception {
 
         Role noRole = new Role("noRole", "noRoleName");
-        this.permissionService.insertPermission(rr1, role1, BasePermission.READ);
+        this.permissionService.insertPermission(rr1.getId(), role1.getId(), BasePermission.READ);
 
         this.mvc.perform(get("/permissions?resourceRangeId={resourceRangeId}&roleId={roleId}", this.rr1.getId(), noRole.getId()))
                 .andExpect(jsonPath("$", hasSize(0)));
@@ -91,13 +97,79 @@ public class PermissionControllerTest {
     }
 
     @Test
-    @WithMockUser(value = "admin", authorities = "admin")
     public void NoResourceRange() throws  Exception {
 
-        this.permissionService.insertPermission(rr1, role1, BasePermission.READ);
+        this.permissionService.insertPermission(rr1.getId(), role1.getId(), BasePermission.READ);
 
         this.mvc.perform(get("/permissions?resourceRangeId={resourceRangeId}&roleId={roleId}", 9999, this.role1.getId()))
                 .andExpect(jsonPath("$", hasSize(0)));
+
+    }
+
+    /**
+     * 测试插入一条permission
+     * @throws Exception
+     */
+    @Test
+    public void save_insertPermission() throws Exception {
+        this.mvc.perform(post("/permissions")
+                    .param("resourceRangeId", String.valueOf(rr1.getId()))
+                    .param("roleId", role1.getId())
+                    .param("permissions", "R,W,"));
+        List<PermissionWrapper> wrappers = this.permissionService.getByResourceRangeAndRole(rr1.getId(), role1.getId());
+
+        assertThat(wrappers).hasSize(2)
+                .extracting("resourceRange.id", "role.id", "permission")
+                .containsExactlyInAnyOrder(tuple(rr1.getId(), role1.getId(), BasePermission.READ),
+                                 tuple(rr1.getId(), role1.getId(), BasePermission.WRITE));
+    }
+
+    /**
+     * 测试修改一条权限信息
+     */
+    @Test
+    public void save_updatePermission() throws Exception {
+        this.permissionService.insertPermission(this.rr1.getId(), this.role1.getId(), BasePermission.READ);
+
+        this.mvc.perform(post("/permissions")
+                .param("resourceRangeId", String.valueOf(rr1.getId()))
+                .param("roleId", role1.getId())
+                .param("permissions", "W,"));
+
+        List<PermissionWrapper> wrappers = this.permissionService.getByResourceRangeAndRole(rr1.getId(), role1.getId());
+
+        assertThat(wrappers).hasSize(1)
+                .extracting("resourceRange.id", "role.id", "permission")
+                .containsExactlyInAnyOrder(tuple(rr1.getId(), role1.getId(), BasePermission.WRITE));
+
+    }
+
+    /**
+     * 保存一条不存在的ResourceRange的权限
+     * 抛出异常，此处不是NotFoundExcption 而是 NestedException，所以expected = Exception
+     */
+    @Test(expected = Exception.class)
+    public void save_noPermission_noResourceRange() throws Exception {
+
+        this.mvc.perform(post("/permissions")
+                .param("resourceRangeId", "0")
+                .param("roleId", role1.getId())
+                .param("permissions", "W,"));
+
+    }
+
+    /**
+     * 保存一条不存在的Role的权限
+     */
+    @Test(expected = Exception.class)
+    public void save_noPermission_noRole() throws Exception {
+
+        Role role = new Role("noRole", "roleName");
+
+        this.mvc.perform(post("/permissions")
+                .param("resourceRangeId", "0")
+                .param("roleId", role.getId())
+                .param("permissions", "W,"));
 
     }
 }
