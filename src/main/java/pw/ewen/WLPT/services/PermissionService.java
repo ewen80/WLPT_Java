@@ -16,9 +16,7 @@ import pw.ewen.WLPT.repositories.ResourceRangeRepository;
 import pw.ewen.WLPT.repositories.RoleRepository;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by wen on 17-3-5.
@@ -50,32 +48,29 @@ public class PermissionService {
 //    }
 
     /**
-     * 通过ResourceRange和Role获取PermissionWrappers
+     * 通过ResourceRange和Role获取PermissionWrapper
      * @param resourceRangeId ResourceRange对象的id值
-     * @return
+     * @return  如果ResourceRange和Role根据id值没有找到对应对象，或者没有对应权限则返回null
      */
-    public List<PermissionWrapper> getByResourceRangeAndRole(long resourceRangeId, String roleId) {
-        List<PermissionWrapper> resultList = new ArrayList<>();
-
+    public PermissionWrapper getByResourceRangeAndRole(long resourceRangeId, String roleId) {
         ResourceRange range = this.resourceRangeRepository.findOne(resourceRangeId);
         Role role = this.roleRepository.findOne(roleId);
         if(range != null && role != null){
+            Set<Permission> permissions = new HashSet<>();
             ObjectIdentityImpl oi = new ObjectIdentityImpl(range);
             Sid sid = new GrantedAuthoritySid(roleId);
             try {
                 MutableAcl mutableAcl = (MutableAcl)aclService.readAclById(oi, Collections.singletonList(sid));
                 List<AccessControlEntry> entries = mutableAcl.getEntries();
                 for(AccessControlEntry entry : entries) {
-                    PermissionWrapper wrapper = new PermissionWrapper(range, role, entry.getPermission());
-                    resultList.add(wrapper);
+                    permissions.add(entry.getPermission());
                 }
+                return new PermissionWrapper(range, role, permissions);
             } catch ( org.springframework.security.acls.model.NotFoundException e) {
                 //aclService.readAclById 没有找到Acl
             }
-
-
         }
-        return resultList;
+        return null;
     }
 
     /**
@@ -151,10 +146,12 @@ public class PermissionService {
      * @param roleId
      */
     public void deleteAllPermissions(long resourceRangeId, String roleId) {
-        List<PermissionWrapper> permissionWrappers = this.getByResourceRangeAndRole(resourceRangeId, roleId);
+        PermissionWrapper permissionWrapper = this.getByResourceRangeAndRole(resourceRangeId, roleId);
 
-        for(PermissionWrapper wrapper : permissionWrappers) {
-            this.deletePermission(resourceRangeId, roleId, wrapper.getPermission());
+        if(permissionWrapper != null) {
+            for(Permission p : permissionWrapper.getPermissions()) {
+                this.deletePermission(resourceRangeId, roleId, p);
+            }
         }
     }
 

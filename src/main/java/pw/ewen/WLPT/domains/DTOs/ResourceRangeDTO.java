@@ -41,11 +41,11 @@ public class ResourceRangeDTO implements Serializable {
             range.setId(dto.getId());
             range.setFilter(dto.getFilter());
             range.setMatchAll(dto.isMatchAll());
-            Role role = roleRepository.getOne(dto.getRoleId());
+            Role role = roleRepository.findOne(dto.getRoleId());
             if(role != null){
                 range.setRole(role);
             }
-            ResourceType type = resourceTypeRepository.getOne((dto.getResourceTypeClassName()));
+            ResourceType type = resourceTypeRepository.findOne((dto.getResourceTypeClassName()));
             if(type != null){
                 range.setResourceType(type);
             }

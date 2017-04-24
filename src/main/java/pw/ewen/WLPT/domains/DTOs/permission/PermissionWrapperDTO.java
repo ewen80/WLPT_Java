@@ -1,12 +1,17 @@
-package pw.ewen.WLPT.domains.DTOs;
+package pw.ewen.WLPT.domains.DTOs.permission;
 
 import org.springframework.security.acls.model.Permission;
 import org.springframework.util.Assert;
+import pw.ewen.WLPT.domains.DTOs.DTOConvert;
 import pw.ewen.WLPT.domains.PermissionWrapper;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.repositories.ResourceRangeRepository;
 import pw.ewen.WLPT.repositories.RoleRepository;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by wen on 17-4-16.
@@ -15,10 +20,10 @@ public class PermissionWrapperDTO {
 
     private long resourceRangeId;
     private String roleId;
-    private Permission permission;
+    private Set<PermissionDTO> permissionDTOs;
 
     //实现DTOConvert接口的内部类
-    private static class PermissionWrapperConverter implements DTOConvert<PermissionWrapperDTO, PermissionWrapper>{
+    private static class PermissionWrapperConverter implements DTOConvert<PermissionWrapperDTO, PermissionWrapper> {
 
         private ResourceRangeRepository resourceRangeRepository;
         private RoleRepository roleRepository;
@@ -38,10 +43,14 @@ public class PermissionWrapperDTO {
             Assert.notNull(this.resourceRangeRepository);
             Assert.notNull(this.roleRepository);
 
-            ResourceRange range = this.resourceRangeRepository.getOne(dto.getResourceRangeId());
-            Role role = roleRepository.getOne(dto.getRoleId());
+            ResourceRange range = this.resourceRangeRepository.findOne(dto.getResourceRangeId());
+            Role role = roleRepository.findOne(dto.getRoleId());
             if(range != null && role != null) {
-                return  new PermissionWrapper(range, role,dto.getPermission());
+                Set<Permission> permissions = new HashSet<>();
+                for(PermissionDTO pDTO : dto.getPermissionDTOs()) {
+                    permissions.add(pDTO.convertToPermission());
+                }
+                return  new PermissionWrapper(range, role, permissions);
             } else {
                 return null;
             }
@@ -52,7 +61,10 @@ public class PermissionWrapperDTO {
             PermissionWrapperDTO dto = new PermissionWrapperDTO();
             dto.setResourceRangeId(wrapper.getResourceRange().getId());
             dto.setRoleId(wrapper.getRole().getId());
-            dto.setPermission(wrapper.getPermission());
+            Set<PermissionDTO> pDTO = wrapper.getPermissions().stream()
+                                        .map( permission -> PermissionDTO.convertFromPermission(permission))
+                                        .collect(Collectors.toSet());
+            dto.setPermissionDTOs(pDTO);
             return dto;
         }
     }
@@ -89,11 +101,11 @@ public class PermissionWrapperDTO {
         this.roleId = roleId;
     }
 
-    public Permission getPermission() {
-        return permission;
+    public Set<PermissionDTO> getPermissionDTOs() {
+        return permissionDTOs;
     }
 
-    public void setPermission(Permission permission) {
-        this.permission = permission;
+    public void setPermissionDTOs(Set<PermissionDTO> permissionDTOs) {
+        this.permissionDTOs = permissionDTOs;
     }
 }

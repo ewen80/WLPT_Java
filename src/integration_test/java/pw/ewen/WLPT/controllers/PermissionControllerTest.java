@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.model.Permission;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -20,16 +21,16 @@ import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.services.PermissionService;
 
-import javax.persistence.EntityNotFoundException;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Created by wenliang on 17-4-17.
@@ -78,7 +79,9 @@ public class PermissionControllerTest {
     public void HaveResourceRangeAndRole() throws Exception{
         this.permissionService.insertPermission(this.rr1.getId(), this.role1.getId(), BasePermission.READ);
         this.mvc.perform(get("/permissions?resourceRangeId={resourceRangeId}&roleId={roleId}", rr1.getId(), role1.getId()))
-                .andExpect(jsonPath("$[*].resourceRangeId",containsInAnyOrder(Math.toIntExact(rr1.getId()))));
+                .andExpect(jsonPath("$.resourceRangeId", is(Math.toIntExact(rr1.getId()))))
+                .andExpect(jsonPath("$.roleId", is(role1.getId())))
+                .andExpect(jsonPath("$.permissionDTOs[*].mask", containsInAnyOrder(BasePermission.READ.getMask())));
     }
 
     /**
@@ -92,7 +95,7 @@ public class PermissionControllerTest {
         this.permissionService.insertPermission(rr1.getId(), role1.getId(), BasePermission.READ);
 
         this.mvc.perform(get("/permissions?resourceRangeId={resourceRangeId}&roleId={roleId}", this.rr1.getId(), noRole.getId()))
-                .andExpect(jsonPath("$", hasSize(0)));
+                .andExpect(status().isNotFound());
 
     }
 
@@ -102,7 +105,7 @@ public class PermissionControllerTest {
         this.permissionService.insertPermission(rr1.getId(), role1.getId(), BasePermission.READ);
 
         this.mvc.perform(get("/permissions?resourceRangeId={resourceRangeId}&roleId={roleId}", 9999, this.role1.getId()))
-                .andExpect(jsonPath("$", hasSize(0)));
+                .andExpect(status().isNotFound());
 
     }
 
@@ -116,12 +119,12 @@ public class PermissionControllerTest {
                     .param("resourceRangeId", String.valueOf(rr1.getId()))
                     .param("roleId", role1.getId())
                     .param("permissions", "R,W,"));
-        List<PermissionWrapper> wrappers = this.permissionService.getByResourceRangeAndRole(rr1.getId(), role1.getId());
+        PermissionWrapper wrapper = this.permissionService.getByResourceRangeAndRole(rr1.getId(), role1.getId());
 
-        assertThat(wrappers).hasSize(2)
-                .extracting("resourceRange.id", "role.id", "permission")
-                .containsExactlyInAnyOrder(tuple(rr1.getId(), role1.getId(), BasePermission.READ),
-                                 tuple(rr1.getId(), role1.getId(), BasePermission.WRITE));
+
+        assertThat(wrapper)
+                .extracting("resourceRange.id", "role.id", "permissions")
+                .containsExactlyInAnyOrder(rr1.getId(), role1.getId(), new HashSet<Permission>() {{ add(BasePermission.READ); add(BasePermission.WRITE); }});
     }
 
     /**
@@ -136,11 +139,11 @@ public class PermissionControllerTest {
                 .param("roleId", role1.getId())
                 .param("permissions", "W,"));
 
-        List<PermissionWrapper> wrappers = this.permissionService.getByResourceRangeAndRole(rr1.getId(), role1.getId());
+        PermissionWrapper wrapper = this.permissionService.getByResourceRangeAndRole(rr1.getId(), role1.getId());
 
-        assertThat(wrappers).hasSize(1)
-                .extracting("resourceRange.id", "role.id", "permission")
-                .containsExactlyInAnyOrder(tuple(rr1.getId(), role1.getId(), BasePermission.WRITE));
+        assertThat(wrapper)
+                .extracting("resourceRange.id", "role.id", "permissions")
+                .containsExactlyInAnyOrder(rr1.getId(), role1.getId(), Collections.singleton(BasePermission.WRITE));
 
     }
 

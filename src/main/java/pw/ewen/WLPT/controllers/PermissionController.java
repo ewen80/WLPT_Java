@@ -1,24 +1,16 @@
 package pw.ewen.WLPT.controllers;
 
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.model.Permission;
-import org.springframework.security.acls.model.Sid;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pw.ewen.WLPT.domains.DTOs.PermissionWrapperDTO;
-import pw.ewen.WLPT.domains.DTOs.ResourceRangeDTO;
+import pw.ewen.WLPT.domains.DTOs.permission.PermissionWrapperDTO;
 import pw.ewen.WLPT.domains.PermissionWrapper;
-import pw.ewen.WLPT.domains.Resource;
-import pw.ewen.WLPT.domains.entities.ResourceRange;
-import pw.ewen.WLPT.domains.entities.Role;
+import pw.ewen.WLPT.exceptions.domain.PermissionNotFoundException;
 import pw.ewen.WLPT.services.PermissionService;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by wen on 17-3-5.
@@ -39,12 +31,13 @@ public class PermissionController {
      * 通过ResourceRange和Role获取权限
      */
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    public List<PermissionWrapperDTO> getByResourceRangeAndRole(@RequestParam long resourceRangeId,
-                                                                @RequestParam String roleId){
-        List<PermissionWrapper> wrapperList = this.permissionService.getByResourceRangeAndRole(resourceRangeId, roleId);
-        return wrapperList.stream()
-                    .map( PermissionWrapperDTO::convertFromPermissionWrapper)
-                    .collect(Collectors.toList());
+    public PermissionWrapperDTO getByResourceRangeAndRole(@RequestParam long resourceRangeId, @RequestParam String roleId){
+        PermissionWrapper wrapper = this.permissionService.getByResourceRangeAndRole(resourceRangeId, roleId);
+        if(wrapper != null) {
+            return PermissionWrapperDTO.convertFromPermissionWrapper(wrapper);
+        } else {
+            throw new PermissionNotFoundException();
+        }
     }
 
     /**

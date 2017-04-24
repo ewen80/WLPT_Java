@@ -97,11 +97,11 @@ public class PermissionServiceTest {
     public void getByResourceRangeAndRole() throws Exception {
         permissionService.insertPermission(resourceRange.getId(), testRole.getId(), BasePermission.READ);
 
-        List<PermissionWrapper> wrappers = permissionService.getByResourceRangeAndRole(resourceRange.getId(), testRole.getId());
-        assertThat(wrappers).hasSize(1);
-        assertThat(wrappers.get(0))
-                .extracting("resourceRange", "role", "permission")
-                .containsExactly(resourceRange, testRole, BasePermission.READ);
+        PermissionWrapper wrapper = permissionService.getByResourceRangeAndRole(resourceRange.getId(), testRole.getId());
+        assertThat(wrapper.getPermissions()).hasSize(1);
+        assertThat(wrapper)
+                .extracting("resourceRange", "role", "permissions")
+                .containsExactly(resourceRange, testRole, Collections.singleton(BasePermission.READ));
     }
 
     /**
@@ -198,10 +198,10 @@ public class PermissionServiceTest {
 
         permissionService.deleteAllPermissions(resourceRange.getId(), testRole.getId());
 
-        List<PermissionWrapper> wrappers = permissionService.getByResourceRangeAndRole(resourceRange.getId(), testRole.getId());
-        assertThat(wrappers).hasSize(0);
-        wrappers = permissionService.getByResourceRangeAndRole(resourceRange1.getId(), testRole1.getId());
-        assertThat(wrappers).hasSize(1);
+        PermissionWrapper wrapper = permissionService.getByResourceRangeAndRole(resourceRange.getId(), testRole.getId());
+        assertThat(wrapper.getPermissions()).hasSize(0);
+        wrapper = permissionService.getByResourceRangeAndRole(resourceRange1.getId(), testRole1.getId());
+        assertThat(wrapper.getPermissions()).hasSize(1);
     }
 
     @Test(expected = javax.persistence.EntityNotFoundException.class)
