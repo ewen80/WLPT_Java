@@ -10,15 +10,13 @@ import java.util.Set;
  * Created by wen on 17-4-16.
  * 权限包装类
  */
-public class PermissionWrapper {
+public class ResourceRangePermissionWrapper {
 
     private ResourceRange resourceRange;
-    private Role role;
     private Set<Permission> permissions;
 
-    public PermissionWrapper(ResourceRange resourceRange, Role role, Set<Permission> permissions) {
+    public ResourceRangePermissionWrapper(ResourceRange resourceRange, Set<Permission> permissions) {
         this.resourceRange = resourceRange;
-        this.role = role;
         this.permissions = permissions;
     }
 
@@ -30,14 +28,6 @@ public class PermissionWrapper {
 
     public void setResourceRange(ResourceRange resourceRange) {
         this.resourceRange = resourceRange;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 
     public Set<Permission> getPermissions() {

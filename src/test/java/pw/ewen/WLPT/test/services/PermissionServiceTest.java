@@ -1,6 +1,5 @@
 package pw.ewen.WLPT.test.services;
 
-import javassist.NotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +15,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import pw.ewen.WLPT.domains.PermissionWrapper;
+import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.domains.entities.Role;
@@ -91,17 +90,17 @@ public class PermissionServiceTest {
     }
 
     /**
-     * 测试是否能够通过给定ResourceRange和Role读取权限
+     * 测试是否能够通过给定ResourceRange读取权限
      */
     @Test
-    public void getByResourceRangeAndRole() throws Exception {
-        permissionService.insertPermission(resourceRange.getId(), testRole.getId(), BasePermission.READ);
+    public void getByResourceRange() throws Exception {
+        permissionService.insertPermission(resourceRange.getId(), BasePermission.READ);
 
-        PermissionWrapper wrapper = permissionService.getByResourceRangeAndRole(resourceRange.getId(), testRole.getId());
+        ResourceRangePermissionWrapper wrapper = permissionService.getByResourceRange(resourceRange.getId());
         assertThat(wrapper.getPermissions()).hasSize(1);
         assertThat(wrapper)
-                .extracting("resourceRange", "role", "permissions")
-                .containsExactly(resourceRange, testRole, Collections.singleton(BasePermission.READ));
+                .extracting("resourceRange","permissions")
+                .containsExactly(resourceRange, Collections.singleton(BasePermission.READ));
     }
 
     /**
@@ -110,7 +109,7 @@ public class PermissionServiceTest {
     @Test
     public void insertPermissionWhenNotExistSameResourceRange() throws Exception {
 
-        permissionService.insertPermission(resourceRange.getId(), testRole.getId(), BasePermission.READ);
+        permissionService.insertPermission(resourceRange.getId(), BasePermission.READ);
 
         Acl acl = aclService.readAclById(new ObjectIdentityImpl(resourceRange), Collections.singletonList(testSid));
         List<AccessControlEntry> aces = acl.getEntries();
@@ -118,7 +117,8 @@ public class PermissionServiceTest {
         assertThat(aces).hasSize(1);
 
         AccessControlEntry ace = aces.get(0);
-        assertThat(ace).extracting("Sid", "Permission", "Acl.ObjectIdentity").containsExactly(testSid, BasePermission.READ, new ObjectIdentityImpl(resourceRange));
+        assertThat(ace).extracting("Sid", "Permission", "Acl.ObjectIdentity")
+                .containsExactly(testSid, BasePermission.READ, new ObjectIdentityImpl(resourceRange));
     }
 
     /**
@@ -129,8 +129,8 @@ public class PermissionServiceTest {
         ResourceRange resourceRange1 = new ResourceRange("number = 100", testRole, resourceType);
         resourceRangeRepository.save(resourceRange1);
 
-        permissionService.insertPermission(resourceRange.getId(), testRole.getId(), BasePermission.READ);
-        permissionService.insertPermission(resourceRange1.getId(), testRole.getId(), BasePermission.WRITE);
+        permissionService.insertPermission(resourceRange.getId(), BasePermission.READ);
+        permissionService.insertPermission(resourceRange1.getId(), BasePermission.WRITE);
 
         Acl acl = aclService.readAclById(new ObjectIdentityImpl(resourceRange));
         Boolean isGranted = acl.isGranted(Arrays.asList(BasePermission.WRITE,BasePermission.READ), Collections.singletonList(testSid), true);
@@ -143,8 +143,8 @@ public class PermissionServiceTest {
      */
     @Test(expected = RuntimeException.class)
     public  void insertPermissionWhenExist() throws Exception{
-        permissionService.insertPermission(resourceRange.getId(), testRole.getId(), BasePermission.READ);
-        permissionService.insertPermission(resourceRange.getId(), testRole.getId(), BasePermission.READ);
+        permissionService.insertPermission(resourceRange.getId(), BasePermission.READ);
+        permissionService.insertPermission(resourceRange.getId(), BasePermission.READ);
     }
 
     /**
@@ -152,9 +152,9 @@ public class PermissionServiceTest {
      */
     @Test
     public void deletePermissionWhenExist() throws Exception{
-        permissionService.insertPermission(resourceRange.getId(), testRole.getId(), BasePermission.READ);
+        permissionService.insertPermission(resourceRange.getId(), BasePermission.READ);
 
-        Boolean result =  permissionService.deletePermission(resourceRange.getId(), testRole.getId(), BasePermission.READ);
+        Boolean result =  permissionService.deletePermission(resourceRange.getId(), BasePermission.READ);
         Assert.isTrue(result);
     }
 
@@ -163,16 +163,16 @@ public class PermissionServiceTest {
      */
     @Test
     public void deletePermission_PermissionNotExist() {
-        Boolean result = permissionService.deletePermission(this.resourceRange.getId(), this.testRole.getId(), BasePermission.READ);
+        Boolean result = permissionService.deletePermission(this.resourceRange.getId(), BasePermission.READ);
         Assert.isTrue(!result);
     }
 
     /**
-     * 测试删除权限规则（ResourceRange或者Role不存在）
+     * 测试删除权限规则（ResourceRange不存在）
      */
     @Test(expected = EntityNotFoundException.class)
-    public void deletePermission_NotExistResourceRange_OR_NotExistRole() {
-        permissionService.deletePermission(0, this.testRole.getId(), BasePermission.READ);
+    public void deletePermission_NotExistResourceRange() {
+        permissionService.deletePermission(0, BasePermission.READ);
 
     }
 
@@ -181,9 +181,9 @@ public class PermissionServiceTest {
      */
     @Test
     public void deletePermissionWhenNotSame() throws Exception{
-        permissionService.insertPermission(resourceRange.getId(), testRole.getId(), BasePermission.READ);
+        permissionService.insertPermission(resourceRange.getId(), BasePermission.READ);
 
-        Boolean result = permissionService.deletePermission(resourceRange.getId(), testRole.getId(), BasePermission.WRITE);
+        Boolean result = permissionService.deletePermission(resourceRange.getId(), BasePermission.WRITE);
         Assert.isTrue(!result);
     }
 
@@ -191,21 +191,24 @@ public class PermissionServiceTest {
      * 测试删除全部权限功能
      */
     @Test
-    public void deleteAllPermissions() throws Exception {
-        permissionService.insertPermission(resourceRange.getId(), testRole.getId(), BasePermission.READ);
-        permissionService.insertPermission(resourceRange.getId(), testRole.getId(), BasePermission.WRITE);
-        permissionService.insertPermission(resourceRange1.getId(), testRole1.getId(), BasePermission.READ);
+    public void deleteResourceRangeAllPermissions() throws Exception {
+        permissionService.insertPermission(resourceRange.getId(), BasePermission.READ);
+        permissionService.insertPermission(resourceRange.getId(), BasePermission.WRITE);
+        permissionService.insertPermission(resourceRange1.getId(), BasePermission.READ);
 
-        permissionService.deleteAllPermissions(resourceRange.getId(), testRole.getId());
+        permissionService.deleteResourceRangeAllPermissions(resourceRange.getId());
 
-        PermissionWrapper wrapper = permissionService.getByResourceRangeAndRole(resourceRange.getId(), testRole.getId());
+        ResourceRangePermissionWrapper wrapper = permissionService.getByResourceRange(resourceRange.getId());
         assertThat(wrapper.getPermissions()).hasSize(0);
-        wrapper = permissionService.getByResourceRangeAndRole(resourceRange1.getId(), testRole1.getId());
+        wrapper = permissionService.getByResourceRange(resourceRange1.getId());
         assertThat(wrapper.getPermissions()).hasSize(1);
     }
 
-    @Test(expected = javax.persistence.EntityNotFoundException.class)
+    /**
+     * 插入不存在的ResourceRange规则
+     */
+    @Test(expected = EntityNotFoundException.class)
     public void noResourceRangeFound() {
-        permissionService.insertPermission(0, testRole.getId(), BasePermission.READ);
+        permissionService.insertPermission(0, BasePermission.READ);
     }
 }

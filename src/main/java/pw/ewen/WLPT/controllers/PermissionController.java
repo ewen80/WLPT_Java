@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pw.ewen.WLPT.domains.DTOs.permission.PermissionWrapperDTO;
-import pw.ewen.WLPT.domains.PermissionWrapper;
+import pw.ewen.WLPT.domains.DTOs.permission.ResourceRangePermissionWrapperDTO;
+import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
 import pw.ewen.WLPT.exceptions.domain.PermissionNotFoundException;
 import pw.ewen.WLPT.services.PermissionService;
 
@@ -27,14 +27,13 @@ public class PermissionController {
         this.permissionService = permissionService;
     }
 
-    /**
-     * 通过ResourceRange和Role获取权限
+    /**和Role获取权限
      */
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    public PermissionWrapperDTO getByResourceRangeAndRole(@RequestParam long resourceRangeId, @RequestParam String roleId){
-        PermissionWrapper wrapper = this.permissionService.getByResourceRangeAndRole(resourceRangeId, roleId);
+    public ResourceRangePermissionWrapperDTO getByResourceRange(@RequestParam long resourceRangeId){
+        ResourceRangePermissionWrapper wrapper = this.permissionService.getByResourceRange(resourceRangeId);
         if(wrapper != null) {
-            return PermissionWrapperDTO.convertFromPermissionWrapper(wrapper);
+            return ResourceRangePermissionWrapperDTO.convertFromPermissionWrapper(wrapper);
         } else {
             throw new PermissionNotFoundException();
         }
@@ -43,15 +42,13 @@ public class PermissionController {
     /**
      * 保存权限
      * @param resourceRangeId
-     * @param roleId
      * @param permissions   逗号分割的权限字符串（读：R,写：W）
      */
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public void save(@RequestParam long resourceRangeId,
-                     @RequestParam String roleId,
                      @RequestParam String permissions)  {
 
-        this.permissionService.deleteAllPermissions(resourceRangeId, roleId);
+        this.permissionService.deleteResourceRangeAllPermissions(resourceRangeId);
 
         String[] arrPermissions = permissions.split(",");
         for (String p : arrPermissions) {
@@ -64,7 +61,7 @@ public class PermissionController {
                     permission = BasePermission.WRITE;
                     break;
             }
-            this.permissionService.insertPermission(resourceRangeId, roleId, permission);
+            this.permissionService.insertPermission(resourceRangeId, permission);
         }
     }
 }
