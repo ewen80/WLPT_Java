@@ -5,9 +5,7 @@ import org.springframework.util.Assert;
 import pw.ewen.WLPT.domains.DTOs.DTOConvert;
 import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
-import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.repositories.ResourceRangeRepository;
-import pw.ewen.WLPT.repositories.RoleRepository;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -19,7 +17,7 @@ import java.util.stream.Collectors;
 public class ResourceRangePermissionWrapperDTO {
 
     private long resourceRangeId;
-    private Set<PermissionDTO> permissionDTOs;
+    private Set<PermissionDTO> permissions;
 
     //实现DTOConvert接口的内部类
     private static class PermissionWrapperConverter implements DTOConvert<ResourceRangePermissionWrapperDTO, ResourceRangePermissionWrapper> {
@@ -41,7 +39,7 @@ public class ResourceRangePermissionWrapperDTO {
             ResourceRange range = this.resourceRangeRepository.findOne(dto.getResourceRangeId());
             if(range != null) {
                 Set<Permission> permissions = new HashSet<>();
-                for(PermissionDTO pDTO : dto.getPermissionDTOs()) {
+                for(PermissionDTO pDTO : dto.getPermissions()) {
                     permissions.add(pDTO.convertToPermission());
                 }
                 return  new ResourceRangePermissionWrapper(range, permissions);
@@ -57,7 +55,7 @@ public class ResourceRangePermissionWrapperDTO {
             Set<PermissionDTO> pDTO = wrapper.getPermissions().stream()
                                         .map( permission -> PermissionDTO.convertFromPermission(permission))
                                         .collect(Collectors.toSet());
-            dto.setPermissionDTOs(pDTO);
+            dto.setPermissions(pDTO);
             return dto;
         }
     }
@@ -86,11 +84,11 @@ public class ResourceRangePermissionWrapperDTO {
         this.resourceRangeId = resourceRangeId;
     }
 
-    public Set<PermissionDTO> getPermissionDTOs() {
-        return permissionDTOs;
+    public Set<PermissionDTO> getPermissions() {
+        return permissions;
     }
 
-    public void setPermissionDTOs(Set<PermissionDTO> permissionDTOs) {
-        this.permissionDTOs = permissionDTOs;
+    public void setPermissions(Set<PermissionDTO> permissions) {
+        this.permissions = permissions;
     }
 }

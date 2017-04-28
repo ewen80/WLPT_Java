@@ -63,7 +63,7 @@ public class PermissionService {
     /**
      * 新增资源存取权限规则
      */
-    public void insertPermission(long resourceRangeId, Permission permission) {
+    public void insertPermission(long resourceRangeId, Permission permission) throws AuthorizationException, EntityNotFoundException {
         Assert.notNull(permission);
 
         MutableAcl mutableAcl;
