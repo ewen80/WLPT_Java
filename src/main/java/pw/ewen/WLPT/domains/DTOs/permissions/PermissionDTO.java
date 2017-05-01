@@ -1,4 +1,4 @@
-package pw.ewen.WLPT.domains.DTOs.permission;
+package pw.ewen.WLPT.domains.DTOs.permissions;
 
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.model.Permission;
@@ -10,6 +10,13 @@ import pw.ewen.WLPT.domains.DTOs.DTOConvert;
 public class PermissionDTO  {
 
     int mask;
+
+    public PermissionDTO(int mask) {
+        this.mask = mask;
+    }
+
+    public PermissionDTO() {
+    }
 
     private static class PermissionConverter implements DTOConvert<PermissionDTO, Permission> {
         @Override
@@ -26,8 +33,7 @@ public class PermissionDTO  {
 
         @Override
         public PermissionDTO doBackward(Permission permission) {
-            PermissionDTO dto = new PermissionDTO();
-            dto.setMask(permission.getMask());
+            PermissionDTO dto = new PermissionDTO(permission.getMask());
             return  dto;
         }
     }

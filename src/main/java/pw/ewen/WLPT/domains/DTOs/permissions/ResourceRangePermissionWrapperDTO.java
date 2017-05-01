@@ -1,4 +1,4 @@
-package pw.ewen.WLPT.domains.DTOs.permission;
+package pw.ewen.WLPT.domains.DTOs.permissions;
 
 import org.springframework.security.acls.model.Permission;
 import org.springframework.util.Assert;

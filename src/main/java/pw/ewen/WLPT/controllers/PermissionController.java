@@ -4,14 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.web.bind.annotation.*;
-import pw.ewen.WLPT.domains.DTOs.permission.PermissionDTO;
-import pw.ewen.WLPT.domains.DTOs.permission.ResourceRangePermissionWrapperDTO;
+import pw.ewen.WLPT.domains.DTOs.permissions.PermissionDTO;
+import pw.ewen.WLPT.domains.DTOs.permissions.ResourceRangePermissionWrapperDTO;
 import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
 import pw.ewen.WLPT.exceptions.domain.PermissionNotFoundException;
 import pw.ewen.WLPT.services.PermissionService;
 
 import javax.transaction.Transactional;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -32,20 +33,29 @@ public class PermissionController {
         this.permissionService = permissionService;
     }
 
-    /**获取权限
+    /**
+     * 获取一个或者多个ResourceRange权限
+     * 多个ResourceRange用,分割
      */
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    public ResourceRangePermissionWrapperDTO getByResourceRange(@RequestParam long resourceRangeId){
-        ResourceRangePermissionWrapper wrapper = this.permissionService.getByResourceRange(resourceRangeId);
-        if(wrapper != null) {
-            return ResourceRangePermissionWrapperDTO.convertFromPermissionWrapper(wrapper);
-        } else {
-            throw new PermissionNotFoundException();
+    @RequestMapping(value = "/{resourceRangeIds}", method = RequestMethod.GET, produces = "application/json")
+    public Set<ResourceRangePermissionWrapperDTO> getByResourceRanges(@PathVariable("resourceRangeIds") String resourceRangeIds) throws PermissionNotFoundException,IllegalArgumentException{
+        Set<ResourceRangePermissionWrapperDTO> wrappers = new HashSet<>();
+
+        String[] arrResourceRangeIds = resourceRangeIds.split(",");
+
+        for(String id : arrResourceRangeIds){
+            try{
+                long resourceRangeId = Long.valueOf(id);
+                ResourceRangePermissionWrapper wrapper = this.permissionService.getByResourceRange(resourceRangeId);
+                if(wrapper != null) {
+                    ResourceRangePermissionWrapperDTO dto = ResourceRangePermissionWrapperDTO.convertFromPermissionWrapper(wrapper);
+                    wrappers.add(dto);
+                }
+            }catch(NumberFormatException e){
+                throw new IllegalArgumentException("ResourceRangeId必须是数字");
+            }
         }
-    }
-
-    public Set<ResourceRangePermissionWrapper> getByResourceRanges() {
-
+        return wrappers;
     }
 
     /**
