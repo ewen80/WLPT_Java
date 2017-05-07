@@ -1,12 +1,12 @@
-package pw.ewen.WLPT.controllers;
+package pw.ewen.WLPT.controllers.resources;
 
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import pw.ewen.WLPT.domains.entities.MyResource;
-import pw.ewen.WLPT.repositories.MyResourceRepository;
+import pw.ewen.WLPT.domains.entities.resources.MyResource;
+import pw.ewen.WLPT.repositories.resources.MyResourceRepository;
 import pw.ewen.WLPT.repositories.specifications.MyResourceSpecificationBuilder;
 
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 
  */
 @RestController
-@RequestMapping(value = "/resources")
+@RequestMapping(value = "/resources/myresources")
 public class MyResourceController {
     private MyResourceRepository resourceRepository;
 

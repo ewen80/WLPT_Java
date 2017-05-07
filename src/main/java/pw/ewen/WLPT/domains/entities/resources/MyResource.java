@@ -1,4 +1,4 @@
-package pw.ewen.WLPT.domains.entities;
+package pw.ewen.WLPT.domains.entities.resources;
 
 import pw.ewen.WLPT.domains.Resource;
 

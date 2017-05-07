@@ -10,10 +10,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import pw.ewen.WLPT.domains.entities.MyResource;
+import pw.ewen.WLPT.domains.entities.resources.MyResource;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
-import pw.ewen.WLPT.repositories.MyResourceRepository;
+import pw.ewen.WLPT.repositories.resources.MyResourceRepository;
 import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.repositories.UserRepository;
 
