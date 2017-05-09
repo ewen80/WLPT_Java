@@ -4,6 +4,7 @@ import pw.ewen.WLPT.domains.Resource;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -16,12 +17,13 @@ public class Menu extends Resource implements Serializable {
 
     private String name;
     private String path;
-    private int orderId;
+    private int orderId = 0;
     private List<Menu> children;
     private Menu parent;
 
     public  Menu() {
         super();
+        children = new ArrayList<>();
     }
 
     /**

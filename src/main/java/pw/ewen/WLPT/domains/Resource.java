@@ -24,5 +24,18 @@ public abstract class Resource {
     }
     public void setId(long id){ this.id = id;}
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        Resource resource = (Resource) o;
+
+        return id == resource.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
+    }
 }

@@ -47,7 +47,7 @@ public class MenuDTO {
                 }
             }
 
-            List<Menu> children = this.menuRepository.findByparent_id(menuDTO.getId());
+            List<Menu> children = this.menuRepository.findByParent_id(menuDTO.getId());
             if(children != null) {
                 menu.setChildren(children);
             }
@@ -56,8 +56,34 @@ public class MenuDTO {
 
         @Override
         public MenuDTO doBackward(Menu menu) {
-            return null;
+            MenuDTO dto = new MenuDTO();
+            dto.setId(menu.getId());
+            dto.setName(menu.getName());
+            dto.setOrderId(menu.getOrderId());
+            dto.setPath(menu.getPath());
+            dto.setParentId(menu.getParent().getId());
+
+            return dto;
         }
+    }
+
+    /**
+     * 转化为Menu对象
+     * @return
+     */
+    public Menu convertToMenu(MenuRepository menuRepository) {
+        MenuConverter converter = new MenuConverter(menuRepository);
+        return converter.doForward(this);
+    }
+
+    /**
+     * 转换为MenuDTO对象
+     * @param menu
+     * @return
+     */
+    public static MenuDTO convertFromMenu(Menu menu) {
+        MenuConverter converter = new MenuConverter();
+        return converter.doBackward(menu);
     }
 
     public long getId() {
