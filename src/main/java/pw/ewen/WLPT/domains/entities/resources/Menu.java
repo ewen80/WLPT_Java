@@ -1,12 +1,13 @@
 package pw.ewen.WLPT.domains.entities.resources;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import pw.ewen.WLPT.domains.Resource;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by wen on 17-5-7.
@@ -34,7 +35,6 @@ public class Menu extends Resource implements Serializable {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -47,7 +47,6 @@ public class Menu extends Resource implements Serializable {
     public String getPath() {
         return path;
     }
-
     public void setPath(String path) {
         this.path = path;
     }
@@ -60,7 +59,6 @@ public class Menu extends Resource implements Serializable {
     public int getOrderId() {
         return orderId;
     }
-
     public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
@@ -70,10 +68,10 @@ public class Menu extends Resource implements Serializable {
      * @return
      */
     @OneToMany(mappedBy = "parent")
+    @OrderBy("orderId")
     public List<Menu> getChildren() {
         return children;
     }
-
     public void setChildren(List<Menu> children) {
         this.children = children;
     }
@@ -84,10 +82,11 @@ public class Menu extends Resource implements Serializable {
      */
     @ManyToOne
     @JoinColumn(name = "parent_Id")
+    @JsonIgnore
     public Menu getParent() {
         return parent;
     }
-
+    @JsonProperty
     public void setParent(Menu parent) {
         this.parent = parent;
     }

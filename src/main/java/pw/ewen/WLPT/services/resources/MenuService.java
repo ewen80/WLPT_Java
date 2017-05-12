@@ -1,6 +1,7 @@
 package pw.ewen.WLPT.services.resources;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
 import pw.ewen.WLPT.repositories.resources.MenuRepository;
@@ -25,7 +26,7 @@ public class MenuService {
      * @return
      */
     public List<Menu> getAll() {
-        return this.menuRepository.findAll();
+        return this.menuRepository.findAll(new Sort("orderId"));
     }
 
     public Menu save(Menu  menu) {

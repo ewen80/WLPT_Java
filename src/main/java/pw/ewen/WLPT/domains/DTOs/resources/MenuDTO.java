@@ -2,8 +2,6 @@ package pw.ewen.WLPT.domains.DTOs.resources;
 
 import org.springframework.util.Assert;
 import pw.ewen.WLPT.domains.DTOs.DTOConvert;
-import pw.ewen.WLPT.domains.entities.Role;
-import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
 import pw.ewen.WLPT.repositories.resources.MenuRepository;
 
