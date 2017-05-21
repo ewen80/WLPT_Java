@@ -27,18 +27,11 @@ public class MenuController {
     }
 
     /**
-     * 返回所有菜单信息
-     * @return
+     * 返回菜单信息
+     * @return  （树形json格式）
      */
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-//    public List<MenuDTO> getAll() {
-//        List<Menu> menus = this.menuService.getAll();
-//        return menus.stream()
-//                .map( menu -> MenuDTO.convertFromMenu(menu))
-//                .collect(Collectors.toList());
-//    }
-
-    public List<Menu> getAll() {
-        return this.menuService.getAll();
+    public List<Menu> getTree() {
+        return this.menuService.getTree();
     }
 }

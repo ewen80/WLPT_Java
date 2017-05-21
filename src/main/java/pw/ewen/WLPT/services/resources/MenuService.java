@@ -29,6 +29,14 @@ public class MenuService {
         return this.menuRepository.findAll(new Sort("orderId"));
     }
 
+    /**
+     * 获取顶级菜单
+     * @return
+     */
+    public List<Menu> getTree() {
+        return this.menuRepository.findByParent(null);
+    }
+
     public Menu save(Menu  menu) {
         return this.menuRepository.save(menu);
     }

@@ -13,4 +13,5 @@ import java.util.List;
 @Repository
 public interface MenuRepository extends JpaRepository<Menu, Long>, JpaSpecificationExecutor<Menu> {
     List<Menu> findByParent_id(long parentId);
+    List<Menu> findByParent(Menu menu);
 }
