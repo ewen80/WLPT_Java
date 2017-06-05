@@ -16,7 +16,7 @@ public class MenuDTO {
     private String name;
     private String path;
     private int orderId;
-    private long parentId;
+    private long parentId; //默认0,表示无上级节点
 
     private static class MenuConverter implements DTOConvert<MenuDTO, Menu>  {
 

@@ -2,11 +2,15 @@ package pw.ewen.WLPT.controllers.resources;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import pw.ewen.WLPT.domains.DTOs.UserDTO;
 import pw.ewen.WLPT.domains.DTOs.resources.MenuDTO;
+import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
+import pw.ewen.WLPT.repositories.resources.MenuRepository;
 import pw.ewen.WLPT.services.resources.MenuService;
 
 import java.util.List;
@@ -20,10 +24,12 @@ import java.util.stream.Collectors;
 public class MenuController {
 
     private MenuService menuService;
+    private MenuRepository menuRepository;
 
     @Autowired
-    MenuController(MenuService menuService) {
+    MenuController(MenuService menuService, MenuRepository menuRepository) {
         this.menuService = menuService;
+        this.menuRepository = menuRepository;
     }
 
     /**
@@ -33,5 +39,11 @@ public class MenuController {
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public List<Menu> getTree() {
         return this.menuService.getTree();
+    }
+
+    @RequestMapping(method=RequestMethod.POST, produces="application/json")
+    public MenuDTO save(@RequestBody MenuDTO dto){
+        Menu menu = dto.convertToMenu(this.menuRepository);
+        return MenuDTO.convertFromMenu(this.menuService.save(menu));
     }
 }
