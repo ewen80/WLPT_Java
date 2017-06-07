@@ -59,7 +59,9 @@ public class MenuDTO {
             dto.setName(menu.getName());
             dto.setOrderId(menu.getOrderId());
             dto.setPath(menu.getPath());
-            dto.setParentId(menu.getParent().getId());
+            if(menu.getParent() != null){
+                dto.setParentId(menu.getParent().getId());
+            }
 
             return dto;
         }

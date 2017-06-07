@@ -2,10 +2,7 @@ package pw.ewen.WLPT.controllers.resources;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domains.DTOs.UserDTO;
 import pw.ewen.WLPT.domains.DTOs.resources.MenuDTO;
 import pw.ewen.WLPT.domains.entities.User;
@@ -45,5 +42,11 @@ public class MenuController {
     public MenuDTO save(@RequestBody MenuDTO dto){
         Menu menu = dto.convertToMenu(this.menuRepository);
         return MenuDTO.convertFromMenu(this.menuService.save(menu));
+    }
+
+    @RequestMapping(method=RequestMethod.DELETE, value="/{menuId}")
+    public void delete(@PathVariable("menuId") String menuId) throws NumberFormatException{
+        Long longMenuId = Long.valueOf(menuId);
+        this.menuService.delete(longMenuId);
     }
 }
