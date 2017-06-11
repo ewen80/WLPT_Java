@@ -67,7 +67,7 @@ public class Menu extends Resource implements Serializable {
      * 子节点
      * @return
      */
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(mappedBy = "parent",orphanRemoval = true)
     @OrderBy("orderId")
     public List<Menu> getChildren() {
         return children;
