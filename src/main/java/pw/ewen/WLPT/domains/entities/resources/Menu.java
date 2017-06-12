@@ -27,6 +27,22 @@ public class Menu extends Resource implements Serializable {
         children = new ArrayList<>();
     }
 
+    public Menu(String name){
+        this();
+        this.name = name;
+    }
+
+    public Menu(String name, String path){
+        this(name);
+        this.path = path;
+    }
+
+    public Menu(String name, String path, int orderId){
+        this(name,path);
+        this.orderId = orderId;
+    }
+
+
     /**
      * 菜单名
      * @return

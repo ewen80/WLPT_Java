@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
 import pw.ewen.WLPT.repositories.resources.MenuRepository;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -61,5 +63,28 @@ public class MenuService {
 
     public void delete(long id) {
         this.menuRepository.delete(id);
+    }
+
+    /**
+     * 根据叶子节点菜单生成对应的菜单树
+     * 思路：对每个叶子节点获取父节点，（此时可能需要从hibernate detach以便不要加载父节点的children属性）并将自己添加到父节点的children中
+     * 重复这一过程，直到父节点为null.(递归函数)
+     * @param leafMenus 叶子节点(已经是hibernate Persistent状态)
+     * @return  包含叶子节点的完整树结构
+     */
+    public List<Menu> generateLeafMenusTree(List<Menu> leafMenus){
+        List<Menu> results = new ArrayList<>();
+
+        for(Menu menu: leafMenus){
+            Menu parent = menu.getParent();
+            if(parent != null){
+                parent.getChildren().clear();
+                parent.getChildren().add(menu);
+                this.generateLeafMenusTree(Collections.singletonList(parent));
+            } else {
+                results.add(menu);
+            }
+        }
+        return results;
     }
 }
