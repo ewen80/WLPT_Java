@@ -77,10 +77,14 @@ public class MenuService {
 
         for(Menu menu: leafMenus){
             Menu parent = menu.getParent();
+
             if(parent != null){
-                parent.getChildren().clear();
-                parent.getChildren().add(menu);
-                this.generateLeafMenusTree(Collections.singletonList(parent));
+                //如果menu已经存在于parent的children中则不再重复添加
+                if(!parent.getChildren().contains(menu)){
+                    parent.getChildren().add(menu);
+                }
+                List<Menu> parentMenu = this.generateLeafMenusTree(Collections.singletonList(parent));
+                results = parentMenu;
             } else {
                 results.add(menu);
             }
