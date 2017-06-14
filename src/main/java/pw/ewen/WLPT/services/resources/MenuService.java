@@ -7,6 +7,7 @@ import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.acls.model.*;
 import org.springframework.stereotype.Service;
+import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
 import pw.ewen.WLPT.repositories.resources.MenuRepository;
@@ -84,10 +85,11 @@ public class MenuService {
      * 根据子节点菜单生成对应的菜单树
      * 思路：对每个叶子节点获取父节点，（此时可能需要从hibernate detach以便不要加载父节点的children属性）并将自己添加到父节点的children中
      * 重复这一过程，直到父节点为null.(递归函数)
-     * @param childMenus 叶子节点(已经是hibernate Persistent状态)
+     * @param menuIds 叶子节点ids
      * @return  包含叶子节点的完整树结构
      */
-    public List<Menu> generateUpflowTree(List<Menu> childMenus){
+    public List<Menu> generateUpflowTree(Iterable<Long> menuIds){
+        List<Menu> childMenus = this.menuRepository.findAll(menuIds);
         List<Menu> results = new ArrayList<>();
 
         for(Menu menu: childMenus){
@@ -98,8 +100,13 @@ public class MenuService {
                 if(!parent.getChildren().contains(menu)){
                     parent.getChildren().add(menu);
                 }
-                List<Menu> parentMenu = this.generateUpflowTree(Collections.singletonList(parent));
-                results = parentMenu;
+                List<Menu> parentMenus = this.generateUpflowTree(Collections.singletonList(parent.getId()));
+//                results = parentMenu;
+                for(Menu parentMenu: parentMenus){
+                    if(!results.contains(parentMenu)){
+                        results.add(parentMenu);
+                    }
+                }
             } else {
                 results.add(menu);
             }
@@ -114,25 +121,46 @@ public class MenuService {
      * @return  有权限的叶子节点
      */
     public List<Menu> generatePermissionLeafMenus(List<Menu> menus){
+        List<Menu> childrenMenus = new ArrayList<>();
+
         for(Menu menu: menus){
             List<Menu> children = menu.getChildren();
-            for(Menu child: children){
-                //子节点是否配置过权限
+            //判断是否是叶子节点
+            if(children.size() > 0){
+                List<Menu> menusIsAuthorized = this.menusIsAuthorized(children, this.userContext.getCurrentUser().getRole(), Arrays.asList(BasePermission.READ, BasePermission.WRITE));
 
+                if(menusIsAuthorized.size() == 0){
+                    //子节点中没有被授权的节点
+                    menusIsAuthorized = children;
+                }
+
+                for(Menu child: menusIsAuthorized){
+                    childrenMenus.addAll(this.generatePermissionLeafMenus(Collections.singletonList(child)));
+                }
+            } else {
+                //已经是叶子节点
+                childrenMenus.add(menu);
             }
         }
+        return childrenMenus;
     }
 
     /**
-     * 菜单是否已经被授权
-     * @param menu
-     * @return
+     * 菜单(s)是否已经被授权,列表中有一个被授权则返回true
+     * @param menus
+     * @return  被授权的菜单列表
      */
-    private boolean menuIsAuthorized(Menu menu, List<Permission> permissions){
-        ObjectIdentity menuOI = objectIdentityRetrieval.getObjectIdentity(menu);
-        GrantedAuthoritySid sid = new GrantedAuthoritySid(userContext.getCurrentUser().getRole().getId());
-        Acl acl = aclService.readAclById(menuOI, Collections.singletonList(sid));
-        acl.isGranted(Arrays.asList(BasePermission.READ, BasePermission.WRITE), Collections.singletonList(sid), true);
-
+    private List<Menu> menusIsAuthorized(List<Menu> menus, Role myRole, List<Permission> permissions) {
+        List<Menu> authorizedMenus = new ArrayList<>();
+        for(Menu menu: menus){
+            ObjectIdentity menuOI = objectIdentityRetrieval.getObjectIdentity(menu);
+            GrantedAuthoritySid sid = new GrantedAuthoritySid(myRole.getId());
+            Acl acl = aclService.readAclById(menuOI, Collections.singletonList(sid));
+            if(acl.isGranted(permissions, Collections.singletonList(sid), true)){
+                authorizedMenus.add(menu);
+            }
+        }
+        return authorizedMenus;
     }
+
 }
