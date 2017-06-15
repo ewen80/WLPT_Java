@@ -24,7 +24,7 @@ public class Menu extends Resource implements Serializable {
 
     public  Menu() {
         super();
-        children = new ArrayList<>();
+//        children = new ArrayList<>();
     }
 
     public Menu(String name){
@@ -83,7 +83,7 @@ public class Menu extends Resource implements Serializable {
      * 子节点
      * @return
      */
-    @OneToMany(mappedBy = "parent",orphanRemoval = true)
+    @OneToMany(mappedBy = "parent", orphanRemoval = true)
     @OrderBy("orderId")
     public List<Menu> getChildren() {
         return children;

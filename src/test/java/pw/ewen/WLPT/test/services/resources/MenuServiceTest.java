@@ -4,8 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.domain.Specifications;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
 import pw.ewen.WLPT.repositories.resources.MenuRepository;
@@ -35,53 +37,56 @@ public class MenuServiceTest {
     @Autowired
     private MenuService menuService;
 
-    Menu menu1 = new Menu("1");
-    Menu menu2 = new Menu("2");
-    Menu menu3 = new Menu("3");
+    private Menu menu1;
 
-    Menu menu11 = new Menu("11");
-    Menu menu12 = new Menu("12");
-    Menu menu13 = new Menu("13");
+    private Menu menu11;
 
-    Menu menu111 = new Menu("111");
-    Menu menu112 = new Menu("112");
-    Menu menu121 = new Menu("121");
-    Menu menu122 = new Menu("122");
-    Menu menu131 = new Menu("131");
-    Menu menu132 = new Menu("132");
-    Menu menu133 = new Menu("133");
+    private Menu menu111;
+    private Menu menu112;
 
-    Menu menu21 = new Menu("21");
-    Menu menu22 = new Menu("22");
-    Menu menu23 = new Menu("23");
+    private Menu menu12;
 
-    Menu menu31 = new Menu("31");
-    Menu menu32 = new Menu("32");
-    Menu menu33 = new Menu("33");
+    private Menu menu121;
+    private Menu menu122;
+
+    private Menu menu13;
+
+    private Menu menu131;
+    private Menu menu132;
+    private Menu menu133;
+
+    private Menu menu2;
+
+    private Menu menu21;
+    private Menu menu22;
+    private Menu menu23;
+
+    private Menu menu3;
+
+    private Menu menu31;
+    private Menu menu32;
+    private Menu menu33;
 
     @Before
     public void init(){
 
-        this.menu111.setParent(this.menu11);
-        this.menu111.setOrderId(1);
+        this.menu1 = new Menu("1");
+        this.menu2 = new Menu("2");
+        this.menu3 = new Menu("3");
 
-        this.menu112.setParent(this.menu11);
-        this.menu112.setOrderId(2);
+        this.menu1.setOrderId(1);
+        this.menu2.setOrderId(2);
+        this.menu3.setOrderId(3);
 
-        this.menu121.setParent(this.menu12);
-        this.menu121.setOrderId(1);
+        this.menuRepository.save(menu1);
+        this.menuRepository.save(menu2);
+        this.menuRepository.save(menu3);
 
-        this.menu122.setParent(this.menu12);
-        this.menu122.setOrderId(2);
+        /////////////////////////////////////////////
 
-        this.menu131.setParent(this.menu13);
-        this.menu131.setOrderId(1);
-
-        this.menu132.setParent(this.menu13);
-        this.menu132.setOrderId(2);
-
-        this.menu133.setParent(this.menu13);
-        this.menu133.setOrderId(3);
+        this.menu11 = new Menu("11");
+        this.menu12 = new Menu("12");
+        this.menu13 = new Menu("13");
 
         this.menu11.setParent(this.menu1);
         this.menu11.setOrderId(1);
@@ -92,44 +97,89 @@ public class MenuServiceTest {
         this.menu13.setParent(this.menu1);
         this.menu13.setOrderId(3);
 
+        this.menuRepository.save(menu11);
+        this.menuRepository.save(menu12);
+        this.menuRepository.save(menu13);
+
+        /////////////////////////////////////////////////////
+
+        this.menu111 = new Menu("111");
+        this.menu112 = new Menu("112");
+
+        this.menu111.setParent(this.menu11);
+        this.menu111.setOrderId(1);
+
+        this.menu112.setParent(this.menu11);
+        this.menu112.setOrderId(2);
+
+        this.menuRepository.save(menu111);
+        this.menuRepository.save(menu112);
+
+        /////////////////////////////////////////////////////
+
+        this.menu121 = new Menu("121");
+        this.menu122 = new Menu("122");
+
+        this.menu121.setParent(this.menu12);
+        this.menu121.setOrderId(1);
+
+        this.menu122.setParent(this.menu12);
+        this.menu122.setOrderId(2);
+
+        this.menuRepository.save(menu121);
+        this.menuRepository.save(menu122);
+
+        ////////////////////////////////////////////////////////
+
+        this.menu131 = new Menu("131");
+        this.menu132 = new Menu("132");
+        this.menu133 = new Menu("133");
+
+        this.menu131.setParent(this.menu13);
+        this.menu131.setOrderId(1);
+
+        this.menu132.setParent(this.menu13);
+        this.menu132.setOrderId(2);
+
+        this.menu133.setParent(this.menu13);
+        this.menu133.setOrderId(3);
+
+        this.menuRepository.save(menu131);
+        this.menuRepository.save(menu132);
+        this.menuRepository.save(menu133);
+
+        //////////////////////////////////////////////
+
+        this.menu21 = new Menu("21");
+        this.menu22 = new Menu("22");
+        this.menu23 = new Menu("23");
+
         this.menu21.setParent(this.menu2);
         this.menu21.setOrderId(1);
 
         this.menu22.setParent(this.menu2);
         this.menu22.setOrderId(2);
 
+        this.menu23.setParent(this.menu2);
+        this.menu23.setOrderId(3);
+
+        this.menuRepository.save(menu21);
+        this.menuRepository.save(menu22);
+        this.menuRepository.save(menu23);
+
+        //////////////////////////////////////////////
+        this.menu31 = new Menu("31");
+        this.menu32 = new Menu("32");
+        this.menu33 = new Menu("33");
+
         this.menu31.setParent(this.menu3);
-        this.menu31.setOrderId(3);
+        this.menu31.setOrderId(1);
 
         this.menu32.setParent(this.menu3);
         this.menu32.setOrderId(2);
 
         this.menu33.setParent(this.menu3);
         this.menu33.setOrderId(3);
-
-        this.menu1.setOrderId(1);
-        this.menu2.setOrderId(2);
-        this.menu3.setOrderId(3);
-
-        this.menuRepository.save(menu1);
-        this.menuRepository.save(menu2);
-        this.menuRepository.save(menu3);
-
-        this.menuRepository.save(menu11);
-        this.menuRepository.save(menu12);
-        this.menuRepository.save(menu13);
-
-        this.menuRepository.save(menu111);
-        this.menuRepository.save(menu112);
-        this.menuRepository.save(menu121);
-        this.menuRepository.save(menu122);
-        this.menuRepository.save(menu131);
-        this.menuRepository.save(menu132);
-        this.menuRepository.save(menu133);
-
-        this.menuRepository.save(menu21);
-        this.menuRepository.save(menu22);
-        this.menuRepository.save(menu23);
 
         this.menuRepository.save(menu31);
         this.menuRepository.save(menu32);
@@ -147,7 +197,7 @@ public class MenuServiceTest {
      */
     @Test
     public void generateUpflowTree(){
-        List<Long> leafMenuIds = new ArrayList<>();
+        List<Long> leafMenuIds;
         SearchSpecification spec111 = new SearchSpecification(
                 new SearchCriteria("name", SearchOperation.EQUALITY, "111"));
         SearchSpecification spec112 = new SearchSpecification(
@@ -191,5 +241,14 @@ public class MenuServiceTest {
         List<Menu> menus = this.menuService.generatePermissionLeafMenus(Arrays.asList(this.menu1, this.menu2, this.menu3));
         assertThat(menus)
                 .hasSize(13);
+    }
+
+    @Test
+    public void testLazyload(){
+//        SearchSpecification spec2 = new SearchSpecification(
+//                new SearchCriteria("name", SearchOperation.EQUALITY, "2"));
+//        Menu menu = this.menuRepository.findOne(spec2);
+        List<Menu> menus = this.menuRepository.findAll();
+        menus.toString();
     }
 }

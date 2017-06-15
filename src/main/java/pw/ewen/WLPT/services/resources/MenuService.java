@@ -101,7 +101,6 @@ public class MenuService {
                     parent.getChildren().add(menu);
                 }
                 List<Menu> parentMenus = this.generateUpflowTree(Collections.singletonList(parent.getId()));
-//                results = parentMenu;
                 for(Menu parentMenu: parentMenus){
                     if(!results.contains(parentMenu)){
                         results.add(parentMenu);
