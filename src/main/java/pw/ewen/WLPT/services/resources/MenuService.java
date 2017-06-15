@@ -16,6 +16,7 @@ import pw.ewen.WLPT.security.acl.ObjectIdentityRetrievalStrategyWLPTImpl;
 import pw.ewen.WLPT.services.PermissionService;
 import pw.ewen.WLPT.services.UserService;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,6 +36,8 @@ public class MenuService {
     private MutableAclService aclService;
     @Autowired
     private UserContext userContext;
+    @Autowired
+    private EntityManager entityManager;
     @Autowired
     private ObjectIdentityRetrievalStrategyWLPTImpl objectIdentityRetrieval;
 
@@ -83,24 +86,36 @@ public class MenuService {
 
     /**
      * 根据子节点菜单生成对应的菜单树
-     * 思路：对每个叶子节点获取父节点，（此时可能需要从hibernate detach以便不要加载父节点的children属性）并将自己添加到父节点的children中
+     * 思路：对每个叶子节点获取父节点，清空父节点的children属性，并将自己添加到父节点的children中
      * 重复这一过程，直到父节点为null.(递归函数)
-     * @param menuIds 叶子节点ids
+     * 如果子节点非叶子节点，则生成的tree中该节点所有子节点都被包含
+     * @param childMenus 叶子节点s
      * @return  包含叶子节点的完整树结构
      */
-    public List<Menu> generateUpflowTree(Iterable<Long> menuIds){
-        List<Menu> childMenus = this.menuRepository.findAll(menuIds);
+    public List<Menu> generateUpflowTree(List<Menu> childMenus){
+//        List<Menu> childMenus = this.menuRepository.findAll(menuIds);
         List<Menu> results = new ArrayList<>();
+
+        //parent节点的children需要被清空，否则会把所有子节点都加进去
+        boolean parentChildrenHasCleared = false;
 
         for(Menu menu: childMenus){
             Menu parent = menu.getParent();
 
             if(parent != null){
+                if(!parentChildrenHasCleared){
+                    //把parent状态设置为detach,使得对children的更改不会同步到数据库中
+                    this.entityManager.detach(parent);
+
+                    parent.setChildren(new ArrayList<Menu>());
+                    parentChildrenHasCleared = true;
+                }
+
                 //如果menu已经存在于parent的children中则不再重复添加
                 if(!parent.getChildren().contains(menu)){
                     parent.getChildren().add(menu);
                 }
-                List<Menu> parentMenus = this.generateUpflowTree(Collections.singletonList(parent.getId()));
+                List<Menu> parentMenus = this.generateUpflowTree(Collections.singletonList(parent));
                 for(Menu parentMenu: parentMenus){
                     if(!results.contains(parentMenu)){
                         results.add(parentMenu);

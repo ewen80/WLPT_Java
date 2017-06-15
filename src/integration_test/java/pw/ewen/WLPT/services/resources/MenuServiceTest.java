@@ -1,4 +1,4 @@
-package pw.ewen.WLPT.test.services.resources;
+package pw.ewen.WLPT.services.resources;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.transaction.AfterTransaction;
+import org.springframework.test.context.transaction.BeforeTransaction;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
 import pw.ewen.WLPT.repositories.resources.MenuRepository;
 import pw.ewen.WLPT.repositories.specifications.core.SearchCriteria;
@@ -67,9 +69,8 @@ public class MenuServiceTest {
     private Menu menu32;
     private Menu menu33;
 
-    @Before
-    public void init(){
-
+    @BeforeTransaction
+    public void beforeTransaction(){
         this.menu1 = new Menu("1");
         this.menu2 = new Menu("2");
         this.menu3 = new Menu("3");
@@ -184,7 +185,18 @@ public class MenuServiceTest {
         this.menuRepository.save(menu31);
         this.menuRepository.save(menu32);
         this.menuRepository.save(menu33);
+    }
 
+    @AfterTransaction
+    public void afterTransaction(){
+        List<Menu> delMenus = Arrays.asList(this.menu1,this.menu2,this.menu3,
+                                            this.menu11,this.menu12,this.menu13,
+                                            this.menu21,this.menu22,this.menu23,
+                                            this.menu31,this.menu32,this.menu33,
+                                            this.menu111,this.menu112,
+                                            this.menu121,this.menu122,
+                                            this.menu131,this.menu132,this.menu133);
+        this.menuRepository.deleteInBatch(delMenus);
     }
 
     /**
@@ -197,7 +209,7 @@ public class MenuServiceTest {
      */
     @Test
     public void generateUpflowTree(){
-        List<Long> leafMenuIds;
+        List<Menu> leafMenus;
         SearchSpecification spec111 = new SearchSpecification(
                 new SearchCriteria("name", SearchOperation.EQUALITY, "111"));
         SearchSpecification spec112 = new SearchSpecification(
@@ -205,12 +217,12 @@ public class MenuServiceTest {
         SearchSpecification spec2 = new SearchSpecification(
                 new SearchCriteria("name", SearchOperation.EQUALITY, "2"));
 
-        leafMenuIds = Arrays.asList(this.menuRepository.findOne(spec111).getId(),
-                        this.menuRepository.findOne(spec112).getId(),
-                        this.menuRepository.findOne(spec2).getId());
+        leafMenus = Arrays.asList(this.menuRepository.findOne(spec111),
+                        this.menuRepository.findOne(spec112),
+                        this.menuRepository.findOne(spec2));
 
 
-        List<Menu> menus = this.menuService.generateUpflowTree(leafMenuIds);
+        List<Menu> menus = this.menuService.generateUpflowTree(leafMenus);
 
         assertThat(menus)
                 .hasSize(2)
@@ -237,18 +249,21 @@ public class MenuServiceTest {
      * 测试没有任何权限设置过的情况下，生成叶子节点
      */
     @Test
+    @WithMockUser(value = "admin")
     public void testGeneratePermissionLeafMenus_noAuthorizedMenus(){
-        List<Menu> menus = this.menuService.generatePermissionLeafMenus(Arrays.asList(this.menu1, this.menu2, this.menu3));
+        SearchSpecification spec1 = new SearchSpecification(
+                new SearchCriteria("name", SearchOperation.EQUALITY, "1"));
+        SearchSpecification spec2 = new SearchSpecification(
+                new SearchCriteria("name", SearchOperation.EQUALITY, "2"));
+        SearchSpecification spec3 = new SearchSpecification(
+                new SearchCriteria("name", SearchOperation.EQUALITY, "3"));
+
+        List<Menu> menus = this.menuService.generatePermissionLeafMenus(Arrays.asList(this.menuRepository.findOne(spec1),
+                                                                                    this.menuRepository.findOne(spec2),
+                                                                                    this.menuRepository.findOne(spec3)));
         assertThat(menus)
-                .hasSize(13);
+                .hasSize(16);
     }
 
-    @Test
-    public void testLazyload(){
-//        SearchSpecification spec2 = new SearchSpecification(
-//                new SearchCriteria("name", SearchOperation.EQUALITY, "2"));
-//        Menu menu = this.menuRepository.findOne(spec2);
-        List<Menu> menus = this.menuRepository.findAll();
-        menus.toString();
-    }
+
 }
