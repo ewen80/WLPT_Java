@@ -169,10 +169,16 @@ public class MenuService {
         for(Menu menu: menus){
             ObjectIdentity menuOI = objectIdentityRetrieval.getObjectIdentity(menu);
             GrantedAuthoritySid sid = new GrantedAuthoritySid(myRole.getId());
-            Acl acl = aclService.readAclById(menuOI, Collections.singletonList(sid));
-            if(acl.isGranted(permissions, Collections.singletonList(sid), true)){
-                authorizedMenus.add(menu);
+            try{
+                Acl acl = aclService.readAclById(menuOI, Collections.singletonList(sid));
+                if(acl.isGranted(permissions, Collections.singletonList(sid), true)){
+                    authorizedMenus.add(menu);
+                }
+            } catch(NotFoundException e){
+                //没有找到acl，菜单对应的ResourceRange没有找到（没有对该菜单做过任何权限设置）
+
             }
+
         }
         return authorizedMenus;
     }

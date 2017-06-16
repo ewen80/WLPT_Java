@@ -76,6 +76,10 @@ public class SecurityAclConfig {
         return new AclAuthorizationStrategyImpl(auths);
     }
 
+    /**
+     * 有管理ACL权限的角色，默认：admin组
+     * @return
+     */
     @Bean
     SimpleGrantedAuthority getGrantedAuthority(){
         return new SimpleGrantedAuthority("admin");

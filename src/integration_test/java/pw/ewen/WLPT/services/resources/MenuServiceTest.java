@@ -7,15 +7,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.domain.Specifications;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.transaction.AfterTransaction;
 import org.springframework.test.context.transaction.BeforeTransaction;
+import pw.ewen.WLPT.domains.entities.ResourceRange;
+import pw.ewen.WLPT.domains.entities.ResourceType;
+import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
+import pw.ewen.WLPT.repositories.ResourceRangeRepository;
+import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.resources.MenuRepository;
 import pw.ewen.WLPT.repositories.specifications.core.SearchCriteria;
 import pw.ewen.WLPT.repositories.specifications.core.SearchOperation;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecification;
+import pw.ewen.WLPT.services.PermissionService;
 import pw.ewen.WLPT.services.resources.MenuService;
 
 import javax.transaction.Transactional;
@@ -37,7 +44,13 @@ public class MenuServiceTest {
     @Autowired
     private MenuRepository menuRepository;
     @Autowired
+    private ResourceTypeRepository resourceTypeRepository;
+    @Autowired
+    private ResourceRangeRepository resourceRangeRepository;
+    @Autowired
     private MenuService menuService;
+    @Autowired
+    private PermissionService permissionService;
 
     private Menu menu1;
 
@@ -205,7 +218,20 @@ public class MenuServiceTest {
      * |  |   |-menu111
      * |  |   |-menu112
      * |  |-menu12
+     * |  |   |-menu121
+     * |  |   |-menu122
+     * |  |-menu13
+     * |  |   |-menu131
+     * |  |   |-menu132
+     * |  |   |-menu133
      * |-menu2
+     * |    |-menu21
+     * |    |-menu22
+     * |    |-menu23
+     * |-menu3
+     * |    |-menu31
+     * |    |-menu32
+     * |    |-menu33
      */
     @Test
     public void generateUpflowTree(){
@@ -255,14 +281,51 @@ public class MenuServiceTest {
                 new SearchCriteria("name", SearchOperation.EQUALITY, "1"));
         SearchSpecification spec2 = new SearchSpecification(
                 new SearchCriteria("name", SearchOperation.EQUALITY, "2"));
-        SearchSpecification spec3 = new SearchSpecification(
-                new SearchCriteria("name", SearchOperation.EQUALITY, "3"));
+//        SearchSpecification spec3 = new SearchSpecification(
+//                new SearchCriteria("name", SearchOperation.EQUALITY, "3"));
 
         List<Menu> menus = this.menuService.generatePermissionLeafMenus(Arrays.asList(this.menuRepository.findOne(spec1),
-                                                                                    this.menuRepository.findOne(spec2),
-                                                                                    this.menuRepository.findOne(spec3)));
+                                                                                    this.menuRepository.findOne(spec2)
+//                                                                                    this.menuRepository.findOne(spec3)
+                                            ));
         assertThat(menus)
-                .hasSize(16);
+                .hasSize(10);
+    }
+
+    /**
+     * 测试有菜单权限设置的情况下，生成叶子节点
+     */
+    @Test
+    @WithMockUser(value = "admin" ,authorities = {"admin"})
+    public void testGeneratePermissionLeafMenus_authorizedMenus(){
+        //添加权限
+        this.addAuthorizedMenus();
+
+        SearchSpecification spec1 = new SearchSpecification(
+                new SearchCriteria("name", SearchOperation.EQUALITY, "1"));
+//        SearchSpecification spec2 = new SearchSpecification(
+//                new SearchCriteria("name", SearchOperation.EQUALITY, "2"));
+//        SearchSpecification spec3 = new SearchSpecification(
+//                new SearchCriteria("name", SearchOperation.EQUALITY, "3"));
+
+        List<Menu> menus = this.menuService.generatePermissionLeafMenus(Arrays.asList(this.menuRepository.findOne(spec1)
+//                this.menuRepository.findOne(spec2)
+//                                                                                    this.menuRepository.findOne(spec3)
+        ));
+        assertThat(menus)
+                .hasSize(6)
+                .extracting("name")
+                .containsExactlyInAnyOrder("111","121","122","131","132","133");
+    }
+
+    private void addAuthorizedMenus(){
+        ResourceType resourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.Menu","Menu","");
+        resourceTypeRepository.save(resourceType);
+
+        ResourceRange resourceRange = new ResourceRange("name=='111'", new Role("admin", "admin"), resourceType);
+        resourceRangeRepository.save(resourceRange);
+
+        this.permissionService.insertPermission(resourceRange.getId(), BasePermission.READ);
     }
 
 
