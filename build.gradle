@@ -33,10 +33,6 @@ sourceSets{
     main{
         java{
             exclude '**/DatabaseConfig.java'
-//                    '**/ResourceRange.java',
-//                    '**/MyResourceRange.java'
-//                    '**/ResourceRangeRepository.java',
-//                    '**/MyResourceRangeRepository.java'
         }
     }
 }
@@ -87,8 +83,10 @@ dependencies {
 //    runtime("mysql:mysql-connector-java:5.1.39")
     testCompile(
             "org.springframework.boot:spring-boot-starter-test",
-            "org.springframework.security:spring-security-test"
+            "org.springframework.security:spring-security-test",
+            files("libs/GroboTestingJUnit-1.2.1-core.jar"),
     )
+
     integrationTestCompile(
 
     )

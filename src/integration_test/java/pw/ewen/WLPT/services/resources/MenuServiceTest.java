@@ -1,12 +1,11 @@
 package pw.ewen.WLPT.services.resources;
 
-import org.junit.Before;
+import net.sourceforge.groboutils.junit.v1.MultiThreadedTestRunner;
+import net.sourceforge.groboutils.junit.v1.TestRunnable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -22,13 +21,11 @@ import pw.ewen.WLPT.repositories.resources.MenuRepository;
 import pw.ewen.WLPT.repositories.specifications.core.SearchCriteria;
 import pw.ewen.WLPT.repositories.specifications.core.SearchOperation;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecification;
+import pw.ewen.WLPT.security.UserContext;
 import pw.ewen.WLPT.services.PermissionService;
-import pw.ewen.WLPT.services.resources.MenuService;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,6 +48,8 @@ public class MenuServiceTest {
     private MenuService menuService;
     @Autowired
     private PermissionService permissionService;
+    @Autowired
+    private UserContext userContext;
 
     private Menu menu1;
 
@@ -242,10 +241,14 @@ public class MenuServiceTest {
                 new SearchCriteria("name", SearchOperation.EQUALITY, "112"));
         SearchSpecification spec2 = new SearchSpecification(
                 new SearchCriteria("name", SearchOperation.EQUALITY, "2"));
+        SearchSpecification spec121 = new SearchSpecification(
+                new SearchCriteria("name", SearchOperation.EQUALITY, "121"));
+
 
         leafMenus = Arrays.asList(this.menuRepository.findOne(spec111),
                         this.menuRepository.findOne(spec112),
-                        this.menuRepository.findOne(spec2));
+                        this.menuRepository.findOne(spec2),
+                        this.menuRepository.findOne(spec121));
 
 
         List<Menu> menus = this.menuService.generateUpflowTree(leafMenus);
@@ -259,9 +262,9 @@ public class MenuServiceTest {
 //                * |  |   |-menu111
 //                * |  |   |-menu112
         assertThat(menus.get(0).getChildren())
-                .hasSize(1)
+                .hasSize(2)
                 .extracting("name")
-                    .containsExactlyInAnyOrder("11");
+                    .containsExactlyInAnyOrder("11","12");
 //                     |-menu11
 //                * |  |   |-menu111
 //                * |  |   |-menu112
@@ -269,6 +272,11 @@ public class MenuServiceTest {
                 .hasSize(2)
                 .extracting("name")
                 .containsExactlyInAnyOrder("111", "112");
+
+        assertThat(menus.get(0).getChildren().get(1).getChildren())
+                .hasSize(1)
+                .extracting("name")
+                .containsExactlyInAnyOrder("121");
     }
 
     /**
@@ -285,9 +293,8 @@ public class MenuServiceTest {
 //                new SearchCriteria("name", SearchOperation.EQUALITY, "3"));
 
         List<Menu> menus = this.menuService.generatePermissionLeafMenus(Arrays.asList(this.menuRepository.findOne(spec1),
-                                                                                    this.menuRepository.findOne(spec2)
-//                                                                                    this.menuRepository.findOne(spec3)
-                                            ));
+                                                                                    this.menuRepository.findOne(spec2))
+                                                                        , userContext.getCurrentUser().getRole());
         assertThat(menus)
                 .hasSize(10);
     }
@@ -308,16 +315,30 @@ public class MenuServiceTest {
 //        SearchSpecification spec3 = new SearchSpecification(
 //                new SearchCriteria("name", SearchOperation.EQUALITY, "3"));
 
-        List<Menu> menus = this.menuService.generatePermissionLeafMenus(Arrays.asList(this.menuRepository.findOne(spec1)
-//                this.menuRepository.findOne(spec2)
-//                                                                                    this.menuRepository.findOne(spec3)
-        ));
+
+        List<Menu> menus = this.menuService.generatePermissionLeafMenus(this.menuRepository.findAll(spec1), this.userContext.getCurrentUser().getRole());
         assertThat(menus)
-                .hasSize(6)
                 .extracting("name")
-                .containsExactlyInAnyOrder("111","121","122","131","132","133");
+                .containsExactlyInAnyOrder("111","121","122");
     }
 
+    /**
+     * 测试最终生成的菜单节点树
+     */
+    @Test
+    @WithMockUser(value = "admin" ,authorities = {"admin"})
+    public void testPermissionMenuTree(){
+        this.addAuthorizedMenus();
+
+        List<Menu> permissionMenuTree = this.menuService.getPermissionMenuTree(this.userContext.getCurrentUser());
+
+        assertThat(permissionMenuTree)
+                .hasSize(2)
+                .extracting("name")
+                .containsExactlyInAnyOrder("1", "2");
+    }
+
+    //对 menu111,menu11,menu12,menu2有权限
     private void addAuthorizedMenus(){
         ResourceType resourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.Menu","Menu","");
         resourceTypeRepository.save(resourceType);
@@ -326,7 +347,52 @@ public class MenuServiceTest {
         resourceRangeRepository.save(resourceRange);
 
         this.permissionService.insertPermission(resourceRange.getId(), BasePermission.READ);
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        ResourceRange resourceRange2 = new ResourceRange("name=='11'", new Role("admin", "admin"), resourceType);
+        resourceRangeRepository.save(resourceRange2);
+
+        this.permissionService.insertPermission(resourceRange2.getId(), BasePermission.READ);
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        ResourceRange resourceRange3 = new ResourceRange("name=='12'", new Role("admin", "admin"), resourceType);
+        resourceRangeRepository.save(resourceRange3);
+
+        this.permissionService.insertPermission(resourceRange3.getId(), BasePermission.READ);
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        ResourceRange resourceRange4 = new ResourceRange("name=='2'", new Role("admin", "admin"), resourceType);
+        resourceRangeRepository.save(resourceRange4);
+
+        this.permissionService.insertPermission(resourceRange4.getId(), BasePermission.READ);
     }
 
+    /**
+     * 多线程测试 PermissionMenuTree
+     */
+    @Test
+    public void testMultipileThread_PermissionMenuTree() throws Throwable {
+        TestRunnable[] trs = new TestRunnable[10];
+        for(int i=0; i<trs.length; i++){
+            trs[i] = new ThreadA();
+        }
+
+        // 用于执行多线程测试用例的Runner，将前面定义的单个Runner组成的数组传入
+        MultiThreadedTestRunner mttr = new MultiThreadedTestRunner(trs);
+
+        // 开发并发执行数组里定义的内容
+        mttr.runTestRunnables();
+    }
+
+    private class ThreadA extends TestRunnable {
+        @Override
+        public void runTest() throws Throwable {
+            // 测试内容
+            System.out.println("===" + Thread.currentThread().getId() + "begin to execute myCommMethod2");
+            for (int i = 0; i <10; i++) {
+                int a  = i*5;
+                System.out.println(a);
+            }
+            System.out.println("===" + Thread.currentThread().getId() + "end to execute myCommMethod2");
+        }
+    }
 
 }

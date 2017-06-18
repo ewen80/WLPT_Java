@@ -17,10 +17,7 @@ import pw.ewen.WLPT.services.PermissionService;
 import pw.ewen.WLPT.services.UserService;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by wenliang on 17-5-9.
@@ -41,6 +38,8 @@ public class MenuService {
     @Autowired
     private ObjectIdentityRetrievalStrategyWLPTImpl objectIdentityRetrieval;
 
+    private static HashMap<Menu,Boolean> MenuChildrenCleanedMap = new HashMap<Menu, Boolean>();
+
 
     /**
      * 获取所有菜单
@@ -51,11 +50,33 @@ public class MenuService {
     }
 
     /**
-     * 获取顶级菜单
+     * 获取所有顶级菜单
      * @return
      */
     public List<Menu> getTree() {
         return this.menuRepository.findByParentOrderByOrderId(null);
+    }
+
+    /**
+     * 获取角色有权限的菜单节点
+     * @param role 角色
+     * @return
+     */
+    public List<Menu> getPermissionMenuTree(Role role){
+        List<Menu> allMenus = this.getAll();
+        List<Menu> myMenus = this.authorizedmenus(allMenus, role, Arrays.asList(BasePermission.READ, BasePermission.WRITE));
+        List<Menu> authorizedLeafMenus = this.generatePermissionLeafMenus(myMenus, this.userContext.getCurrentUser().getRole());
+        List<Menu> permissionMenuTree = this.generateUpflowTree(authorizedLeafMenus);
+        return permissionMenuTree;
+    }
+
+    /**
+     * 获取用户有权限的菜单节点
+     * @param user  用户
+     * @return
+     */
+    public List<Menu> getPermissionMenuTree(User user){
+        return this.getPermissionMenuTree(user.getRole());
     }
 
     public Menu save(Menu  menu) {
@@ -84,6 +105,8 @@ public class MenuService {
         this.menuRepository.delete(id);
     }
 
+
+
     /**
      * 根据子节点菜单生成对应的菜单树
      * 思路：对每个叶子节点获取父节点，清空父节点的children属性，并将自己添加到父节点的children中
@@ -93,22 +116,21 @@ public class MenuService {
      * @return  包含叶子节点的完整树结构
      */
     public List<Menu> generateUpflowTree(List<Menu> childMenus){
-//        List<Menu> childMenus = this.menuRepository.findAll(menuIds);
         List<Menu> results = new ArrayList<>();
 
         //parent节点的children需要被清空，否则会把所有子节点都加进去
-        boolean parentChildrenHasCleared = false;
-
         for(Menu menu: childMenus){
             Menu parent = menu.getParent();
-
+//            if(!MenuChildrenCleanedMap.containsKey(parent)){
+//                MenuChildrenCleanedMap.put(parent,false);
+//            }
             if(parent != null){
-                if(!parentChildrenHasCleared){
+                if(!MenuChildrenCleanedMap.containsKey(parent) || !MenuChildrenCleanedMap.get(parent).booleanValue()){
                     //把parent状态设置为detach,使得对children的更改不会同步到数据库中
                     this.entityManager.detach(parent);
 
                     parent.setChildren(new ArrayList<Menu>());
-                    parentChildrenHasCleared = true;
+                    MenuChildrenCleanedMap.put(parent,true);
                 }
 
                 //如果menu已经存在于parent的children中则不再重复添加
@@ -134,14 +156,14 @@ public class MenuService {
      * @param menus 子节点
      * @return  有权限的叶子节点
      */
-    public List<Menu> generatePermissionLeafMenus(List<Menu> menus){
+    public List<Menu> generatePermissionLeafMenus(List<Menu> menus, Role role){
         List<Menu> childrenMenus = new ArrayList<>();
 
         for(Menu menu: menus){
             List<Menu> children = menu.getChildren();
             //判断是否是叶子节点
             if(children.size() > 0){
-                List<Menu> menusIsAuthorized = this.menusIsAuthorized(children, this.userContext.getCurrentUser().getRole(), Arrays.asList(BasePermission.READ, BasePermission.WRITE));
+                List<Menu> menusIsAuthorized = this.authorizedmenus(children, role, Arrays.asList(BasePermission.READ, BasePermission.WRITE));
 
                 if(menusIsAuthorized.size() == 0){
                     //子节点中没有被授权的节点
@@ -149,22 +171,29 @@ public class MenuService {
                 }
 
                 for(Menu child: menusIsAuthorized){
-                    childrenMenus.addAll(this.generatePermissionLeafMenus(Collections.singletonList(child)));
+                    List<Menu> leafMenus = this.generatePermissionLeafMenus(Collections.singletonList(child), role);
+                    for(Menu m: leafMenus){
+                        if(!childrenMenus.contains(m)){
+                            childrenMenus.add(m);
+                        }
+                    }
                 }
             } else {
                 //已经是叶子节点
-                childrenMenus.add(menu);
+                if(!childrenMenus.contains(menu)){
+                    childrenMenus.add(menu);
+                }
             }
         }
         return childrenMenus;
     }
 
     /**
-     * 菜单(s)是否已经被授权,列表中有一个被授权则返回true
+     * 菜单(s)是否已经被授权
      * @param menus
      * @return  被授权的菜单列表
      */
-    private List<Menu> menusIsAuthorized(List<Menu> menus, Role myRole, List<Permission> permissions) {
+    private List<Menu> authorizedmenus(List<Menu> menus, Role myRole, List<Permission> permissions) {
         List<Menu> authorizedMenus = new ArrayList<>();
         for(Menu menu: menus){
             ObjectIdentity menuOI = objectIdentityRetrieval.getObjectIdentity(menu);
