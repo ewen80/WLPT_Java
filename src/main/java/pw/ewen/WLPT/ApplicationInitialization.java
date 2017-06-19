@@ -28,24 +28,23 @@ public class ApplicationInitialization implements ApplicationRunner {
 
     //初始化菜单数据
     private void initialMenu() {
-//        Menu menu1 = new Menu();
-//        menu1.setName("menu1");
-//        menu1.setPath("path1");
-//        menuRepository.save(menu1);
-//
-//        Menu menu11 = new Menu();
-//        menu11.setName("menu11");
-//        menu11.setPath("path11");
-//        menu11.setOrderId(2);
-//        menu11.setParent(menu1);
-//        menuRepository.save(menu11);
-//
-//        Menu menu12 = new Menu();
-//        menu12.setName("menu12");
-//        menu12.setPath("path12");
-//        menu12.setOrderId(1);
-//        menu12.setParent(menu1);
-//        menuRepository.save(menu12);
+        Menu menu1 = new Menu();
+        menu1.setName("menu1");
+        menu1.setPath("path1");
+        menuRepository.save(menu1);
 
+        Menu menu11 = new Menu();
+        menu11.setName("menu11");
+        menu11.setPath("path11");
+        menu11.setOrderId(2);
+        menu11.setParent(menu1);
+        menuRepository.save(menu11);
+
+        Menu menu12 = new Menu();
+        menu12.setName("menu12");
+        menu12.setPath("path12");
+        menu12.setOrderId(1);
+        menu12.setParent(menu1);
+        menuRepository.save(menu12);
     }
 }

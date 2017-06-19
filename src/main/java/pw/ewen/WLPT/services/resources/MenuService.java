@@ -33,7 +33,7 @@ public class MenuService {
     @Autowired
     private MutableAclService aclService;
     @Autowired
-    private UserContext userContext;
+    private UserService userService;
     @Autowired
     private EntityManager entityManager;
     @Autowired
@@ -57,17 +57,20 @@ public class MenuService {
 
     /**
      * 获取角色有权限的菜单节点
+     * 思路：1.获取所有菜单节点（非树形）
+     *      2.获取所有有权限的菜单节点
+     *      3.根据2产生的节点，生成叶子节点
+     *      4.根据叶子节点生成对应树形
      * @param role 角色
      * @return
      */
     public List<Menu> getPermissionMenuTree(Role role){
         List<Menu> allMenus = this.getAll();
         List<Menu> myMenus = this.authorizedmenus(allMenus, role, Arrays.asList(BasePermission.READ, BasePermission.WRITE));
-        List<Menu> authorizedLeafMenus = this.generatePermissionLeafMenus(myMenus, this.userContext.getCurrentUser().getRole());
+        List<Menu> authorizedLeafMenus = this.generatePermissionLeafMenus(myMenus, role);
         List<Menu> permissionMenuTree = this.generateUpflowTree(authorizedLeafMenus);
         return permissionMenuTree;
     }
-
     /**
      * 获取用户有权限的菜单节点
      * @param user  用户
@@ -75,6 +78,19 @@ public class MenuService {
      */
     public List<Menu> getPermissionMenuTree(User user){
         return this.getPermissionMenuTree(user.getRole());
+    }
+    /**
+     * 获取用户有权限的菜单节点
+     * @param userId  用户id
+     * @return  userId对应的有权限的菜单树，如果userId没有对应的用户则返回null
+     */
+    public List<Menu> getPermissionMenuTree(String userId){
+        User user = this.userService.findOne(userId);
+        if(user != null){
+            return this.getPermissionMenuTree(user);
+        } else {
+            return null;
+        }
     }
 
     public Menu save(Menu  menu) {
@@ -113,7 +129,7 @@ public class MenuService {
      * @param childMenus 叶子节点s
      * @return  包含叶子节点的完整树结构
      */
-    public List<Menu> generateUpflowTree(List<Menu> childMenus){
+    private List<Menu> generateUpflowTree(List<Menu> childMenus){
         List<Menu> results = new ArrayList<>();
 
         for(Menu menu: childMenus){
@@ -152,7 +168,7 @@ public class MenuService {
      * @param menus 子节点
      * @return  有权限的叶子节点
      */
-    public List<Menu> generatePermissionLeafMenus(List<Menu> menus, Role role){
+    private List<Menu> generatePermissionLeafMenus(List<Menu> menus, Role role){
         List<Menu> childrenMenus = new ArrayList<>();
 
         for(Menu menu: menus){

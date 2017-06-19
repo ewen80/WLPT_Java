@@ -30,12 +30,21 @@ public class MenuController {
     }
 
     /**
-     * 返回菜单信息
+     * 返回所有菜单树
      * @return  （树形json格式）
      */
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public List<Menu> getTree() {
         return this.menuService.getTree();
+    }
+
+    /**
+     * 返回有权限的菜单树
+     * @return  树形json格式
+     */
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json", value = "/authorized/{userId}")
+    public List<Menu> getAuthorizedMenuTree(@PathVariable("userId") String userId){
+        return this.menuService.getPermissionMenuTree(userId);
     }
 
     @RequestMapping(method=RequestMethod.POST, produces="application/json")
