@@ -1,6 +1,7 @@
 package pw.ewen.WLPT.services.resources;
 
 import com.fasterxml.jackson.databind.ser.Serializers;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.acls.domain.BasePermission;
@@ -37,9 +38,6 @@ public class MenuService {
     private EntityManager entityManager;
     @Autowired
     private ObjectIdentityRetrievalStrategyWLPTImpl objectIdentityRetrieval;
-
-    private static HashMap<Menu,Boolean> MenuChildrenCleanedMap = new HashMap<Menu, Boolean>();
-
 
     /**
      * 获取所有菜单
@@ -118,25 +116,23 @@ public class MenuService {
     public List<Menu> generateUpflowTree(List<Menu> childMenus){
         List<Menu> results = new ArrayList<>();
 
-        //parent节点的children需要被清空，否则会把所有子节点都加进去
         for(Menu menu: childMenus){
             Menu parent = menu.getParent();
-//            if(!MenuChildrenCleanedMap.containsKey(parent)){
-//                MenuChildrenCleanedMap.put(parent,false);
-//            }
-            if(parent != null){
-                if(!MenuChildrenCleanedMap.containsKey(parent) || !MenuChildrenCleanedMap.get(parent).booleanValue()){
-                    //把parent状态设置为detach,使得对children的更改不会同步到数据库中
-                    this.entityManager.detach(parent);
 
-                    parent.setChildren(new ArrayList<Menu>());
-                    MenuChildrenCleanedMap.put(parent,true);
-                }
+            if(parent != null){
+                //把parent状态设置为detach,使得对children的更改不会同步到数据库中
+                this.entityManager.detach(parent);
 
                 //如果menu已经存在于parent的children中则不再重复添加
-                if(!parent.getChildren().contains(menu)){
+                try {
+                    if(!parent.getChildren().contains(menu)) {
+                        parent.getChildren().add(menu);
+                    }
+                } catch (HibernateException e){ //捕获hibernate的懒加载报错，如果报错说明还没有set过children集合
+                    parent.setChildren(new ArrayList<Menu>());
                     parent.getChildren().add(menu);
                 }
+
                 List<Menu> parentMenus = this.generateUpflowTree(Collections.singletonList(parent));
                 for(Menu parentMenu: parentMenus){
                     if(!results.contains(parentMenu)){
