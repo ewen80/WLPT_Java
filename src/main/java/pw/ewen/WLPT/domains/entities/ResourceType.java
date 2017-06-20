@@ -38,6 +38,10 @@ public class ResourceType implements Serializable {
 //        this.resources = new HashSet<>();
     }
 
+    public ResourceType(String className, String name){
+        this(className,name,"",false);
+    }
+
     public ResourceType(String className,String name, String description){
         this(className,name,description,false);
     }

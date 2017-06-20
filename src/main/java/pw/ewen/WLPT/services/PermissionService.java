@@ -92,6 +92,15 @@ public class PermissionService {
     }
 
     /**
+     * 新增资源存取权限规则
+     */
+    public void insertPermissions(long resourceRangeId, Collection<Permission> permissions) throws AuthorizationException, EntityNotFoundException {
+        for(Permission p: permissions){
+            this.insertPermission(resourceRangeId, p);
+        }
+    }
+
+    /**
      * 删除权限规则
      * @Return 如果删除一条ACE则返回true，如果没有找到对应ACE，即没有实际删除数据返回false
      */

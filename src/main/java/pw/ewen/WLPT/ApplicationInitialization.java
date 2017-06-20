@@ -3,9 +3,20 @@ package pw.ewen.WLPT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.stereotype.Component;
+import pw.ewen.WLPT.domains.Resource;
+import pw.ewen.WLPT.domains.entities.ResourceRange;
+import pw.ewen.WLPT.domains.entities.ResourceType;
+import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
+import pw.ewen.WLPT.repositories.ResourceRangeRepository;
+import pw.ewen.WLPT.repositories.ResourceTypeRepository;
+import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.repositories.resources.MenuRepository;
+import pw.ewen.WLPT.services.PermissionService;
+
+import java.util.Arrays;
 
 /**
  * Created by wen on 17-5-14.
@@ -14,16 +25,21 @@ import pw.ewen.WLPT.repositories.resources.MenuRepository;
 @Component
 public class ApplicationInitialization implements ApplicationRunner {
 
-    private MenuRepository menuRepository;
-
     @Autowired
-    public ApplicationInitialization(MenuRepository menuRepository) {
-        this.menuRepository = menuRepository;
-    }
+    private MenuRepository menuRepository;
+    @Autowired
+    private ResourceTypeRepository resourceTypeRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private ResourceRangeRepository resourceRangeRepository;
+    @Autowired
+    private PermissionService permissionService;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
         this.initialMenu();
+        this.authorizeMenu();
     }
 
     //初始化菜单数据
@@ -46,5 +62,16 @@ public class ApplicationInitialization implements ApplicationRunner {
         menu12.setOrderId(1);
         menu12.setParent(menu1);
         menuRepository.save(menu12);
+    }
+    //初始化菜单权限
+    private void authorizeMenu(){
+        ResourceType menuResourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.Menu", "menu");
+        this.resourceTypeRepository.save(menuResourceType);
+
+        Role adminRole = this.roleRepository.findOne("admin");
+
+        ResourceRange haveAllMenuPermission = new ResourceRange("", adminRole, menuResourceType);
+        haveAllMenuPermission.setMatchAll(true);
+        this.resourceRangeRepository.save(haveAllMenuPermission);
     }
 }
