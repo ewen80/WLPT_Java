@@ -18,6 +18,7 @@ public class Menu extends Resource implements Serializable {
 
     private String name;
     private String path;
+    private String iconClass;
     private int orderId = 0;
     private List<Menu> children;
     private Menu parent;
@@ -65,6 +66,18 @@ public class Menu extends Resource implements Serializable {
     }
     public void setPath(String path) {
         this.path = path;
+    }
+
+    /**
+     * 菜单图表类
+     * @return
+     */
+    public String getIconClass() {
+        return iconClass;
+    }
+
+    public void setIconClass(String iconClass) {
+        this.iconClass = iconClass;
     }
 
     /**
