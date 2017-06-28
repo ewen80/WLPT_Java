@@ -1,8 +1,5 @@
 package pw.ewen.WLPT.configs.security;
 
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
-import org.springframework.cache.ehcache.EhCacheFactoryBean;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +13,6 @@ import org.springframework.security.acls.jdbc.LookupStrategy;
 import org.springframework.security.acls.model.AclCache;
 import org.springframework.security.acls.model.AclService;
 import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy;
-import org.springframework.security.acls.model.PermissionGrantingStrategy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 

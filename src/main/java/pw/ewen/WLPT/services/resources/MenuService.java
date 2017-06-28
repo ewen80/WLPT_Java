@@ -1,6 +1,5 @@
 package pw.ewen.WLPT.services.resources;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -12,13 +11,15 @@ import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
 import pw.ewen.WLPT.repositories.resources.MenuRepository;
-import pw.ewen.WLPT.security.UserContext;
 import pw.ewen.WLPT.security.acl.ObjectIdentityRetrievalStrategyWLPTImpl;
 import pw.ewen.WLPT.services.PermissionService;
 import pw.ewen.WLPT.services.UserService;
 
 import javax.persistence.EntityManager;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by wenliang on 17-5-9.

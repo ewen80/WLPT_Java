@@ -3,9 +3,7 @@ package pw.ewen.WLPT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.stereotype.Component;
-import pw.ewen.WLPT.domains.Resource;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.domains.entities.Role;
@@ -15,8 +13,6 @@ import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.repositories.resources.MenuRepository;
 import pw.ewen.WLPT.services.PermissionService;
-
-import java.util.Arrays;
 
 /**
  * Created by wen on 17-5-14.

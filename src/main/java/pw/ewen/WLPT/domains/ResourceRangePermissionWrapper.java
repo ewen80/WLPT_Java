@@ -2,7 +2,6 @@ package pw.ewen.WLPT.domains;
 
 import org.springframework.security.acls.model.Permission;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
-import pw.ewen.WLPT.domains.entities.Role;
 
 import java.util.Set;
 

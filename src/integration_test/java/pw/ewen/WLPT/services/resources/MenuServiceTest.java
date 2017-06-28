@@ -18,9 +18,6 @@ import pw.ewen.WLPT.domains.entities.resources.Menu;
 import pw.ewen.WLPT.repositories.ResourceRangeRepository;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.resources.MenuRepository;
-import pw.ewen.WLPT.repositories.specifications.core.SearchCriteria;
-import pw.ewen.WLPT.repositories.specifications.core.SearchOperation;
-import pw.ewen.WLPT.repositories.specifications.core.SearchSpecification;
 import pw.ewen.WLPT.security.UserContext;
 import pw.ewen.WLPT.services.PermissionService;
 

@@ -16,6 +16,7 @@ public class MenuDTO {
     private String name;
     private String path;
     private int orderId;
+    private String iconClass;
     private long parentId; //默认0,表示无上级节点
 
     private static class MenuConverter implements DTOConvert<MenuDTO, Menu>  {
@@ -35,6 +36,7 @@ public class MenuDTO {
             menu.setId(menuDTO.getId());
             menu.setName(menuDTO.getName());
             menu.setOrderId(menuDTO.getOrderId());
+            menu.setIconClass(menuDTO.getIconClass());
             menu.setPath(menuDTO.getPath());
 
             Menu parent = null;
@@ -58,6 +60,7 @@ public class MenuDTO {
             dto.setId(menu.getId());
             dto.setName(menu.getName());
             dto.setOrderId(menu.getOrderId());
+            dto.setIconClass(menu.getIconClass());
             dto.setPath(menu.getPath());
             if(menu.getParent() != null){
                 dto.setParentId(menu.getParent().getId());
@@ -116,6 +119,14 @@ public class MenuDTO {
 
     public void setOrderId(int orderId) {
         this.orderId = orderId;
+    }
+
+    public String getIconClass() {
+        return iconClass;
+    }
+
+    public void setIconClass(String iconClass) {
+        this.iconClass = iconClass;
     }
 
     public long getParentId() {

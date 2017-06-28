@@ -18,7 +18,7 @@ public class Menu extends Resource implements Serializable {
 
     private String name;
     private String path;
-    private String iconClass;
+    private String iconClass = "";
     private int orderId = 0;
     private List<Menu> children;
     private Menu parent;

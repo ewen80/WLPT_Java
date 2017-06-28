@@ -1,17 +1,13 @@
 package pw.ewen.WLPT.controllers.resources;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
-import pw.ewen.WLPT.domains.DTOs.UserDTO;
 import pw.ewen.WLPT.domains.DTOs.resources.MenuDTO;
-import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
 import pw.ewen.WLPT.repositories.resources.MenuRepository;
 import pw.ewen.WLPT.services.resources.MenuService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by wen on 17-5-7.
