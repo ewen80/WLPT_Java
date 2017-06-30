@@ -16,6 +16,7 @@ public class MethodSucrityConfig extends GlobalMethodSecurityConfiguration {
     @Autowired
     PermissionEvaluator aclPermissionEvaluator;
 
+    //替代默认hasPermission()
     @Override
     protected MethodSecurityExpressionHandler createExpressionHandler() {
         DefaultMethodSecurityExpressionHandler defaultMethodSecurityExpressionHandler = new DefaultMethodSecurityExpressionHandler();
