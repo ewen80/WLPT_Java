@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class MenuDTO {
 
-    private long id;
+    private long resourceId;
     private String name;
     private String path;
     private int orderId;
@@ -33,7 +33,7 @@ public class MenuDTO {
             Assert.notNull(this.menuRepository);
 
             Menu menu = new Menu();
-            menu.setId(menuDTO.getId());
+            menu.setResourceId(menuDTO.getResourceId());
             menu.setName(menuDTO.getName());
             menu.setOrderId(menuDTO.getOrderId());
             menu.setIconClass(menuDTO.getIconClass());
@@ -47,7 +47,7 @@ public class MenuDTO {
                 }
             }
 
-            List<Menu> children = this.menuRepository.findByParent_id(menuDTO.getId());
+            List<Menu> children = this.menuRepository.findByParent_id(menuDTO.getResourceId());
             if(children != null) {
                 menu.setChildren(children);
             }
@@ -57,13 +57,13 @@ public class MenuDTO {
         @Override
         public MenuDTO doBackward(Menu menu) {
             MenuDTO dto = new MenuDTO();
-            dto.setId(menu.getId());
+            dto.setResourceId(menu.getResourceId());
             dto.setName(menu.getName());
             dto.setOrderId(menu.getOrderId());
             dto.setIconClass(menu.getIconClass());
             dto.setPath(menu.getPath());
             if(menu.getParent() != null){
-                dto.setParentId(menu.getParent().getId());
+                dto.setParentId(menu.getParent().getResourceId());
             }
 
             return dto;
@@ -89,12 +89,12 @@ public class MenuDTO {
         return converter.doBackward(menu);
     }
 
-    public long getId() {
-        return id;
+    public long getResourceId() {
+        return resourceId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setResourceId(long resourceId) {
+        this.resourceId = resourceId;
     }
 
     public String getName() {

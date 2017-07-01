@@ -169,7 +169,7 @@ public class PermissionControllerTest {
                 .content(jsonString))
                 .andExpect(status().isOk());
 
-//                .param("resourceRangeId", String.valueOf(rr1.getId()))
+//                .param("resourceRangeId", String.valueOf(rr1.getResourceId()))
 //                .param("permissions", "W,"));
 
         ResourceRangePermissionWrapper wrapper = this.permissionService.getByResourceRange(rr1.getId());

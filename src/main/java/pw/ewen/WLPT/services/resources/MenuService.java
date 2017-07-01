@@ -96,7 +96,7 @@ public class MenuService {
 
     public Menu save(Menu  menu) {
         Menu parent = menu.getParent();
-        Long parentId = parent == null ? null : parent.getId();
+        Long parentId = parent == null ? null : parent.getResourceId();
         if(menu.getOrderId() != 0){
             //如果新增的菜单的orderId不等于0,则将数据库中已经存在的orderId大于等于当前menu orderId的菜单项顺序id往后顺移一位
             List<Menu> afterCurMenus = this.menuRepository.findByOrderIdGreaterThanEqualAndParent_id(menu.getOrderId(), parentId);

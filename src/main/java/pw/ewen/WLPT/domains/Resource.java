@@ -11,7 +11,7 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class Resource {
 
-    private long id;
+    private long resourceId;
 
     protected Resource() {
     }
@@ -19,10 +19,10 @@ public abstract class Resource {
     //资源唯一标志号
     @Id
     @GeneratedValue
-    public long getId(){
-        return this.id;
+    public long getResourceId(){
+        return this.resourceId;
     }
-    public void setId(long id){ this.id = id;}
+    public void setResourceId(long resourceId){ this.resourceId = resourceId;}
 
     @Override
     public boolean equals(Object o) {
@@ -31,11 +31,11 @@ public abstract class Resource {
 
         Resource resource = (Resource) o;
 
-        return id == resource.id;
+        return resourceId == resource.resourceId;
     }
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        return (int) (resourceId ^ (resourceId >>> 32));
     }
 }

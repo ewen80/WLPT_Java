@@ -49,7 +49,7 @@ public class MenuRepositoryTest {
      */
     @Test
     public void testGetByParentId() {
-        List<Menu> menus = this.menuRepository.findByParent_id(this.menu1.getId());
+        List<Menu> menus = this.menuRepository.findByParent_id(this.menu1.getResourceId());
         assertThat(menus).hasSize(1)
                 .containsOnly(menu11);
     }
