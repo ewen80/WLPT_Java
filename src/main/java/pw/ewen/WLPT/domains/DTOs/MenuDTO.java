@@ -1,9 +1,8 @@
-package pw.ewen.WLPT.domains.DTOs.resources;
+package pw.ewen.WLPT.domains.DTOs;
 
 import org.springframework.util.Assert;
-import pw.ewen.WLPT.domains.DTOs.DTOConvert;
-import pw.ewen.WLPT.domains.entities.resources.Menu;
-import pw.ewen.WLPT.repositories.resources.MenuRepository;
+import pw.ewen.WLPT.domains.entities.Menu;
+import pw.ewen.WLPT.repositories.MenuRepository;
 
 import java.util.List;
 
@@ -47,7 +46,7 @@ public class MenuDTO {
                 }
             }
 
-            List<Menu> children = this.menuRepository.findByParent_id(menuDTO.getResourceId());
+            List<Menu> children = this.menuRepository.findByParent_resourceId(menuDTO.getResourceId());
             if(children != null) {
                 menu.setChildren(children);
             }

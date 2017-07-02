@@ -1,11 +1,11 @@
-package pw.ewen.WLPT.controllers.resources;
+package pw.ewen.WLPT.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import pw.ewen.WLPT.domains.DTOs.resources.MenuDTO;
-import pw.ewen.WLPT.domains.entities.resources.Menu;
-import pw.ewen.WLPT.repositories.resources.MenuRepository;
-import pw.ewen.WLPT.services.resources.MenuService;
+import pw.ewen.WLPT.domains.DTOs.MenuDTO;
+import pw.ewen.WLPT.domains.entities.Menu;
+import pw.ewen.WLPT.repositories.MenuRepository;
+import pw.ewen.WLPT.services.MenuService;
 
 import java.util.List;
 

@@ -1,6 +1,7 @@
 package pw.ewen.WLPT.domains.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import pw.ewen.WLPT.domains.Resource;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,7 +14,7 @@ import java.io.Serializable;
 //@JsonIdentityInfo(
 //		generator = ObjectIdGenerators.PropertyGenerator.class,
 //		property = "id")
-public class User implements Serializable {
+public class User extends Resource implements Serializable {
 	private static final long serialVersionUID = 5844614718392473692L;
 	
 	private String id;
@@ -32,7 +33,7 @@ public class User implements Serializable {
 		this.role = role;
 	}
 
-	@Id
+	@Column(nullable = false,unique = true)
 	public String getId() {
 		return id;
 	}
@@ -61,7 +62,7 @@ public class User implements Serializable {
 	}
 
 	@ManyToOne
-	@JoinColumn(name="role_Id")
+	@JoinColumn(name="role_resourceId")
 	public Role getRole() {
 		return role;
 	}

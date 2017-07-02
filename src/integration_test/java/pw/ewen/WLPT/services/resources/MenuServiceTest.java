@@ -14,11 +14,12 @@ import org.springframework.test.context.transaction.BeforeTransaction;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.domains.entities.Role;
-import pw.ewen.WLPT.domains.entities.resources.Menu;
+import pw.ewen.WLPT.domains.entities.Menu;
 import pw.ewen.WLPT.repositories.ResourceRangeRepository;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
-import pw.ewen.WLPT.repositories.resources.MenuRepository;
+import pw.ewen.WLPT.repositories.MenuRepository;
 import pw.ewen.WLPT.security.UserContext;
+import pw.ewen.WLPT.services.MenuService;
 import pw.ewen.WLPT.services.PermissionService;
 
 import javax.transaction.Transactional;
@@ -337,7 +338,7 @@ public class MenuServiceTest {
 
     //对 menu111,menu11,menu12,menu2有权限
     private void addAuthorizedMenus(){
-        ResourceType resourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.Menu","Menu","");
+        ResourceType resourceType = new ResourceType("pw.ewen.WLPT.domains.entities.Menu","Menu","");
         resourceTypeRepository.save(resourceType);
 
         ResourceRange resourceRange = new ResourceRange("name=='111'", new Role("admin", "admin"), resourceType);

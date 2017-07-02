@@ -1,6 +1,7 @@
 package pw.ewen.WLPT.domains.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import pw.ewen.WLPT.domains.Resource;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,11 +19,8 @@ import java.util.Set;
 //@JsonIdentityInfo(
 //		generator = ObjectIdGenerators.PropertyGenerator.class,
 //		property = "id")
-public class Role implements Serializable {
+public class Role extends  Resource implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1888955493407366629L;
 	private String id;
 	private String name;
@@ -40,9 +38,7 @@ public class Role implements Serializable {
 		this.resourceRanges = new HashSet<>();
 	}
 
-	@Id
-//	@GeneratedValue(generator="UUID")
-//	@GenericGenerator(name="UUID", strategy="uuid")
+	@Column(nullable = false, unique = true)
 	public String getId() {
 		return id;
 	}

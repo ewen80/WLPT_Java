@@ -5,8 +5,10 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import pw.ewen.WLPT.domains.entities.Role;
 
+import java.util.List;
+
 @Repository
 public interface RoleRepository extends JpaRepository<Role, String>, JpaSpecificationExecutor<Role> {
-//    List<Role> findByName(String name);
+    Role findByid(String roleId);
 }
 

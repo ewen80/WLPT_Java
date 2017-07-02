@@ -1,4 +1,4 @@
-package pw.ewen.WLPT.domains.entities.resources;
+package pw.ewen.WLPT.domains.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

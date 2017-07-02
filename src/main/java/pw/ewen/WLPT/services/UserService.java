@@ -46,7 +46,7 @@ public class UserService {
      * @return 如果没有找到返回null
      */
     public User findOne(String id){
-        return this.userRepository.findOne(id);
+        return this.userRepository.findByid(id);
     }
 
     public User save(User user){

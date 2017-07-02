@@ -6,8 +6,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import pw.ewen.WLPT.domains.entities.resources.Menu;
-import pw.ewen.WLPT.repositories.resources.MenuRepository;
+import pw.ewen.WLPT.domains.entities.Menu;
+import pw.ewen.WLPT.repositories.MenuRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -49,7 +49,7 @@ public class MenuRepositoryTest {
      */
     @Test
     public void testGetByParentId() {
-        List<Menu> menus = this.menuRepository.findByParent_id(this.menu1.getResourceId());
+        List<Menu> menus = this.menuRepository.findByParent_resourceId(this.menu1.getResourceId());
         assertThat(menus).hasSize(1)
                 .containsOnly(menu11);
     }

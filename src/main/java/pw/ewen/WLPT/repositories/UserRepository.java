@@ -5,6 +5,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import pw.ewen.WLPT.domains.entities.User;
 
+import java.util.List;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, String>, JpaSpecificationExecutor<User> {
+    User findByid(String userId);
 }
