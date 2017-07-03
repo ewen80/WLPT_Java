@@ -29,7 +29,7 @@ public class SecurityUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        User user = userRepository.findOne(userId);
+        User user = userRepository.findByid(userId);
         Role role;
         if(user != null){
             role = user.getRole();

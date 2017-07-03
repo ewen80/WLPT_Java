@@ -41,7 +41,7 @@ public class UserContext {
         if (userId == null) {
             return null;
         }
-        User user = userRepository.findOne(userId);
+        User user = userRepository.findByid(userId);
 //        if (user == null) {
 //            throw new IllegalStateException(
 //                    "Could not find user with id " + userId);

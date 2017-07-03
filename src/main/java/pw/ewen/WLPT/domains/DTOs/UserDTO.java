@@ -30,7 +30,7 @@ public class UserDTO {
         public User doForward(UserDTO dto) {
             Assert.notNull(this.roleRepository);
 
-            Role role = roleRepository.findOne(dto.getRoleId());
+            Role role = roleRepository.findByid(dto.getRoleId());
             User user = new User(dto.getId(), dto.getName(), dto.getPassword(), role);
 
             return user;

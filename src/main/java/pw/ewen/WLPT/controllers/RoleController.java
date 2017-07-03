@@ -54,7 +54,7 @@ public class RoleController {
      */
     @RequestMapping(value="/{roleId}", method=RequestMethod.GET, produces="application/json")
     public Role getOneRole(@PathVariable("roleId") String roleId){
-        return roleRepository.findOne(roleId);
+        return roleRepository.findByid(roleId);
     }
 
 //    @RequestMapping(value = "/byname/{name}", method=RequestMethod.GET, produces = "application/json")
@@ -81,7 +81,7 @@ public class RoleController {
         String[] arrRoleIds = roleIds.split(",");
         //检查角色下是否有用户，有则不允许删除
         for(String id : arrRoleIds){
-            Role role = this.roleRepository.findOne(id);
+            Role role = this.roleRepository.findByid(id);
             if(role != null ){
                 Set<User> users = role.getUsers();
                 if(users.isEmpty()){
