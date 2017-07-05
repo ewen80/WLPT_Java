@@ -6,6 +6,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import pw.ewen.WLPT.aops.ResourceTypeAnnotationHandler;
+import pw.ewen.WLPT.domains.NeverMatchedResourceRange;
 import pw.ewen.WLPT.domains.entities.*;
 import pw.ewen.WLPT.repositories.*;
 import pw.ewen.WLPT.services.PermissionService;
@@ -41,6 +42,8 @@ public class ApplicationInitialization implements ApplicationRunner {
         this.initialRolesAndUsers();
         this.initialMenu();
 //        this.authorizeMenu();
+
+       this.userRepository.findAll();
     }
 
 
@@ -83,8 +86,6 @@ public class ApplicationInitialization implements ApplicationRunner {
         homeMenu.setName("Home");
         homeMenu.setPath("/");
         menuRepository.save(homeMenu);
-
-        homeMenu.ttt();
 
         Menu adminMenu = new Menu();
         adminMenu.setName("后台管理");

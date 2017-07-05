@@ -4,6 +4,7 @@ package pw.ewen.WLPT.aops;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,9 +14,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class  ResourceTypeAnnotationHandler {
 
-    @Around("execution(* pw.ewen.WLPT.domains.entities.Menu.ttt(..))")
+    public ResourceTypeAnnotationHandler() {
+        System.out.println("created aop");
+    }
+
+    @Around("execution(* pw.ewen.WLPT.domains.entities.Menu.*(..))")
     public Object around(final ProceedingJoinPoint joinPoint) throws Throwable {
         System.out.println("aoooop");
         return joinPoint.proceed();
+    }
+
+    @Before("execution(* pw.ewen.WLPT.repositories.*.*(..))")
+    public void tttAOP(){
+        System.out.println("aooooop");
     }
 }

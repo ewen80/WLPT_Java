@@ -126,8 +126,4 @@ public class Menu extends Resource implements Serializable {
         this.parent = parent;
     }
 
-    @pw.ewen.WLPT.annotations.ResourceType.ResourceType
-    public void ttt(){
-        System.out.println("111");
-    }
 }

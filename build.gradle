@@ -79,7 +79,8 @@ dependencies {
             "com.h2database:h2",
             "net.sf.ehcache:ehcache",
             "org.apache.commons:commons-lang3:3.5",
-            "org.springframework.boot:spring-boot-starter-aop"
+            "org.springframework.boot:spring-boot-starter-aop",
+            "org.springframework:spring-aspects:4.1.8.RELEASE"
     )
 //    runtime("mysql:mysql-connector-java:5.1.39")
     testCompile(
