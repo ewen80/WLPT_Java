@@ -51,7 +51,7 @@ public class ResourceRangePermissionWrapperDTO {
         @Override
         public ResourceRangePermissionWrapperDTO doBackward(ResourceRangePermissionWrapper wrapper) {
             ResourceRangePermissionWrapperDTO dto = new ResourceRangePermissionWrapperDTO();
-            dto.setResourceRangeId(wrapper.getResourceRange().getId());
+            dto.setResourceRangeId(wrapper.getResourceRange().getResourceId());
             Set<PermissionDTO> pDTO = wrapper.getPermissions().stream()
                                         .map( permission -> PermissionDTO.convertFromPermission(permission))
                                         .collect(Collectors.toSet());

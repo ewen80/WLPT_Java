@@ -11,5 +11,5 @@ import pw.ewen.WLPT.domains.entities.ResourceType;
  */
 @Repository
 public interface ResourceTypeRepository extends JpaRepository<ResourceType, String>, JpaSpecificationExecutor<ResourceType> {
-
+    ResourceType findByClassName(String className);
 }

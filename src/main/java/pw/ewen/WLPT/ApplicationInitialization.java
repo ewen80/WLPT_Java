@@ -3,7 +3,9 @@ package pw.ewen.WLPT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import pw.ewen.WLPT.aops.ResourceTypeAnnotationHandler;
 import pw.ewen.WLPT.domains.entities.*;
 import pw.ewen.WLPT.repositories.*;
 import pw.ewen.WLPT.services.PermissionService;
@@ -15,6 +17,11 @@ import pw.ewen.WLPT.services.PermissionService;
 @Component
 public class ApplicationInitialization implements ApplicationRunner {
 
+    @Autowired
+    private ApplicationContext context;
+
+    @Autowired
+    private ResourceTypeAnnotationHandler resourceTypeAnnotationHandler;
     @Autowired
     private MenuRepository menuRepository;
     @Autowired
@@ -28,12 +35,15 @@ public class ApplicationInitialization implements ApplicationRunner {
     @Autowired
     private PermissionService permissionService;
 
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         this.initialRolesAndUsers();
         this.initialMenu();
-        this.authorizeMenu();
+//        this.authorizeMenu();
     }
+
+
 
     //初始化角色（默认为admin,guest）
     private void initialRoles(){
@@ -68,10 +78,13 @@ public class ApplicationInitialization implements ApplicationRunner {
 
     //初始化菜单数据
     private void initialMenu() {
+
         Menu homeMenu = new Menu();
         homeMenu.setName("Home");
         homeMenu.setPath("/");
         menuRepository.save(homeMenu);
+
+        homeMenu.ttt();
 
         Menu adminMenu = new Menu();
         adminMenu.setName("后台管理");
@@ -101,6 +114,7 @@ public class ApplicationInitialization implements ApplicationRunner {
         menusAdminMenu.setParent(adminMenu);
         menuRepository.save(menusAdminMenu);
     }
+
     //初始化菜单权限
     //admin角色对所有菜单都有权限
     private void authorizeMenu(){

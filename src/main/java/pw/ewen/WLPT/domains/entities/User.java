@@ -1,6 +1,7 @@
 package pw.ewen.WLPT.domains.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import pw.ewen.WLPT.annotations.ResourceType.*;
 import pw.ewen.WLPT.domains.Resource;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.io.Serializable;
  * 一个用户只能属于一个角色（后期可以扩展至属于多个角色）
  */
 @Entity
+@pw.ewen.WLPT.annotations.ResourceType.ResourceType
 //@JsonIdentityInfo(
 //		generator = ObjectIdGenerators.PropertyGenerator.class,
 //		property = "id")

@@ -1,6 +1,7 @@
 package pw.ewen.WLPT.domains.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import pw.ewen.WLPT.annotations.ResourceType.*;
 import pw.ewen.WLPT.domains.Resource;
 
 import javax.persistence.Column;
@@ -15,6 +16,7 @@ import java.util.Set;
  * 系统角色
  */
 @Entity
+@pw.ewen.WLPT.annotations.ResourceType.ResourceType
 //@JsonIgnoreProperties(value={"users", "handler", "hibernateLazyInitializer"})
 //@JsonIdentityInfo(
 //		generator = ObjectIdGenerators.PropertyGenerator.class,

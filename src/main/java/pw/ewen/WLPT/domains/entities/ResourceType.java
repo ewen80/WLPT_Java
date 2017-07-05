@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pw.ewen.WLPT.domains.Resource;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -17,7 +18,8 @@ import java.util.Set;
  * 保存当前系统中的资源类别列表
  */
 @Entity
-public class ResourceType implements Serializable {
+@pw.ewen.WLPT.annotations.ResourceType.ResourceType
+public class ResourceType extends Resource implements Serializable {
 
     private String className;
     private String name;
@@ -49,7 +51,7 @@ public class ResourceType implements Serializable {
     /**
      * 类的全名称
      */
-    @Id
+    @Column(unique = true)
     public String getClassName() {
         return className;
     }

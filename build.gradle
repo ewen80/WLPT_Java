@@ -78,7 +78,8 @@ dependencies {
             "org.springframework.security:spring-security-acl",
             "com.h2database:h2",
             "net.sf.ehcache:ehcache",
-            "org.apache.commons:commons-lang3:3.5"
+            "org.apache.commons:commons-lang3:3.5",
+            "org.springframework.boot:spring-boot-starter-aop"
     )
 //    runtime("mysql:mysql-connector-java:5.1.39")
     testCompile(

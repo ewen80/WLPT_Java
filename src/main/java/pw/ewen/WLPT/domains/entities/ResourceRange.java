@@ -11,6 +11,7 @@ import pw.ewen.WLPT.exceptions.security.MatchedMultipleResourceRangeException;
 import pw.ewen.WLPT.repositories.ResourceRangeRepository;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -20,11 +21,11 @@ import java.util.List;
  * Role和ResourceType不能为空,MatachAll只是在基于Role和ResourceType的基础上匹配全部资源(即忽略filter字段)
  */
 @Entity
+@pw.ewen.WLPT.annotations.ResourceType.ResourceType
 //@JsonIdentityInfo(
 //        generator = ObjectIdGenerators.PropertyGenerator.class,
 //        property = "id")
-public class ResourceRange {
-    private long id;
+public class ResourceRange extends Resource implements Serializable {
     private String filter;
     @JsonBackReference(value = "range")
     private Role role;
@@ -39,11 +40,6 @@ public class ResourceRange {
         this.role = role;
         this.resourceType = resourceType;
     }
-
-    @Id
-    @GeneratedValue
-    public long getId(){ return this.id;}
-    public void setId(long value){ this.id = value;}
 
     //资源范围筛选依据（Spel）
     public String getFilter() {
@@ -127,18 +123,4 @@ public class ResourceRange {
         return matchedResourceRange;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ResourceRange that = (ResourceRange) o;
-
-        return id == that.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
-    }
 }

@@ -38,7 +38,7 @@ public class ResourceRangeDTO implements Serializable {
             Assert.notNull(this.resourceTypeRepository);
 
             ResourceRange range = new ResourceRange();
-            range.setId(dto.getId());
+            range.setResourceId(dto.getId());
             range.setFilter(dto.getFilter());
             range.setMatchAll(dto.isMatchAll());
             Role role = roleRepository.findByid(dto.getRoleId());
@@ -55,7 +55,7 @@ public class ResourceRangeDTO implements Serializable {
         @Override
         public ResourceRangeDTO doBackward(ResourceRange range) {
             ResourceRangeDTO dto = new ResourceRangeDTO();
-            dto.setId(range.getId());
+            dto.setId(range.getResourceId());
             dto.setFilter(range.getFilter());
             dto.setMatchAll(range.isMatchAll());
             dto.setResourceTypeClassName(range.getResourceType().getClassName());
