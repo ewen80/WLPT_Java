@@ -5,8 +5,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import pw.ewen.WLPT.aops.ResourceTypeAnnotationHandler;
-import pw.ewen.WLPT.domains.NeverMatchedResourceRange;
+import pw.ewen.WLPT.aops.ResourceTypeAnnotationAspect;
 import pw.ewen.WLPT.domains.entities.*;
 import pw.ewen.WLPT.repositories.*;
 import pw.ewen.WLPT.services.PermissionService;
@@ -22,7 +21,7 @@ public class ApplicationInitialization implements ApplicationRunner {
     private ApplicationContext context;
 
     @Autowired
-    private ResourceTypeAnnotationHandler resourceTypeAnnotationHandler;
+    private ResourceTypeAnnotationAspect resourceTypeAnnotationHandler;
     @Autowired
     private MenuRepository menuRepository;
     @Autowired

@@ -67,6 +67,13 @@ tasks.withType(Test) {
     reports.html.destination = file("${reporting.baseDir}/${name}")
 }
 
+bootRun.doFirst {
+    jvmArgs = [
+            '-javaagent:/home/wenliang/Develop/gradle-3.3/caches/modules-2/files-2.1/org.springframework/spring-instrument/4.3.9.RELEASE/41801646a3586f5382e61fe61494d9761ac82f5e/spring-instrument-4.3.9.RELEASE.jar',
+            '-javaagent:/home/wenliang/Develop/gradle-3.3/caches/modules-2/files-2.1/org.aspectj/aspectjweaver/1.8.9/db28774f477f07220eac18d5ec9c4e01f48589d7/aspectjweaver-1.8.9.jar'
+    ]
+}
+
 // In this section you declare the dependencies for your production and test code
 dependencies {
     compile(
@@ -80,7 +87,7 @@ dependencies {
             "net.sf.ehcache:ehcache",
             "org.apache.commons:commons-lang3:3.5",
             "org.springframework.boot:spring-boot-starter-aop",
-            "org.springframework:spring-aspects:4.1.8.RELEASE"
+            "org.springframework:spring-instrument:4.3.9.RELEASE"
     )
 //    runtime("mysql:mysql-connector-java:5.1.39")
     testCompile(

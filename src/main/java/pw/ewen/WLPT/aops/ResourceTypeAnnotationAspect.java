@@ -11,10 +11,9 @@ import org.springframework.stereotype.Component;
  * Created by wenliang on 17-7-5.
  */
 @Aspect
-@Component
-public class  ResourceTypeAnnotationHandler {
+public class ResourceTypeAnnotationAspect {
 
-    public ResourceTypeAnnotationHandler() {
+    public ResourceTypeAnnotationAspect() {
         System.out.println("created aop");
     }
 
