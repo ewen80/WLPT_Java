@@ -49,6 +49,7 @@ repositories {
 configurations {
     integrationTestCompile.extendsFrom testCompile
     integrationTestRuntime.extendsFrom testRuntime
+    javaAgent
 }
 
 task integrationTest(type: Test) {
@@ -68,10 +69,25 @@ tasks.withType(Test) {
 }
 
 bootRun.doFirst {
-    jvmArgs = [
-            '-javaagent:/home/wenliang/Develop/gradle-3.3/caches/modules-2/files-2.1/org.springframework/spring-instrument/4.3.9.RELEASE/41801646a3586f5382e61fe61494d9761ac82f5e/spring-instrument-4.3.9.RELEASE.jar',
-            '-javaagent:/home/wenliang/Develop/gradle-3.3/caches/modules-2/files-2.1/org.aspectj/aspectjweaver/1.8.9/db28774f477f07220eac18d5ec9c4e01f48589d7/aspectjweaver-1.8.9.jar'
-    ]
+    configurations.javaAgent.files.each {
+        bootRun.jvmArgs.add "-javaagent:${it}"
+    }
+
+    println bootRun.jvmArgs
+//    jvmArgs = [
+//            '-javaagent:/home/wenliang/Develop/gradle-3.3/caches/modules-2/files-2.1/org.springframework/spring-instrument/4.3.9.RELEASE/41801646a3586f5382e61fe61494d9761ac82f5e/spring-instrument-4.3.9.RELEASE.jar',
+//            '-javaagent:/home/wenliang/Develop/gradle-3.3/caches/modules-2/files-2.1/org.aspectj/aspectjweaver/1.8.9/db28774f477f07220eac18d5ec9c4e01f48589d7/aspectjweaver-1.8.9.jar'
+//    ]
+}
+
+task tt {
+    doLast {
+        bootRun.jvmArgs = []
+        configurations.javaAgent.files.each {
+            bootRun.jvmArgs.add "-javaagent:${it}"
+        }
+        println bootRun.jvmArgs
+    }
 }
 
 // In this section you declare the dependencies for your production and test code
@@ -88,6 +104,11 @@ dependencies {
             "org.apache.commons:commons-lang3:3.5",
             "org.springframework.boot:spring-boot-starter-aop",
             "org.springframework:spring-instrument:4.3.9.RELEASE"
+    )
+
+    javaAgent(
+            "org.springframework:spring-instrument:4.3.9.RELEASE",
+            "org.aspectj:aspectjweaver:1.8.9"
     )
 //    runtime("mysql:mysql-connector-java:5.1.39")
     testCompile(

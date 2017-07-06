@@ -17,14 +17,8 @@ public class ResourceTypeAnnotationAspect {
         System.out.println("created aop");
     }
 
-    @Around("execution(* pw.ewen.WLPT.domains.entities.Menu.*(..))")
-    public Object around(final ProceedingJoinPoint joinPoint) throws Throwable {
-        System.out.println("aoooop");
-        return joinPoint.proceed();
-    }
-
-    @Before("execution(* pw.ewen.WLPT.repositories.*.*(..))")
+    @Before("execution(* pw.ewen.WLPT.domains.entities.Menu.new(..))")
     public void tttAOP(){
-        System.out.println("aooooop");
+        System.out.println("menu created");
     }
 }
