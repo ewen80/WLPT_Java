@@ -7,7 +7,6 @@ import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -18,7 +17,6 @@ import java.util.Set;
  * 保存当前系统中的资源类别列表
  */
 @Entity
-@pw.ewen.WLPT.annotations.ResourceType.ResourceType
 public class ResourceType extends Resource implements Serializable {
 
     private String className;

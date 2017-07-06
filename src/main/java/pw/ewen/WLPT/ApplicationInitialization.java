@@ -5,7 +5,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import pw.ewen.WLPT.aops.ResourceTypeAnnotationAspect;
+import pw.ewen.WLPT.aops.ResourceTypeAspect;
 import pw.ewen.WLPT.domains.entities.*;
 import pw.ewen.WLPT.repositories.*;
 import pw.ewen.WLPT.services.PermissionService;
@@ -21,7 +21,7 @@ public class ApplicationInitialization implements ApplicationRunner {
     private ApplicationContext context;
 
     @Autowired
-    private ResourceTypeAnnotationAspect resourceTypeAnnotationHandler;
+    private ResourceTypeAspect resourceTypeAnnotationHandler;
     @Autowired
     private MenuRepository menuRepository;
     @Autowired

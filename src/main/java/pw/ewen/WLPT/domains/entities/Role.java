@@ -1,12 +1,10 @@
 package pw.ewen.WLPT.domains.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import pw.ewen.WLPT.annotations.ResourceType.*;
 import pw.ewen.WLPT.domains.Resource;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -16,7 +14,6 @@ import java.util.Set;
  * 系统角色
  */
 @Entity
-@pw.ewen.WLPT.annotations.ResourceType.ResourceType
 //@JsonIgnoreProperties(value={"users", "handler", "hibernateLazyInitializer"})
 //@JsonIdentityInfo(
 //		generator = ObjectIdGenerators.PropertyGenerator.class,

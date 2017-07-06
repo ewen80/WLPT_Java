@@ -10,7 +10,10 @@ import pw.ewen.WLPT.domains.Resource;
 import pw.ewen.WLPT.exceptions.security.MatchedMultipleResourceRangeException;
 import pw.ewen.WLPT.repositories.ResourceRangeRepository;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.List;
 
@@ -21,7 +24,6 @@ import java.util.List;
  * Role和ResourceType不能为空,MatachAll只是在基于Role和ResourceType的基础上匹配全部资源(即忽略filter字段)
  */
 @Entity
-@pw.ewen.WLPT.annotations.ResourceType.ResourceType
 //@JsonIdentityInfo(
 //        generator = ObjectIdGenerators.PropertyGenerator.class,
 //        property = "id")

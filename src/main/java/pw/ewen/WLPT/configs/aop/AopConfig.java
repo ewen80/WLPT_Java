@@ -3,10 +3,8 @@ package pw.ewen.WLPT.configs.aop;
 import org.aspectj.lang.Aspects;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.EnableLoadTimeWeaving;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import pw.ewen.WLPT.aops.ResourceTypeAnnotationAspect;
+import pw.ewen.WLPT.aops.ResourceTypeAspect;
 
 /**
  * Created by wenliang on 17-7-5.
@@ -18,7 +16,7 @@ import pw.ewen.WLPT.aops.ResourceTypeAnnotationAspect;
 public class AopConfig {
 
     @Bean
-    public ResourceTypeAnnotationAspect resourceTypeAnnotationAspect(){
-        return Aspects.aspectOf(ResourceTypeAnnotationAspect.class);
+    public ResourceTypeAspect resourceTypeAnnotationAspect(){
+        return Aspects.aspectOf(ResourceTypeAspect.class);
     }
 }

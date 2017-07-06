@@ -7,13 +7,11 @@ import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.acls.model.*;
 import org.springframework.stereotype.Service;
+import pw.ewen.WLPT.domains.entities.Menu;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
-import pw.ewen.WLPT.domains.entities.Menu;
 import pw.ewen.WLPT.repositories.MenuRepository;
 import pw.ewen.WLPT.security.acl.ObjectIdentityRetrievalStrategyWLPTImpl;
-import pw.ewen.WLPT.services.PermissionService;
-import pw.ewen.WLPT.services.UserService;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;

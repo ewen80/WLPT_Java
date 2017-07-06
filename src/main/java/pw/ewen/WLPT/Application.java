@@ -2,7 +2,6 @@ package pw.ewen.WLPT;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 /**
  * Created by wenliang on 17-1-24.

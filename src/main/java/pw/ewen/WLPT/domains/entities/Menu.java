@@ -2,9 +2,6 @@ package pw.ewen.WLPT.domains.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.boot.context.properties.ConfigurationBeanFactoryMetaData;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import pw.ewen.WLPT.domains.Resource;
 
@@ -18,7 +15,6 @@ import java.util.List;
  * 菜单资源类
  */
 @Entity
-@pw.ewen.WLPT.annotations.ResourceType.ResourceType
 @Component
 public class Menu extends Resource implements Serializable {
 

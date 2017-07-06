@@ -15,7 +15,7 @@
 
     <aspects>
         <!-- declare aspects to the weaver -->
-        <aspect name="pw.ewen.WLPT.aops.ResourceTypeAnnotationAspect" />
+        <aspect name="pw.ewen.WLPT.aops.ResourceTypeAspect" />
     </aspects>
 
 </aspectj>
