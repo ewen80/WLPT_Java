@@ -5,3 +5,6 @@
 /build/*
 /gradle/*
 /src/jpaModelgen/
+/.gradle/
+/build/
+/bin/

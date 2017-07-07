@@ -2,9 +2,11 @@ package pw.ewen.WLPT.aops;
 
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 
@@ -22,8 +24,9 @@ public class ResourceTypeAspect {
         this.resourceTypeRepository = resourceTypeRepository;
     }
 
-    @Before("execution(pw.ewen.WLPT.domains.Resource+.new(..))")
+    @AfterReturning("execution(pw.ewen.WLPT.domains.Resource+.new(..))")
     public void saveResourceTypeInDB(JoinPoint joinPoint){
+
         Class resourceClass = joinPoint.getTarget().getClass();
         System.out.println(resourceClass.toString() + " Created");
 

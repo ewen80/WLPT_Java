@@ -18,11 +18,6 @@ import pw.ewen.WLPT.services.PermissionService;
 public class ApplicationInitialization implements ApplicationRunner {
 
     @Autowired
-    private ApplicationContext context;
-
-    @Autowired
-    private ResourceTypeAspect resourceTypeAnnotationHandler;
-    @Autowired
     private MenuRepository menuRepository;
     @Autowired
     private ResourceTypeRepository resourceTypeRepository;
@@ -38,11 +33,10 @@ public class ApplicationInitialization implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        this.initialRolesAndUsers();
-        this.initialMenu();
+//        this.initialRolesAndUsers();
+//        this.initialMenu();
 //        this.authorizeMenu();
 
-       this.userRepository.findAll();
     }
 
 
