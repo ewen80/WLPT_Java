@@ -33,8 +33,8 @@ public class ApplicationInitialization implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-//        this.initialRolesAndUsers();
-//        this.initialMenu();
+        this.initialRolesAndUsers();
+        this.initialMenu();
 //        this.authorizeMenu();
 
     }

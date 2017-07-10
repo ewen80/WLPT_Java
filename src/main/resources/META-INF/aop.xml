@@ -11,7 +11,6 @@
         -->
         <include within="pw.ewen.WLPT.domains.Resource+" />
         <include within="pw.ewen.WLPT.aops.*"/>
-        <include within="pw.ewen.WLPT.configs.aop" />
         <exclude within="pw.ewen.WLPT.test..*"/>
         <exclude within="pw.ewen.WLPT.controllers..*"/>
     </weaver>

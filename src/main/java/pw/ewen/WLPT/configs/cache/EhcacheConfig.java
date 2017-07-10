@@ -2,7 +2,9 @@ package pw.ewen.WLPT.configs.cache;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.ehcache.EhCacheFactoryBean;
+import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.acls.domain.AclAuthorizationStrategy;
@@ -14,6 +16,7 @@ import org.springframework.security.acls.model.PermissionGrantingStrategy;
  * 系统缓存配置
  */
 @Configuration
+@EnableCaching
 public class EhcacheConfig {
 
     @Bean
@@ -23,12 +26,28 @@ public class EhcacheConfig {
         return new EhCacheBasedAclCache(ehcache, permissionGrantingStrategy, aclAuthorizationStrategy);
     }
 
+    /**
+     * 获取ACL的ehCache
+     * @param cacheManager
+     * @return
+     */
     @Bean
-    EhCacheFactoryBean getEhCache(CacheManager cacheManager){
+    EhCacheFactoryBean getAclEhCache(CacheManager cacheManager){
         EhCacheFactoryBean ehCacheFactoryBean = new EhCacheFactoryBean();
         ehCacheFactoryBean.setCacheManager(cacheManager);
         ehCacheFactoryBean.setCacheName("aclCache");
 //        ehCacheFactoryBean.setTransactionalMode("local");
         return ehCacheFactoryBean;
+    }
+
+    /**
+     * 获取EhCacheManager Bean
+     * @return
+     */
+    @Bean
+    EhCacheManagerFactoryBean getEhCacheManager(){
+        EhCacheManagerFactoryBean cacheManagerFactoryBean =  new EhCacheManagerFactoryBean();
+        cacheManagerFactoryBean.setAcceptExisting(true);//此处不设置true，test会出现错误：spring testing: Another CacheManager with same name 'myCacheManager' already exists in the same VM
+        return cacheManagerFactoryBean;
     }
 }
