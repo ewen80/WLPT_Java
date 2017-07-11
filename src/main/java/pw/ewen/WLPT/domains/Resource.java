@@ -13,8 +13,8 @@ public abstract class Resource {
 
     private long resourceId;
 
-    protected Resource() {
-    }
+//    protected Resource() {
+//    }
 
     //资源唯一标志号
     @Id

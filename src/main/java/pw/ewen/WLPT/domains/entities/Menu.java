@@ -26,7 +26,6 @@ public class Menu extends Resource implements Serializable {
     private Menu parent;
 
     public  Menu() {
-        super();
         children = new ArrayList<>();
     }
 

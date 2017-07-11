@@ -20,7 +20,7 @@ public  class MyResource extends Resource implements Serializable {
         this.number = number;
     }
     public MyResource() {
-        super();
+
     }
 
 //    @ManyToOne

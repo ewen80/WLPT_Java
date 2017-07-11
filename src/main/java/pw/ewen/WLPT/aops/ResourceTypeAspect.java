@@ -5,6 +5,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.util.Assert;
@@ -25,16 +26,23 @@ public class ResourceTypeAspect {
         this.resourceTypeRepository = resourceTypeRepository;
     }
 
-    @AfterReturning("execution(pw.ewen.WLPT.domains.Resource+.new(..)) && !withincode(pw.ewen.WLPT.aops.ResourceTypeAspect.addResourceTypeInDB)")
+//    && !cflowblow(execution(pw.ewen.WLPT.aops.ResourceTypeAspect.addResourceTypeInDB))
+//call(pw.ewen.WLPT.domains.Resource+.new(..))
+    @Pointcut("execution(pw.ewen.WLPT.domains.Resource+.new(..))")
+    private void resourceConstructor(){}
+
+
+    @Before("resourceConstructor() && !this(pw.ewen.WLPT.aops.ResourceTypeAspect)")
     public void saveResourceTypeInDB(JoinPoint joinPoint){
 
         Class resourceClass = joinPoint.getTarget().getClass();
         String resourceClassName = resourceClass.getCanonicalName();
 
-        System.out.println(resourceClass.toString() + " Created");
+        System.out.println("enter:" + joinPoint);
 
         if(this.resourceTypeRepository != null){
             //判断系统中是否已经存在ResourceType,不存在则添加
+            System.out.println("检查 " + resourceClassName + " 是否在数据库中");
             if(!this.resourceTypeHadInDB(resourceClassName)){
                 //添加ResourceType,考虑是否会造成死循环，因为new ResourceType也会触发切面，此处使用withincode切点
                 this.addResourceTypeInDB(resourceClassName);
@@ -50,6 +58,8 @@ public class ResourceTypeAspect {
     @Cacheable
     private boolean resourceTypeHadInDB(String resourceTypeClassName){
         Assert.notNull(this.resourceTypeRepository);
+
+        System.out.println("检查数据库");
 
         ResourceType resourceType = this.resourceTypeRepository.findByClassName(resourceTypeClassName);
         return resourceType != null;
