@@ -31,7 +31,7 @@ public class ResourceTypeAspect {
     private void resourceConstructor(){}
 
 
-    @Before("execution(pw.ewen.WLPT.domains.Resource+.new(..)) && !cflow(call(* pw.ewen.WLPT..*.ResourceTypeService.save(String)))")
+    @Before("execution(pw.ewen.WLPT.domains.Resource+.new(..)) && !cflow(execution(* pw.ewen.WLPT..*.ResourceTypeService.save(String)))")
     public void saveResourceTypeInDB(JoinPoint joinPoint){
 
         Class resourceClass = joinPoint.getTarget().getClass();
