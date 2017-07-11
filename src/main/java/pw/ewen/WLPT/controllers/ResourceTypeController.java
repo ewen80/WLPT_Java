@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.specifications.ResourceTypeSpecificationBuilder;
+import pw.ewen.WLPT.services.ResourceTypeService;
 
 /**
  * Created by wen on 17-3-12.
@@ -22,6 +23,9 @@ public class ResourceTypeController {
     public ResourceTypeController(ResourceTypeRepository resourceTypeRepository) {
         this.resourceTypeRepository = resourceTypeRepository;
     }
+
+    @Autowired
+    private ResourceTypeService resourceTypeService;
 
     /**
      * 获取资源类型（分页，查询）
@@ -56,7 +60,7 @@ public class ResourceTypeController {
      */
     @RequestMapping(method=RequestMethod.POST, produces = "application/json")
     public ResourceType save(@RequestBody ResourceType resourceType){
-        return this.resourceTypeRepository.save(resourceType);
+        return this.resourceTypeService.save(resourceType);
     }
 
     /**

@@ -11,6 +11,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.util.Assert;
 import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
+import pw.ewen.WLPT.services.ResourceTypeService;
 
 /**
  * Created by wenliang on 17-7-5.
@@ -20,19 +21,17 @@ import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 @Aspect
 public class ResourceTypeAspect {
 
-    private ResourceTypeRepository resourceTypeRepository;
+    private ResourceTypeService resourceTypeService;
 
-    public void setResourceTypeRepository(ResourceTypeRepository resourceTypeRepository) {
-        this.resourceTypeRepository = resourceTypeRepository;
+    public void setResourceTypeService(ResourceTypeService resourceTypeService) {
+        this.resourceTypeService = resourceTypeService;
     }
 
-//    && !cflowblow(execution(pw.ewen.WLPT.aops.ResourceTypeAspect.addResourceTypeInDB))
-//call(pw.ewen.WLPT.domains.Resource+.new(..))
     @Pointcut("execution(pw.ewen.WLPT.domains.Resource+.new(..))")
     private void resourceConstructor(){}
 
 
-    @Before("resourceConstructor() && !this(pw.ewen.WLPT.aops.ResourceTypeAspect)")
+    @Before("execution(pw.ewen.WLPT.domains.Resource+.new(..)) && !cflow(call(* pw.ewen.WLPT..*.ResourceTypeService.save(String)))")
     public void saveResourceTypeInDB(JoinPoint joinPoint){
 
         Class resourceClass = joinPoint.getTarget().getClass();
@@ -40,13 +39,13 @@ public class ResourceTypeAspect {
 
         System.out.println("enter:" + joinPoint);
 
-        if(this.resourceTypeRepository != null){
+        if(this.resourceTypeService != null){
             //判断系统中是否已经存在ResourceType,不存在则添加
-            System.out.println("检查 " + resourceClassName + " 是否在数据库中");
-            if(!this.resourceTypeHadInDB(resourceClassName)){
-                //添加ResourceType,考虑是否会造成死循环，因为new ResourceType也会触发切面，此处使用withincode切点
-                this.addResourceTypeInDB(resourceClassName);
-            }
+//            System.out.println("检查 " + resourceClassName + " 是否在数据库中");
+//            if(!this.resourceTypeHadInDB(resourceClassName)){
+                //添加ResourceType,考虑是否会造成死循环，因为new ResourceType也会触发切面
+                this.resourceTypeService.save(resourceClassName);
+//            }
         }
     }
 
@@ -57,19 +56,12 @@ public class ResourceTypeAspect {
      */
     @Cacheable
     private boolean resourceTypeHadInDB(String resourceTypeClassName){
-        Assert.notNull(this.resourceTypeRepository);
+        Assert.notNull(this.resourceTypeService);
 
-        System.out.println("检查数据库");
+//        System.out.println("检查数据库");
 
-        ResourceType resourceType = this.resourceTypeRepository.findByClassName(resourceTypeClassName);
+        ResourceType resourceType = this.resourceTypeService.findByClassName(resourceTypeClassName);
         return resourceType != null;
     }
 
-    //在数据库中添加ResourceType信息
-    private void addResourceTypeInDB(String resourceTypeClassName){
-        Assert.notNull(this.resourceTypeRepository);
-
-        ResourceType menuResourceType = new ResourceType(resourceTypeClassName);
-        this.resourceTypeRepository.save(menuResourceType);
-    }
 }
