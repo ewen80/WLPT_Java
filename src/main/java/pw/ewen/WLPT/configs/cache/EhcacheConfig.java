@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheFactoryBean;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
+import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.acls.domain.AclAuthorizationStrategy;
@@ -18,7 +19,7 @@ import org.springframework.security.acls.model.PermissionGrantingStrategy;
  * 系统缓存配置
  */
 @Configuration
-@EnableCaching
+@EnableCaching(mode = AdviceMode.ASPECTJ)
 public class EhcacheConfig {
 
     @Bean

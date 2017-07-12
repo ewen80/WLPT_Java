@@ -78,13 +78,14 @@ bootRun.doFirst {
     //远程调试用，启用aspectJ后，直接debug无法进入断点，必须启用远程调试
     args.add("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005")
     jvmArgs =  args
+
+    println(jvmArgs)
 }
 
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
     compile(
-//            "org.springframework.boot:spring-boot-devtools",
             "org.springframework.boot:spring-boot-starter-data-jpa",
             "org.springframework.boot:spring-boot-starter-web",
             "org.springframework.boot:spring-boot-starter-security",
@@ -94,7 +95,7 @@ dependencies {
             "net.sf.ehcache:ehcache",
             "org.apache.commons:commons-lang3:3.5",
             "org.springframework.boot:spring-boot-starter-aop",
-            "org.springframework:spring-instrument:4.3.9.RELEASE"
+//            "org.springframework:spring-instrument:4.3.9.RELEASE"
     )
 
     javaAgent(
