@@ -30,22 +30,26 @@ public class ResourceTypeAspect {
     @Pointcut("execution(pw.ewen.WLPT.domains.Resource+.new(..))")
     private void resourceConstructor(){}
 
+    @Pointcut("!cflow(execution(* pw.ewen.WLPT..*.ResourceTypeService.save(String)))")
+    private void noRecursive(){}
 
-    @Before("execution(pw.ewen.WLPT.domains.Resource+.new(..)) && !cflow(execution(* pw.ewen.WLPT..*.ResourceTypeService.save(String)))")
+
+    @Before("resourceConstructor() && noRecursive()")
     public void saveResourceTypeInDB(JoinPoint joinPoint){
 
         Class resourceClass = joinPoint.getTarget().getClass();
         String resourceClassName = resourceClass.getCanonicalName();
 
-        System.out.println("enter:" + joinPoint);
+//        System.out.println("enter:" + joinPoint);
 
         if(this.resourceTypeService != null){
             //判断系统中是否已经存在ResourceType,不存在则添加
-//            System.out.println("检查 " + resourceClassName + " 是否在数据库中");
-//            if(!this.resourceTypeHadInDB(resourceClassName)){
+            System.out.println("准备检查 " + resourceClassName + " 是否在数据库中，测试cache是否有效");
+            if(!this.resourceTypeHadInDB(resourceClassName)){
                 //添加ResourceType,考虑是否会造成死循环，因为new ResourceType也会触发切面
+                System.out.println("保存数据库");
                 this.resourceTypeService.save(resourceClassName);
-//            }
+            }
         }
     }
 
@@ -54,11 +58,11 @@ public class ResourceTypeAspect {
      * @param resourceTypeClassName 资源类的全限定名
      * @return
      */
-    @Cacheable
+    @Cacheable("resourceTypeCache")
     private boolean resourceTypeHadInDB(String resourceTypeClassName){
         Assert.notNull(this.resourceTypeService);
 
-//        System.out.println("检查数据库");
+        System.out.println("检查数据库中，cache无效");
 
         ResourceType resourceType = this.resourceTypeService.findByClassName(resourceTypeClassName);
         return resourceType != null;
