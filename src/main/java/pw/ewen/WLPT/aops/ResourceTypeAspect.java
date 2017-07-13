@@ -37,19 +37,10 @@ public class ResourceTypeAspect {
     @Before("resourceConstructor() && noRecursive()")
     public void saveResourceTypeInDB(JoinPoint joinPoint){
 
-        Class resourceClass = joinPoint.getTarget().getClass();
-        String resourceClassName = resourceClass.getCanonicalName();
-
-//        System.out.println("enter:" + joinPoint);
-
+        String resourceClassName = joinPoint.getTarget().getClass().getCanonicalName();
         if(this.resourceTypeService != null){
             //判断系统中是否已经存在ResourceType,不存在则添加
-            System.out.println("准备检查 " + resourceClassName + " 是否在数据库中，测试cache是否有效");
-            if(!this.resourceTypeService.resourceTypeHadInDB(resourceClassName)){
-                //添加ResourceType,考虑是否会造成死循环，因为new ResourceType也会触发切面
-                System.out.println("保存数据库");
-                this.resourceTypeService.save(resourceClassName);
-            }
+            this.resourceTypeService.initialResourceTypeInDB(resourceClassName);
         }
     }
 

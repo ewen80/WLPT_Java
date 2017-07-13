@@ -41,9 +41,11 @@ public class ResourceTypeService {
      */
     @Cacheable("resourceTypeInDBCache")
     public boolean initialResourceTypeInDB(String resourceTypeClassName){
-        System.out.println("检查数据库中，cache无效");
-
         ResourceType resourceType = this.findByClassName(resourceTypeClassName);
-        return resourceType != null;
+        if(resourceType == null){
+            System.out.println("saving " + resourceTypeClassName);
+            this.save(resourceTypeClassName);
+        }
+        return true;
     }
 }

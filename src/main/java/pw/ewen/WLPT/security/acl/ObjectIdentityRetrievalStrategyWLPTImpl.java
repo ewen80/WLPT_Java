@@ -28,7 +28,7 @@ public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRe
 
     @Override
     public ObjectIdentity getObjectIdentity(Object domainObject) {
-        //查找ResourceRepository中当前SID对应的ResourceRange
+        //查找ResourceRepository中当前SID对应的ResourceRangeyao
         Role currentUserRole = userContext.getCurrentUser().getRole();
         ResourceRange resourceRange = getResourceRange(domainObject, currentUserRole);
         if(resourceRange == null){

@@ -32,7 +32,7 @@ public class AuthenticationApi {
     public boolean checkAuthentication(@RequestBody HashMap<String,String> authInfo){
         UserDetails userDetails;
         try{
-            userDetails = userDetailsService.loadUserByUsername(authInfo.get("userId"));
+            userDetails = this.userDetailsService.loadUserByUsername(authInfo.get("userId"));
             String authString = userDetails.getUsername() + ":" + userDetails.getPassword();
             byte[] encodedBytes = Base64.getEncoder().encode(authString.getBytes());
             String encodedAuthString = new String(encodedBytes);

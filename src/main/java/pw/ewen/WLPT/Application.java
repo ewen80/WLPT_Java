@@ -2,6 +2,7 @@ package pw.ewen.WLPT;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 /**
  * Created by wenliang on 17-1-24.
