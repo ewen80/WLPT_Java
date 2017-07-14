@@ -11,18 +11,21 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class Resource {
 
-    private long resourceId;
+    private long id;
 
 //    protected Resource() {
 //    }
 
     //资源唯一标志号
+    //由于spring security acl要求，属性名只能用id
     @Id
     @GeneratedValue
-    public long getResourceId(){
-        return this.resourceId;
+    public long getId(){
+        return this.id;
     }
-    public void setResourceId(long resourceId){ this.resourceId = resourceId;}
+    public void setId(long id){ this.id = id;}
+
+
 
     @Override
     public boolean equals(Object o) {
@@ -31,11 +34,11 @@ public abstract class Resource {
 
         Resource resource = (Resource) o;
 
-        return resourceId == resource.resourceId;
+        return id == resource.id;
     }
 
     @Override
     public int hashCode() {
-        return (int) (resourceId ^ (resourceId >>> 32));
+        return (int) (id ^ (id >>> 32));
     }
 }

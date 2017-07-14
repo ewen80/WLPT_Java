@@ -30,7 +30,7 @@ public class UserDTO {
         public User doForward(UserDTO dto) {
             Assert.notNull(this.roleRepository);
 
-            Role role = roleRepository.findByid(dto.getRoleId());
+            Role role = roleRepository.findByroleId(dto.getRoleId());
             User user = new User(dto.getId(), dto.getName(), dto.getPassword(), role);
 
             return user;
@@ -39,12 +39,12 @@ public class UserDTO {
         @Override
         public UserDTO doBackward(User user) {
             UserDTO dto = new UserDTO();
-            dto.setId(user.getId());
+            dto.setId(user.getUserId());
             dto.setName(user.getName());
             dto.setPassword(user.getPassword());
             dto.setPicture(user.getPicture());
             if(user.getRole() != null){
-                dto.setRoleId(user.getRole().getId());
+                dto.setRoleId(user.getRole().getRoleId());
             }
 
             return dto;

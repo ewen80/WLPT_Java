@@ -45,7 +45,7 @@ public class PermissionService {
         if(range != null){
             Set<Permission> permissions = new HashSet<>();
             ObjectIdentityImpl oi = new ObjectIdentityImpl(range);
-            Sid sid = new GrantedAuthoritySid(range.getRole().getId());
+            Sid sid = new GrantedAuthoritySid(range.getRole().getRoleId());
             try {
                 MutableAcl mutableAcl = (MutableAcl)aclService.readAclById(oi, Collections.singletonList(sid));
                 List<AccessControlEntry> entries = mutableAcl.getEntries();
@@ -69,7 +69,7 @@ public class PermissionService {
         MutableAcl mutableAcl;
         ResourceRange resourceRange = this.resourceRangeRepository.findOne(resourceRangeId);
         if(resourceRange != null) {
-            Sid sid = new GrantedAuthoritySid(resourceRange.getRole().getId());
+            Sid sid = new GrantedAuthoritySid(resourceRange.getRole().getRoleId());
             if(isThisResourceRangeExist(resourceRange)){
                 if(isThisPermissionExist(resourceRange, sid, permission)){
                     //当前已经存在此规则，抛出异常
@@ -110,7 +110,7 @@ public class PermissionService {
         MutableAcl mutableAcl;
         ResourceRange resourceRange = this.resourceRangeRepository.findOne(resourceRangeId);
         if(resourceRange != null) {
-            Sid sid = new GrantedAuthoritySid(resourceRange.getRole().getId());
+            Sid sid = new GrantedAuthoritySid(resourceRange.getRole().getRoleId());
             if(isThisPermissionExist(resourceRange, sid, permission)){
                 //存在规则
                 ObjectIdentityImpl oi = new ObjectIdentityImpl(resourceRange);

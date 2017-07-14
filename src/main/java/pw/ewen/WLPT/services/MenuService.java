@@ -3,6 +3,8 @@ package pw.ewen.WLPT.services;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.acls.model.*;
@@ -42,6 +44,7 @@ public class MenuService {
      * 获取所有菜单
      * @return
      */
+    @PostFilter("hasPermission(filterObject, 'read')")
     public List<Menu> getAll() {
         return this.menuRepository.findAll(new Sort("orderId"));
     }
@@ -92,12 +95,13 @@ public class MenuService {
         }
     }
 
+    @PreFilter("hasPermission(targetObject, 'write')")
     public Menu save(Menu  menu) {
         Menu parent = menu.getParent();
-        Long parentId = parent == null ? null : parent.getResourceId();
+        Long parentId = parent == null ? null : parent.getId();
         if(menu.getOrderId() != 0){
             //如果新增的菜单的orderId不等于0,则将数据库中已经存在的orderId大于等于当前menu orderId的菜单项顺序id往后顺移一位
-            List<Menu> afterCurMenus = this.menuRepository.findByOrderIdGreaterThanEqualAndParent_resourceId(menu.getOrderId(), parentId);
+            List<Menu> afterCurMenus = this.menuRepository.findByOrderIdGreaterThanEqualAndParent_id(menu.getOrderId(), parentId);
             for(Menu m: afterCurMenus){
                 m.setOrderId(m.getOrderId()+1);
             }
@@ -105,7 +109,7 @@ public class MenuService {
             this.menuRepository.save(afterCurMenus);
         } else {
             //如果当前menu orderId 等于0,则新增menu顺序为最后一位
-            Menu lastOrderMenu = this.menuRepository.findTopByParent_resourceIdOrderByOrderIdDesc(parentId);
+            Menu lastOrderMenu = this.menuRepository.findTopByParent_idOrderByOrderIdDesc(parentId);
             if(lastOrderMenu != null){
                 menu.setOrderId(lastOrderMenu.getOrderId()+1);
             }
@@ -114,6 +118,7 @@ public class MenuService {
         return this.menuRepository.save(menu);
     }
 
+    @PreFilter("hasPermission(targetObject, 'write')")
     public void delete(long id) {
         this.menuRepository.delete(id);
     }
@@ -208,7 +213,7 @@ public class MenuService {
         List<Menu> authorizedMenus = new ArrayList<>();
         for(Menu menu: menus){
             ObjectIdentity menuOI = objectIdentityRetrieval.getObjectIdentity(menu);
-            GrantedAuthoritySid sid = new GrantedAuthoritySid(myRole.getId());
+            GrantedAuthoritySid sid = new GrantedAuthoritySid(myRole.getRoleId());
             try{
                 Acl acl = aclService.readAclById(menuOI, Collections.singletonList(sid));
                 if(acl.isGranted(permissions, Collections.singletonList(sid), true)){

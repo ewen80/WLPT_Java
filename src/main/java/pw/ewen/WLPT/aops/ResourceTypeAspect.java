@@ -30,7 +30,7 @@ public class ResourceTypeAspect {
     @Pointcut("execution(pw.ewen.WLPT.domains.Resource+.new(..))")
     private void resourceConstructor(){}
 
-    @Pointcut("!cflow(execution(* pw.ewen.WLPT..*.ResourceTypeService.save(String)))")
+    @Pointcut("!cflow(execution(* pw.ewen.WLPT.aops.ResourceTypeAspect.initialResourceTypeInDB(..)))")
     private void noRecursive(){}
 
 
@@ -38,12 +38,28 @@ public class ResourceTypeAspect {
     public void saveResourceTypeInDB(JoinPoint joinPoint){
 
         String resourceClassName = joinPoint.getTarget().getClass().getCanonicalName();
+        String resourceName = joinPoint.getTarget().getClass().getSimpleName();
+
         if(this.resourceTypeService != null){
             //判断系统中是否已经存在ResourceType,不存在则添加
-            this.resourceTypeService.initialResourceTypeInDB(resourceClassName);
+            System.out.println("检查cache");
+            this.initialResourceTypeInDB(resourceName, resourceClassName);
         }
     }
 
-
-
+    /**
+     * 数据库中保存ResourceType信息
+     * @param resourceTypeClassName 资源类的全限定名
+     * @return
+     */
+    @Cacheable("resourceTypeInDBCache")
+    public void initialResourceTypeInDB(String resourceTypeName, String resourceTypeClassName){
+        System.out.println("cache 失效");
+        ResourceType resourceType = this.resourceTypeService.findByClassName(resourceTypeClassName);
+        if(resourceType == null){
+            ResourceType newResourceType = new ResourceType(resourceTypeClassName, resourceTypeName);
+            this.resourceTypeService.save(newResourceType);
+        }
+//        return true;
+    }
 }

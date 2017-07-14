@@ -16,11 +16,11 @@ import java.io.Serializable;
 @Entity
 //@JsonIdentityInfo(
 //		generator = ObjectIdGenerators.PropertyGenerator.class,
-//		property = "id")
+//		property = "userId")
 public class User extends Resource implements Serializable {
 	private static final long serialVersionUID = 5844614718392473692L;
 	
-	private String id;
+	private String userId;
 	private String name;
 	@JsonBackReference(value = "user")
 	private Role role;
@@ -29,19 +29,19 @@ public class User extends Resource implements Serializable {
 	
 	protected User(){}
 	
-	public User(String id, String name, String password, Role role){
-		this.id = id;
+	public User(String userId, String name, String password, Role role){
+		this.userId = userId;
 		this.name = name;
 		this.password = password;
 		this.role = role;
 	}
 
 	@Column(nullable = false,unique = true)
-	public String getId() {
-		return id;
+	public String getUserId() {
+		return userId;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 	
 	@Column(nullable = false)
@@ -76,7 +76,7 @@ public class User extends Resource implements Serializable {
 	@Override
 	public boolean equals(Object obj) {
 		if(obj instanceof  User){
-			if(this.id.equals(((User) obj).getId())){
+			if(this.userId.equals(((User) obj).getUserId())){
 				return true;
 			}else{
 				return false;

@@ -15,7 +15,6 @@ import java.util.List;
  * 菜单资源类
  */
 @Entity
-@Component
 public class Menu extends Resource implements Serializable {
 
     private String name;

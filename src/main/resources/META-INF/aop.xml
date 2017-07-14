@@ -10,8 +10,8 @@
             and does not need to encompass the aspects themselves.
         -->
         <include within="pw.ewen.WLPT.domains.Resource+" />
+        <!--<include within="pw.ewen.WLPT.services.ResourceTypeService" />-->
         <include within="pw.ewen.WLPT.aops.*"/>
-        <include within="pw.ewen.WLPT.services.*" />
         <exclude within="pw.ewen.WLPT.test..*"/>
         <exclude within="pw.ewen.WLPT.controllers..*"/>
     </weaver>

@@ -7,6 +7,6 @@ import pw.ewen.WLPT.domains.entities.Role;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, String>, JpaSpecificationExecutor<Role> {
-    Role findByid(String roleId);
+    Role findByroleId(String roleId);
 }
 

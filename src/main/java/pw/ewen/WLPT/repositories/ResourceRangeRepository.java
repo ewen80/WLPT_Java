@@ -19,5 +19,5 @@ public interface ResourceRangeRepository extends JpaRepository<ResourceRange, Lo
      * @param resourceTypeClassName
      * @return
      */
-    List<ResourceRange> findByRole_idAndResourceType_className(String roleId, String resourceTypeClassName);
+    List<ResourceRange> findByRole_roleIdAndResourceType_className(String roleId, String resourceTypeClassName);
 }

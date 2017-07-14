@@ -1,7 +1,6 @@
 package pw.ewen.WLPT.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domains.DTOs.MenuDTO;
 import pw.ewen.WLPT.domains.entities.Menu;
@@ -40,12 +39,11 @@ public class MenuController {
      */
     @RequestMapping(method = RequestMethod.GET, produces = "application/json", value = "/authorized")
     public List<Menu> getAuthorizedMenuTree(){
-        String userId = this.userContext.getCurrentUser().getId();
+        String userId = this.userContext.getCurrentUser().getUserId();
         return this.menuService.getPermissionMenuTree(userId);
     }
 
     @RequestMapping(method=RequestMethod.POST, produces="application/json")
-//    @PreFilter("hasPermission(targetObject, 'write')")
     public MenuDTO save(@RequestBody MenuDTO dto){
         Menu menu = dto.convertToMenu(this.menuRepository);
         return MenuDTO.convertFromMenu(this.menuService.save(menu));

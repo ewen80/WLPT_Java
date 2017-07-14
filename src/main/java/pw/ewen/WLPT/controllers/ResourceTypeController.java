@@ -51,7 +51,7 @@ public class ResourceTypeController {
      */
     @RequestMapping(value="/{className}", method=RequestMethod.GET, produces="application/json")
     public ResourceType getOne(@PathVariable("className") String className){
-        return resourceTypeRepository.findOne(className);
+        return this.resourceTypeService.getOne(className);
     }
 
     /**

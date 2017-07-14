@@ -12,9 +12,9 @@ import java.util.List;
  */
 @Repository
 public interface MenuRepository extends JpaRepository<Menu, Long>, JpaSpecificationExecutor<Menu> {
-    List<Menu> findByParent_resourceId(long parentId);
+    List<Menu> findByParent_id(long parentId);
     List<Menu> findByParentOrderByOrderId(Menu menu);
-    List<Menu> findByOrderIdGreaterThanEqualAndParent_resourceId(int orderId, Long parentId);
+    List<Menu> findByOrderIdGreaterThanEqualAndParent_id(int orderId, Long parentId);
     //获取该父节点下orderId最大的menu
-    Menu findTopByParent_resourceIdOrderByOrderIdDesc(Long parentId);
+    Menu findTopByParent_idOrderByOrderIdDesc(Long parentId);
 }

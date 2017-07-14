@@ -32,7 +32,7 @@ public class MenuDTO {
             Assert.notNull(this.menuRepository);
 
             Menu menu = new Menu();
-            menu.setResourceId(menuDTO.getResourceId());
+            menu.setId(menuDTO.getResourceId());
             menu.setName(menuDTO.getName());
             menu.setOrderId(menuDTO.getOrderId());
             menu.setIconClass(menuDTO.getIconClass());
@@ -46,7 +46,7 @@ public class MenuDTO {
                 }
             }
 
-            List<Menu> children = this.menuRepository.findByParent_resourceId(menuDTO.getResourceId());
+            List<Menu> children = this.menuRepository.findByParent_id(menuDTO.getResourceId());
             if(children != null) {
                 menu.setChildren(children);
             }
@@ -56,13 +56,13 @@ public class MenuDTO {
         @Override
         public MenuDTO doBackward(Menu menu) {
             MenuDTO dto = new MenuDTO();
-            dto.setResourceId(menu.getResourceId());
+            dto.setResourceId(menu.getId());
             dto.setName(menu.getName());
             dto.setOrderId(menu.getOrderId());
             dto.setIconClass(menu.getIconClass());
             dto.setPath(menu.getPath());
             if(menu.getParent() != null){
-                dto.setParentId(menu.getParent().getResourceId());
+                dto.setParentId(menu.getParent().getId());
             }
 
             return dto;

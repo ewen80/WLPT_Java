@@ -29,16 +29,16 @@ public class SecurityUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        User user = userRepository.findByid(userId);
+        User user = userRepository.findByuserId(userId);
         Role role;
         if(user != null){
             role = user.getRole();
             List<GrantedAuthority> authorities = new ArrayList<>();
             if(role != null){
-                authorities.add(new SimpleGrantedAuthority(role.getId()));
+                authorities.add(new SimpleGrantedAuthority(role.getRoleId()));
             }
 
-            return new org.springframework.security.core.userdetails.User(user.getId(), user.getPassword(), authorities);
+            return new org.springframework.security.core.userdetails.User(user.getUserId(), user.getPassword(), authorities);
         }
 
         throw new UsernameNotFoundException("User id: '" + userId + "' not found");

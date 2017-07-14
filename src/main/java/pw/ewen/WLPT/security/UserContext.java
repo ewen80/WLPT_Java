@@ -41,7 +41,7 @@ public class UserContext {
         if (userId == null) {
             return null;
         }
-        User user = userRepository.findByid(userId);
+        User user = userRepository.findByuserId(userId);
 //        if (user == null) {
 //            throw new IllegalStateException(
 //                    "Could not find user with id " + userId);
@@ -52,7 +52,7 @@ public class UserContext {
     public void setCurrentUser(User user) {
         Assert.notNull(user, "user cannot be null");
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getId());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(user.getUserId());
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
                 user.getPassword(),userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);

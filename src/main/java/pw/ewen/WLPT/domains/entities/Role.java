@@ -17,11 +17,11 @@ import java.util.Set;
 //@JsonIgnoreProperties(value={"users", "handler", "hibernateLazyInitializer"})
 //@JsonIdentityInfo(
 //		generator = ObjectIdGenerators.PropertyGenerator.class,
-//		property = "id")
+//		property = "roleId")
 public class Role extends  Resource implements Serializable {
 
 	private static final long serialVersionUID = 1888955493407366629L;
-	private String id;
+	private String roleId;
 	private String name;
 
 	@JsonManagedReference(value = "user")
@@ -30,19 +30,19 @@ public class Role extends  Resource implements Serializable {
 	private Set<ResourceRange>	resourceRanges;
 
 	protected Role(){}
-	public Role(String id, String name) {
+	public Role(String roleId, String name) {
 		this.name = name;
-		this.id = id;
+		this.roleId = roleId;
 		this.users = new HashSet<>();
 		this.resourceRanges = new HashSet<>();
 	}
 
 	@Column(nullable = false, unique = true)
-	public String getId() {
-		return id;
+	public String getRoleId() {
+		return roleId;
 	}
-	public void setId(String id) {
-		this.id = id;
+	public void setRoleId(String roleId) {
+		this.roleId = roleId;
 	}
 	
 	@Column(nullable = false)
@@ -68,7 +68,7 @@ public class Role extends  Resource implements Serializable {
 	@Override
 	public String toString() {
 		final StringBuffer sb = new StringBuffer("Role{");
-		sb.append("id='").append(id).append('\'');
+		sb.append("roleId='").append(roleId).append('\'');
 		sb.append(", name='").append(name).append('\'');
 		sb.append('}');
 		return sb.toString();
@@ -81,11 +81,11 @@ public class Role extends  Resource implements Serializable {
 
 		Role role = (Role) o;
 
-		return id != null ? id.equals(role.id) : role.id == null;
+		return roleId != null ? roleId.equals(role.roleId) : role.roleId == null;
 	}
 
 	@Override
 	public int hashCode() {
-		return id != null ? id.hashCode() : 0;
+		return roleId != null ? roleId.hashCode() : 0;
 	}
 }

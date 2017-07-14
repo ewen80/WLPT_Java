@@ -1,13 +1,10 @@
 package pw.ewen.WLPT;
 
-import org.springframework.beans.PropertyAccessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import pw.ewen.WLPT.aops.ResourceTypeAspect;
 import pw.ewen.WLPT.domains.entities.*;
 import pw.ewen.WLPT.exceptions.enviroment.PropertyNotFound;
 import pw.ewen.WLPT.repositories.*;
@@ -58,13 +55,13 @@ public class ApplicationInitialization implements ApplicationRunner {
     //初始化用户（默认为admin,guest）
     private void initialUsers(){
         //保存管理员用户
-        Role adminRole = this.roleRepository.findByid("admin");
+        Role adminRole = this.roleRepository.findByroleId("admin");
         if(adminRole != null){
             User adminUser = new User("admin","admin","admin",adminRole);
             this.userRepository.save(adminUser);
         }
         //保存来宾客户
-        Role guestRole = this.roleRepository.findByid("guest");
+        Role guestRole = this.roleRepository.findByroleId("guest");
         if(guestRole != null){
             User guestUser = new User("guest","guest","guest",guestRole);
             this.userRepository.save(guestUser);
@@ -117,15 +114,13 @@ public class ApplicationInitialization implements ApplicationRunner {
     //初始化菜单权限
     //admin角色对所有菜单都有权限
     private void authorizeMenu(){
-        System.out.println("开始初始化权限");
-
         String menuClassName = env.getProperty("resource.menu.classname");
         if(menuClassName == null){
             //如果配置文件找不到menu则抛出异常
             throw new PropertyNotFound("menu");
         } else {
             ResourceType menuResourceType = this.resourceTypeRepository.findByClassName(menuClassName);
-            Role adminRole = this.roleRepository.findByid("admin");
+            Role adminRole = this.roleRepository.findByroleId("admin");
 
             ResourceRange haveAllMenuPermission = new ResourceRange("", adminRole, menuResourceType);
             haveAllMenuPermission.setMatchAll(true);

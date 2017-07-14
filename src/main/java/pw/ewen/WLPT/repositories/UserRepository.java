@@ -7,5 +7,5 @@ import pw.ewen.WLPT.domains.entities.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String>, JpaSpecificationExecutor<User> {
-    User findByid(String userId);
+    User findByuserId(String userId);
 }
