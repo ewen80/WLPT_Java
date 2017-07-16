@@ -1,8 +1,8 @@
 package pw.ewen.WLPT.domains;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import pw.ewen.WLPT.domains.entities.ResourceType;
+
+import javax.persistence.*;
 
 /**
  * Created by wen on 17-2-28.
@@ -13,9 +13,6 @@ public abstract class Resource {
 
     private long id;
 
-//    protected Resource() {
-//    }
-
     //资源唯一标志号
     //由于spring security acl要求，属性名只能用id
     @Id
@@ -24,8 +21,6 @@ public abstract class Resource {
         return this.id;
     }
     public void setId(long id){ this.id = id;}
-
-
 
     @Override
     public boolean equals(Object o) {

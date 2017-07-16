@@ -2,6 +2,9 @@ package pw.ewen.WLPT.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreFilter;
 import org.springframework.stereotype.Service;
@@ -9,6 +12,9 @@ import org.springframework.util.Assert;
 import pw.ewen.WLPT.domains.Resource;
 import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
+import pw.ewen.WLPT.repositories.specifications.ResourceTypeSpecificationBuilder;
+
+import java.util.Collection;
 
 /**
  * Created by wen on 17-7-11.
@@ -24,12 +30,19 @@ public class ResourceTypeService {
      * @param className 类全限定名
      * @return  ResourceType
      */
-//    @PostFilter("hasPermission(filterObject, 'read')")
-    public ResourceType getOne(String className){
+    public ResourceType findByClassName(String className){
         return this.resourceTypeRepository.findByClassName(className);
     }
 
-//    @PreFilter("hasPermission(targetObject, 'write')")
+    public Page<ResourceType> getResourcesWithPage(int pageSize, int pageIndex, String filter){
+        ResourceTypeSpecificationBuilder builder = new ResourceTypeSpecificationBuilder();
+        if(filter.isEmpty()){
+            return resourceTypeRepository.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
+        }else{
+            return resourceTypeRepository.findAll(builder.build(filter), new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
+        }
+    }
+
     public ResourceType save(ResourceType resourceType){
         return this.resourceTypeRepository.save(resourceType);
     }
@@ -54,8 +67,19 @@ public class ResourceTypeService {
         return this.save(resourceType);
     }
 
-//    @PostFilter("hasPermission(filterObject, 'write')")
-    public ResourceType findByClassName(String className){
-        return this.resourceTypeRepository.findByClassName(className);
+    /**
+     * 删除（如果当前资源类型下有资源范围则软删除）
+     * @param resourceTypes
+     */
+    public void delete(Collection<ResourceType> resourceTypes){
+        for(ResourceType resourceType : resourceTypes){
+            //检查该ResourceType下是否还有ResourceRange,有则软删除，没有则真删除
+            if(resourceType.getResourceRanges().size() > 0){
+                resourceType.setDeleted(true);
+            } else {
+                this.resourceTypeRepository.delete(resourceType);
+            }
+        }
+        this.resourceTypeRepository.save(resourceTypes);
     }
 }

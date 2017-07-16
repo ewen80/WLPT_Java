@@ -116,7 +116,7 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
         MyResource resource200 = new MyResource(200);
         myResourceRepository.save(resource200);
 
-//        ResourceType rt = resourceTypeRepository.getOne(resource100.getClass().getTypeName());
+//        ResourceType rt = resourceTypeRepository.findByClassName(resource100.getClass().getTypeName());
 
         ResourceRange rr_less_than_150 = new ResourceRange("number < 150", this.userContext.getCurrentUser().getRole(), ResourceType.getFromResouce(resource100,resourceTypeRepository));
         resourceRangeRepository.save(rr_less_than_150);
