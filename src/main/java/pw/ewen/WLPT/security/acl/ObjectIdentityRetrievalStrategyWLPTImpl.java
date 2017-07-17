@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import pw.ewen.WLPT.domains.NeverMatchedResourceRange;
 import pw.ewen.WLPT.domains.Resource;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
+import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.repositories.ResourceRangeRepository;
 import pw.ewen.WLPT.security.UserContext;
@@ -28,7 +29,7 @@ public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRe
 
     @Override
     public ObjectIdentity getObjectIdentity(Object domainObject) {
-        //查找ResourceRepository中当前SID对应的ResourceRangeyao
+        //查找ResourceRepository中当前SID对应的ResourceRange
         Role currentUserRole = userContext.getCurrentUser().getRole();
         ResourceRange resourceRange = getResourceRange(domainObject, currentUserRole);
         if(resourceRange == null){

@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import pw.ewen.WLPT.domains.entities.ResourceType;
 
+import java.util.Collection;
+
 /**
  * Created by wen on 17-3-12.
  * 资源列型仓储

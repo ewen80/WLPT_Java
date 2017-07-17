@@ -49,9 +49,9 @@ public class ResourceTypeController {
      * @param className 资源类全限定名
      */
     @RequestMapping(value="/{className}", method=RequestMethod.GET, produces="application/json")
-    @PostFilter("hasPermission(filterObject, 'read')")
+    @PreAuthorize("hasPermission(@ResourceTypeService.findByClassName(#className), 'read')")
     public ResourceType findByClassName(@PathVariable("className") String className){
-        return this.resourceTypeService.findByClassName(className);
+        return this.resourceTypeService.findByClassName(className.replace('$','.'));
     }
 
     /**
@@ -59,7 +59,7 @@ public class ResourceTypeController {
      * @param resourceType 资源类型
      */
     @RequestMapping(method=RequestMethod.POST, produces = "application/json")
-    @PreFilter("hasPermission(targetObject, 'write')")
+    @PreAuthorize("hasPermission(#resourceType, 'write')")
     public ResourceType save(@RequestBody ResourceType resourceType){
         return this.resourceTypeService.save(resourceType);
     }

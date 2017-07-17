@@ -44,7 +44,7 @@ public class SearchSpecificationsBuilder<T> {
 
         String operationSetExper = StringUtils.join(SearchOperation.SIMPLE_OPERATION_SET, '|');
         Pattern pattern = Pattern.compile(
-                "(\\S+?)(" + operationSetExper + ")(\\*?)(\\w+?)(\\*?),");
+                "(\\S+?)(" + operationSetExper + ")(\\*?)([^*]*)(\\*?),");
         Matcher matcher = pattern.matcher(filterString + ",");
         while (matcher.find()) {
             this.with(
