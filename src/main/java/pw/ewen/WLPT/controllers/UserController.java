@@ -12,6 +12,8 @@ import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.repositories.specifications.UserSpecificationBuilder;
 import pw.ewen.WLPT.services.UserService;
 
+import java.util.ArrayList;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -61,8 +63,13 @@ public class UserController {
 		return UserDTO.convertFromUser(this.userService.save(user));
     }
 
-    @RequestMapping(value = "/{userIds}", method=RequestMethod.DELETE, produces = "application/json")
-    public void delete(@PathVariable("userIds") String userIds){
-		this.userService.delete(userIds);
+    @RequestMapping(value = "/{ids}", method=RequestMethod.DELETE, produces = "application/json")
+    public void delete(@PathVariable("ids") String ids){
+		String[] strIds = ids.split(",");
+		ArrayList<Long> longIds = new ArrayList<>();
+		for(String id: strIds){
+			longIds.add(Long.valueOf(id));
+		}
+		this.userService.delete(longIds);
 	}
 }

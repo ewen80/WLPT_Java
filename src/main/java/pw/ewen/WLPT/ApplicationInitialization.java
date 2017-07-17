@@ -4,11 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.env.Environment;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.stereotype.Component;
 import pw.ewen.WLPT.domains.entities.*;
 import pw.ewen.WLPT.exceptions.enviroment.PropertyNotFound;
 import pw.ewen.WLPT.repositories.*;
 import pw.ewen.WLPT.services.PermissionService;
+
+import java.util.Arrays;
 
 /**
  * Created by wen on 17-5-14.
@@ -124,7 +127,10 @@ public class ApplicationInitialization implements ApplicationRunner {
 
             ResourceRange haveAllMenuPermission = new ResourceRange("", adminRole, menuResourceType);
             haveAllMenuPermission.setMatchAll(true);
-            this.resourceRangeRepository.save(haveAllMenuPermission);
+            haveAllMenuPermission = this.resourceRangeRepository.save(haveAllMenuPermission);
+
+//            此句无法执行，因为调用此方法需要有用户标识，初始化时候没有此用户标识
+//            this.permissionService.insertPermissions(haveAllMenuPermission.getId(), Arrays.asList(BasePermission.READ, BasePermission.WRITE));
         }
 
     }

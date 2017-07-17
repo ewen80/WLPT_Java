@@ -26,6 +26,7 @@ public class User extends Resource implements Serializable {
 	private Role role;
 	private String password;
 	private String picture;
+	private boolean isDeleted = false;
 	
 	protected User(){}
 	
@@ -62,6 +63,16 @@ public class User extends Resource implements Serializable {
 	}
 	public void setPicture(String picture) {
 		this.picture = picture;
+	}
+
+	//软删除标识
+	@Column(nullable = true)
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		isDeleted = deleted;
 	}
 
 	@ManyToOne

@@ -14,6 +14,7 @@ import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.specifications.ResourceTypeSpecificationBuilder;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -34,7 +35,21 @@ public class ResourceTypeService {
         return this.resourceTypeRepository.findByClassName(className);
     }
 
-    public Page<ResourceType> getResourcesWithPage(int pageSize, int pageIndex, String filter){
+    /**获取ResourceTypes根据classNames
+     * @param classNames 类全限定名（,分隔）
+     * @return
+     */
+    public Collection<ResourceType> findByClassNames(String classNames){
+        String[] arrClassNames = classNames.split(",");
+        ArrayList<ResourceType> arrResourceTypes = new ArrayList<>();
+        for(String className : arrClassNames){
+            ResourceType rt = this.resourceTypeRepository.findOne(className);
+            arrResourceTypes.add(rt);
+        }
+        return arrResourceTypes;
+    }
+
+    public Page<ResourceType> getResourcesWithPage(int pageIndex, int pageSize, String filter){
         ResourceTypeSpecificationBuilder builder = new ResourceTypeSpecificationBuilder();
         if(filter.isEmpty()){
             return resourceTypeRepository.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));

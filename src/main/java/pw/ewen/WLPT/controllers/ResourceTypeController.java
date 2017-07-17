@@ -65,24 +65,12 @@ public class ResourceTypeController {
     }
 
     /**
-     * 软删除
+     * 删除,如果有对应的ResourceRange则软删除
      */
     @RequestMapping(value = "/{classNames}", method=RequestMethod.DELETE, produces = "application/json")
-    @PreAuthorize("hasPermission(getResourceTypesFromClassNames(#classNames), 'write')")
+    @PreFilter("hasPermission(@ResourceTypeService.findByClassNames(#classNames), 'write')")
     public void delete(@PathVariable("classNames") String classNames){
-        Collection<ResourceType> resourceTypes = this.getResourceTypesFromClassNames(classNames);
+        Collection<ResourceType> resourceTypes = this.resourceTypeService.findByClassNames(classNames);
         this.resourceTypeService.delete(resourceTypes);
     }
-
-    //获取ResourceTypes根据classNames
-    private Collection<ResourceType> getResourceTypesFromClassNames(String classNames){
-        String[] arrClassNames = classNames.split(",");
-        ArrayList<ResourceType> arrResourceTypes = new ArrayList<>();
-        for(String className : arrClassNames){
-            ResourceType rt = this.resourceTypeRepository.findOne(className);
-            arrResourceTypes.add(rt);
-        }
-        return arrResourceTypes;
-    }
-
 }

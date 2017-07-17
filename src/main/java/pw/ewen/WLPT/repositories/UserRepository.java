@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import pw.ewen.WLPT.domains.entities.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, String>, JpaSpecificationExecutor<User> {
+public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
     User findByuserId(String userId);
 }

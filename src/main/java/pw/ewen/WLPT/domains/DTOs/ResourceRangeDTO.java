@@ -9,6 +9,8 @@ import pw.ewen.WLPT.repositories.RoleRepository;
 
 import java.io.Serializable;
 
+import static java.lang.Long.*;
+
 /**
  * Created by wen on 17-4-9.
  */
@@ -41,11 +43,11 @@ public class ResourceRangeDTO implements Serializable {
             range.setId(dto.getId());
             range.setFilter(dto.getFilter());
             range.setMatchAll(dto.isMatchAll());
-            Role role = roleRepository.findByroleId(dto.getRoleId());
+            Role role = roleRepository.findOne(Long.valueOf(dto.getRoleId()));
             if(role != null){
                 range.setRole(role);
             }
-            ResourceType type = resourceTypeRepository.findOne((dto.getResourceTypeClassName()));
+            ResourceType type = resourceTypeRepository.findByClassName((dto.getResourceTypeClassName()));
             if(type != null){
                 range.setResourceType(type);
             }

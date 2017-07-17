@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import pw.ewen.WLPT.domains.entities.Role;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, String>, JpaSpecificationExecutor<Role> {
+public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificationExecutor<Role> {
     Role findByroleId(String roleId);
 }
 
