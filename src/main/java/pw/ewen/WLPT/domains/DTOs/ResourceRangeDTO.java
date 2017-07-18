@@ -17,7 +17,7 @@ import static java.lang.Long.*;
 public class ResourceRangeDTO implements Serializable {
     private long id;
     private String filter;
-    private String roleId;
+    private long roleId;
     private String resourceTypeClassName;
     private boolean matchAll = false;
 
@@ -61,7 +61,7 @@ public class ResourceRangeDTO implements Serializable {
             dto.setFilter(range.getFilter());
             dto.setMatchAll(range.isMatchAll());
             dto.setResourceTypeClassName(range.getResourceType().getClassName());
-            dto.setRoleId(range.getRole().getRoleId());
+            dto.setRoleId(range.getRole().getId());
             return dto;
         }
     }
@@ -98,11 +98,11 @@ public class ResourceRangeDTO implements Serializable {
         this.filter = filter;
     }
 
-    public String getRoleId() {
+    public long getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(String roleId) {
+    public void setRoleId(long roleId) {
         this.roleId = roleId;
     }
 

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.access.prepost.PreFilter;
@@ -32,16 +33,20 @@ public class ResourceTypeController {
     @Autowired
     private ResourceTypeService resourceTypeService;
 
-    /**
-     * 获取资源类型（分页，查询）
-     * @param pageIndex 第几页
-     * @param pageSize  每页多少条
-     */
+//    /**
+//     * 获取资源类型（分页，查询）
+//     * @param pageIndex 第几页
+//     * @param pageSize  每页多少条
+//     */
+//    public Page<ResourceType> getResourcesWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
+//                                                   @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
+//                                                   @RequestParam(value = "filter", defaultValue = "") String filter){
+//       return this.resourceTypeService.getResourcesWithPage(pageIndex, pageSize, filter);
+//    }
+
     @RequestMapping(method = RequestMethod.GET, produces="application/json")
-    public Page<ResourceType> getResourcesWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
-                                                   @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
-                                                   @RequestParam(value = "filter", defaultValue = "") String filter){
-       return this.resourceTypeService.getResourcesWithPage(pageIndex, pageSize, filter);
+    public Collection<ResourceType> getResources(@RequestParam(value = "filter", defaultValue = "") String filter){
+        return  this.resourceTypeService.findAll(filter);
     }
 
     /**
@@ -49,7 +54,7 @@ public class ResourceTypeController {
      * @param className 资源类全限定名
      */
     @RequestMapping(value="/{className}", method=RequestMethod.GET, produces="application/json")
-    @PreAuthorize("hasPermission(@ResourceTypeService.findByClassName(#className), 'read')")
+    @PostAuthorize("hasPermission(returnObject, 'read')")
     public ResourceType findByClassName(@PathVariable("className") String className){
         return this.resourceTypeService.findByClassName(className.replace('$','.'));
     }

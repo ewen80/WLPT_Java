@@ -20,7 +20,7 @@ import java.util.Collection;
 /**
  * Created by wen on 17-7-11.
  */
-@Service
+@Service("resourceTypeService")
 public class ResourceTypeService {
 
     @Autowired
@@ -49,12 +49,28 @@ public class ResourceTypeService {
         return arrResourceTypes;
     }
 
+    /**
+     * 服务器分页
+     * @param pageIndex
+     * @param pageSize
+     * @param filter
+     * @return
+     */
     public Page<ResourceType> getResourcesWithPage(int pageIndex, int pageSize, String filter){
         ResourceTypeSpecificationBuilder builder = new ResourceTypeSpecificationBuilder();
         if(filter.isEmpty()){
             return resourceTypeRepository.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
         }else{
             return resourceTypeRepository.findAll(builder.build(filter), new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
+        }
+    }
+
+    public Collection<ResourceType> findAll(String filter){
+        ResourceTypeSpecificationBuilder builder = new ResourceTypeSpecificationBuilder();
+        if(filter.isEmpty()){
+            return this.resourceTypeRepository.findAll();
+        } else {
+            return this.resourceTypeRepository.findAll(builder.build(filter));
         }
     }
 
