@@ -5,11 +5,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.exceptions.domain.DeleteHaveUsersRoleException;
 import pw.ewen.WLPT.repositories.RoleRepository;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -17,7 +19,7 @@ import java.util.Set;
 /**
  * Created by wenliang on 17-7-17.
  */
-@Service
+@Service("roleService")
 public class RoleService {
 
     @Autowired
@@ -54,5 +56,15 @@ public class RoleService {
 
     public List<Role> getAllRoles(){
         return this.roleRepository.findAll();
+    }
+
+    public Collection<Role> findByIds(String ids){
+        String[] arrIds = ids.split(",");
+        ArrayList<Role> arrRoles = new ArrayList<>();
+        for(String id : arrIds){
+            Role role = this.roleRepository.findOne(Long.valueOf(id));
+            arrRoles.add(role);
+        }
+        return arrRoles;
     }
 }

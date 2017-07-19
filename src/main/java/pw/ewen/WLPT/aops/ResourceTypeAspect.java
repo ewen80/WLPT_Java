@@ -42,7 +42,6 @@ public class ResourceTypeAspect {
 
         if(this.resourceTypeService != null){
             //判断系统中是否已经存在ResourceType,不存在则添加
-            System.out.println("检查cache");
             this.initialResourceTypeInDB(resourceName, resourceClassName);
         }
     }
@@ -54,7 +53,6 @@ public class ResourceTypeAspect {
      */
     @Cacheable("resourceTypeInDBCache")
     public void initialResourceTypeInDB(String resourceTypeName, String resourceTypeClassName){
-        System.out.println("cache 失效");
         ResourceType resourceType = this.resourceTypeService.findByClassName(resourceTypeClassName);
         if(resourceType == null){
             ResourceType newResourceType = new ResourceType(resourceTypeClassName, resourceTypeName);

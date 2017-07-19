@@ -1,6 +1,7 @@
 package pw.ewen.WLPT.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domains.DTOs.MenuDTO;
 import pw.ewen.WLPT.domains.entities.Menu;

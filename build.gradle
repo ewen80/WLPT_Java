@@ -76,7 +76,7 @@ bootRun.doFirst {
     }
 
     //远程调试用，启用aspectJ后，直接debug无法进入断点，必须启用远程调试
-    args.add("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005")
+    args.add("-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005")
     jvmArgs =  args
 
     println(jvmArgs)

@@ -100,7 +100,7 @@ public class ResourceRange extends Resource implements Serializable {
                 if(!((ResourceRange) range).isMatchAll()) {
                     exp = parser.parseExpression(((ResourceRange) range).getFilter());
                     Boolean result = exp.getValue(context, Boolean.class);
-                    if (result) {
+                    if (result != null && result) {
                         matchedRangesNumber++;
                         //只匹配第一条记录
                         if (matchedResourceRange == null) {

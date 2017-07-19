@@ -24,6 +24,7 @@ public class MethodSucrityConfig extends GlobalMethodSecurityConfiguration {
     protected MethodSecurityExpressionHandler createExpressionHandler() {
         DefaultMethodSecurityExpressionHandler defaultMethodSecurityExpressionHandler = new DefaultMethodSecurityExpressionHandler();
         defaultMethodSecurityExpressionHandler.setPermissionEvaluator(this.aclPermissionEvaluator);
+        //将application context注入，否则security spel得不到bean
         defaultMethodSecurityExpressionHandler.setApplicationContext(this.context);
         return defaultMethodSecurityExpressionHandler;
     }

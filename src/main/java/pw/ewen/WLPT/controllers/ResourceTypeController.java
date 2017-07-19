@@ -23,13 +23,9 @@ import java.util.Collection;
 @RestController
 @RequestMapping(value = "/resourcetypes")
 public class ResourceTypeController {
-    private ResourceTypeRepository resourceTypeRepository;
 
     @Autowired
-    public ResourceTypeController(ResourceTypeRepository resourceTypeRepository) {
-        this.resourceTypeRepository = resourceTypeRepository;
-    }
-
+    private ResourceTypeRepository resourceTypeRepository;
     @Autowired
     private ResourceTypeService resourceTypeService;
 
@@ -45,6 +41,7 @@ public class ResourceTypeController {
 //    }
 
     @RequestMapping(method = RequestMethod.GET, produces="application/json")
+    @PostFilter("hasAuthority('admin') || hasPermission(filterObject, 'read')")
     public Collection<ResourceType> getResources(@RequestParam(value = "filter", defaultValue = "") String filter){
         return  this.resourceTypeService.findAll(filter);
     }
@@ -54,7 +51,7 @@ public class ResourceTypeController {
      * @param className 资源类全限定名
      */
     @RequestMapping(value="/{className}", method=RequestMethod.GET, produces="application/json")
-    @PostAuthorize("hasPermission(returnObject, 'read')")
+    @PostAuthorize("hasAuthority('admin') || hasPermission(returnObject, 'read')")
     public ResourceType findByClassName(@PathVariable("className") String className){
         return this.resourceTypeService.findByClassName(className.replace('$','.'));
     }
@@ -64,7 +61,7 @@ public class ResourceTypeController {
      * @param resourceType 资源类型
      */
     @RequestMapping(method=RequestMethod.POST, produces = "application/json")
-    @PreAuthorize("hasPermission(#resourceType, 'write')")
+    @PreAuthorize("hasAuthority('admin') || hasPermission(#resourceType, 'write')")
     public ResourceType save(@RequestBody ResourceType resourceType){
         return this.resourceTypeService.save(resourceType);
     }
@@ -73,7 +70,7 @@ public class ResourceTypeController {
      * 删除,如果有对应的ResourceRange则软删除
      */
     @RequestMapping(value = "/{classNames}", method=RequestMethod.DELETE, produces = "application/json")
-    @PreFilter("hasPermission(@ResourceTypeService.findByClassNames(#classNames), 'write')")
+    @PreFilter("hasAuthority('admin') ||  hasPermission(@resourceTypeService.findByClassNames(#classNames), 'write')")
     public void delete(@PathVariable("classNames") String classNames){
         Collection<ResourceType> resourceTypes = this.resourceTypeService.findByClassNames(classNames);
         this.resourceTypeService.delete(resourceTypes);
