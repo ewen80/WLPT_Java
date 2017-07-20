@@ -7,4 +7,5 @@ import pw.ewen.WLPT.domains.entities.ResourceRange;
  * 当Resource找不到匹配的ResourceRange时，返回此ResourceRange对象，不能有任何角色对此ResourceRange有权限
  */
 public class NeverMatchedResourceRange extends ResourceRange {
+
 }
