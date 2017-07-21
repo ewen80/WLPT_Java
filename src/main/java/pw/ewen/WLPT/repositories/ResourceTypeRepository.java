@@ -12,6 +12,6 @@ import java.util.Collection;
  * 资源列型仓储
  */
 @Repository
-public interface ResourceTypeRepository extends JpaRepository<ResourceType, String>, JpaSpecificationExecutor<ResourceType> {
+public interface ResourceTypeRepository extends JpaRepository<ResourceType, Long>, JpaSpecificationExecutor<ResourceType> {
     ResourceType findByClassName(String className);
 }

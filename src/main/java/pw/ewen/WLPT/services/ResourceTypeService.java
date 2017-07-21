@@ -43,8 +43,21 @@ public class ResourceTypeService {
         String[] arrClassNames = classNames.split(",");
         ArrayList<ResourceType> arrResourceTypes = new ArrayList<>();
         for(String className : arrClassNames){
-            ResourceType rt = this.resourceTypeRepository.findOne(className);
+            ResourceType rt = this.resourceTypeRepository.findByClassName(className);
             arrResourceTypes.add(rt);
+        }
+        return arrResourceTypes;
+    }
+
+    public ResourceType findOne(Long id){
+        return this.resourceTypeRepository.findOne(id);
+    }
+
+    public Collection<ResourceType> findByIds(Collection<Long> ids){
+        ArrayList<ResourceType> arrResourceTypes = new ArrayList<>();
+        for(Long id : ids){
+            ResourceType resourceType = this.resourceTypeRepository.findOne(id);
+            arrResourceTypes.add(resourceType);
         }
         return arrResourceTypes;
     }
@@ -107,10 +120,11 @@ public class ResourceTypeService {
             //检查该ResourceType下是否还有ResourceRange,有则软删除，没有则真删除
             if(resourceType.getResourceRanges().size() > 0){
                 resourceType.setDeleted(true);
+                this.resourceTypeRepository.save(resourceType);
             } else {
                 this.resourceTypeRepository.delete(resourceType);
             }
         }
-        this.resourceTypeRepository.save(resourceTypes);
+
     }
 }

@@ -87,7 +87,7 @@ public class ResourceRange extends Resource implements Serializable {
     @Transient
     public ResourceRange matchRangeByResourceAndRole(Resource domainObject, Role role, ResourceRangeRepository resourceRangeRepository){
         //从ResourceRange仓储中获取所有和当前角色以及指定资源对应的filter
-        List ranges = resourceRangeRepository.findByRole_roleIdAndResourceType_className(role.getRoleId(), domainObject.getClass().getTypeName());
+        List ranges = resourceRangeRepository.findByRole_idAndResourceType_className(role.getId(), domainObject.getClass().getTypeName());
         //遍历所有filter进行判断表达式是否为true
         ExpressionParser parser = new SpelExpressionParser();
         EvaluationContext context = new StandardEvaluationContext(domainObject);

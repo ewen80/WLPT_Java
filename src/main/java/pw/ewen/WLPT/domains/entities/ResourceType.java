@@ -105,9 +105,9 @@ public class ResourceType extends Resource implements Serializable {
      * @return
      */
     @Autowired
-    public static ResourceType getFromResouce(Resource resource, ResourceTypeRepository repository){
+    public static ResourceType getFromResource(Resource resource, ResourceTypeRepository repository){
         String resourceTypeName = resource.getClass().getTypeName();
-        return repository.getOne(resourceTypeName);
+        return repository.findByClassName(resourceTypeName);
     }
 
 //    /**

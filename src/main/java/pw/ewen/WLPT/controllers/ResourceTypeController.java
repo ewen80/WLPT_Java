@@ -69,10 +69,10 @@ public class ResourceTypeController {
     /**
      * 删除,如果有对应的ResourceRange则软删除
      */
-    @RequestMapping(value = "/{classNames}", method=RequestMethod.DELETE, produces = "application/json")
-    @PreFilter("hasAuthority('admin') ||  hasPermission(@resourceTypeService.findByClassNames(#classNames), 'write')")
-    public void delete(@PathVariable("classNames") String classNames){
-        Collection<ResourceType> resourceTypes = this.resourceTypeService.findByClassNames(classNames);
+    @RequestMapping(method=RequestMethod.DELETE, produces = "application/json")
+    @PreFilter("hasAuthority('admin') || hasPermission(@resourceTypeService.findOne(filterObject ), 'write')")
+    public void delete(@RequestBody Collection<Long> ids){
+        Collection<ResourceType> resourceTypes = this.resourceTypeService.findByIds(ids);
         this.resourceTypeService.delete(resourceTypes);
     }
 }

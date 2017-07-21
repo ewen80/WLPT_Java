@@ -94,7 +94,7 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
 
         ResourceRange matchAllResourceRange = new ResourceRange();
         matchAllResourceRange.setRole(this.userContext.getCurrentUser().getRole());
-        matchAllResourceRange.setResourceType(ResourceType.getFromResouce(resource, resourceTypeRepository));
+        matchAllResourceRange.setResourceType(ResourceType.getFromResource(resource, resourceTypeRepository));
         matchAllResourceRange.setMatchAll(true);
         matchAllResourceRange = resourceRangeRepository.save(matchAllResourceRange);
 
@@ -118,9 +118,9 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
 
 //        ResourceType rt = resourceTypeRepository.findByClassName(resource100.getClass().getTypeName());
 
-        ResourceRange rr_less_than_150 = new ResourceRange("number < 150", this.userContext.getCurrentUser().getRole(), ResourceType.getFromResouce(resource100,resourceTypeRepository));
+        ResourceRange rr_less_than_150 = new ResourceRange("number < 150", this.userContext.getCurrentUser().getRole(), ResourceType.getFromResource(resource100,resourceTypeRepository));
         resourceRangeRepository.save(rr_less_than_150);
-        ResourceRange rr_more_than_150 = new ResourceRange("number > 150",this.userContext.getCurrentUser().getRole(), ResourceType.getFromResouce(resource200,resourceTypeRepository));
+        ResourceRange rr_more_than_150 = new ResourceRange("number > 150",this.userContext.getCurrentUser().getRole(), ResourceType.getFromResource(resource200,resourceTypeRepository));
         resourceRangeRepository.save(rr_more_than_150);
 
         ObjectIdentity oi1 = objectIdentityRetrieval.getObjectIdentity(resource100);
