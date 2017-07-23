@@ -7,6 +7,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.repositories.UserRepository;
+import pw.ewen.WLPT.repositories.specifications.UserSpecificationBuilder;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,30 +18,35 @@ import java.util.List;
 @Service
 public class UserService {
 
+    @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+//    /**
+//     * 返回翻页格式用户列表
+//     * @param spec 过滤表达式
+//     * @param pr    分页对象
+//     * @return
+//     */
+//    public Page<User> findAll(Specification<User> spec, PageRequest pr){
+//        return this.userRepository.findAll(spec, pr);
+//    }
+//
+//    /**
+//     * 返回翻页格式用户列表
+//     * @param pr    分页对象
+//     * @return
+//     */
+//    public Page<User> findAll(PageRequest pr){
+//        return this.userRepository.findAll(pr);
+//    }
 
-    /**
-     * 返回翻页格式用户列表
-     * @param spec 过滤表达式
-     * @param pr    分页对象
-     * @return
-     */
-    public Page<User> findAll(Specification<User> spec, PageRequest pr){
-        return this.userRepository.findAll(spec, pr);
-    }
-
-    /**
-     * 返回翻页格式用户列表
-     * @param pr    分页对象
-     * @return
-     */
-    public Page<User> findAll(PageRequest pr){
-        return this.userRepository.findAll(pr);
+    public Collection<User> findAll(String filter){
+        UserSpecificationBuilder builder = new UserSpecificationBuilder();
+        if(filter.isEmpty()){
+            return this.userRepository.findAll();
+        } else {
+            return this.userRepository.findAll(builder.build(filter));
+        }
     }
 
     /**
@@ -50,6 +56,10 @@ public class UserService {
      */
     public User findOne(String id){
         return this.userRepository.findByuserId(id);
+    }
+
+    public User findOne(long id){
+        return this.userRepository.findOne(id);
     }
 
     public User save(User user){

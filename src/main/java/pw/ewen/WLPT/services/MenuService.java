@@ -44,7 +44,6 @@ public class MenuService {
      * 获取所有菜单
      * @return
      */
-    @PostFilter("hasPermission(filterObject, 'read')")
     public List<Menu> getAll() {
         return this.menuRepository.findAll(new Sort("orderId"));
     }
@@ -95,7 +94,6 @@ public class MenuService {
         }
     }
 
-    @PreFilter("hasPermission(targetObject, 'write')")
     public Menu save(Menu  menu) {
         Menu parent = menu.getParent();
         Long parentId = parent == null ? null : parent.getId();
@@ -118,7 +116,6 @@ public class MenuService {
         return this.menuRepository.save(menu);
     }
 
-    @PreFilter("hasPermission(targetObject, 'write')")
     public void delete(long id) {
         this.menuRepository.delete(id);
     }

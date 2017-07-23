@@ -30,6 +30,11 @@ public class User extends Resource implements Serializable {
 	
 	protected User(){}
 	
+	public User(long id, String userId, String name, String password, Role role){
+		this(userId, name, password, role);
+		this.setId(id);
+	}
+
 	public User(String userId, String name, String password, Role role){
 		this.userId = userId;
 		this.name = name;

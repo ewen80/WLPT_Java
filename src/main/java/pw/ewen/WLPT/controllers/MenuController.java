@@ -25,14 +25,14 @@ public class MenuController {
     @Autowired
     private UserContext userContext;
 
-    /**
-     * 返回所有菜单树
-     * @return  （树形json格式）
-     */
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    public List<Menu> getTree() {
-        return this.menuService.getTree();
-    }
+//    /**
+//     * 返回所有菜单树
+//     * @return  （树形json格式）
+//     */
+//    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+//    public List<Menu> getTree() {
+//        return this.menuService.getTree();
+//    }
 
     /**
      * 返回有权限的菜单树
@@ -45,14 +45,17 @@ public class MenuController {
     }
 
     @RequestMapping(method=RequestMethod.POST, produces="application/json")
+    @PreAuthorize("hasAuthority('admin') || hasPermission(#dto.convertToMenu(@menuRepository), 'write')")
     public MenuDTO save(@RequestBody MenuDTO dto){
         Menu menu = dto.convertToMenu(this.menuRepository);
         return MenuDTO.convertFromMenu(this.menuService.save(menu));
     }
 
     @RequestMapping(method=RequestMethod.DELETE, value="/{menuId}")
-    public void delete(@PathVariable("menuId") String menuId) throws NumberFormatException{
-        Long longMenuId = Long.valueOf(menuId);
-        this.menuService.delete(longMenuId);
+    @PreAuthorize("hasAuthority('admin') || hasPermission(@menuRepository.findOne(#menuId), 'write')")
+    public void delete(@PathVariable("menuId") Long menuId) throws NumberFormatException{
+        if(menuId != null){
+            this.menuService.delete(menuId);
+        }
     }
 }

@@ -33,11 +33,11 @@ public class ResourceTypeAspect {
     @Pointcut("!cflow(execution(* pw.ewen.WLPT.aops.ResourceTypeAspect.initialResourceTypeInDB(..)))")
     private void noRecursive(){}
 
-    @Pointcut("!within(pw.ewen.WLPT.domains.NeverMatchedResourceRange)")
-    private void excludeResouceType(){}
+    @Pointcut("!this(pw.ewen.WLPT.domains.NeverMatchedResourceRange)")
+    private void excludeResourceType(){}
 
 
-    @Before("resourceConstructor() && noRecursive() && excludeResouceType()")
+    @Before("resourceConstructor() && noRecursive() && excludeResourceType()")
     public void saveResourceTypeInDB(JoinPoint joinPoint){
 
         String resourceClassName = joinPoint.getTarget().getClass().getCanonicalName();

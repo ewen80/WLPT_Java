@@ -1,6 +1,8 @@
 package pw.ewen.WLPT.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +10,7 @@ import pw.ewen.WLPT.domains.DTOs.permissions.PermissionDTO;
 import pw.ewen.WLPT.domains.DTOs.permissions.ResourceRangePermissionWrapperDTO;
 import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
 import pw.ewen.WLPT.exceptions.domain.PermissionNotFoundException;
+import pw.ewen.WLPT.repositories.ResourceRangeRepository;
 import pw.ewen.WLPT.services.PermissionService;
 
 import javax.transaction.Transactional;
@@ -19,25 +22,26 @@ import java.util.Set;
 /**
  * Created by wen on 17-3-5.
  * 权限控制Controller
+ * 对Permission的操作权限对应相应的ResourceRange的权限
  */
 @RestController
 @RequestMapping(value = "/permissions")
 public class PermissionController {
 
+    @Autowired
     private PermissionService permissionService;
+    @Autowired
+    private ResourceRangeRepository resourceRangeRepository;
 
     public static final Permission[] SUPPORT_PERMISSIONS = { BasePermission.READ, BasePermission.WRITE };
 
-    @Autowired
-    public PermissionController(PermissionService permissionService) {
-        this.permissionService = permissionService;
-    }
 
     /**
      * 获取一个或者多个ResourceRange权限
      * 多个ResourceRange用,分割
      */
     @RequestMapping(value = "/{resourceRangeIds}", method = RequestMethod.GET, produces = "application/json")
+    @PostFilter("hasAuthority('admin') || hasPermission(filterObject.convertToPermissionWrapper(@resourceRangeRepository).getResourceRange(), 'read')")
     public Set<ResourceRangePermissionWrapperDTO> getByResourceRanges(@PathVariable("resourceRangeIds") String resourceRangeIds) throws PermissionNotFoundException,IllegalArgumentException{
         Set<ResourceRangePermissionWrapperDTO> wrappers = new HashSet<>();
 
@@ -63,6 +67,7 @@ public class PermissionController {
      * @return int  插入的权限记录数
      */
     @RequestMapping(method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @PreAuthorize("hasAuthority('admin') || hasPermission(#wrapperDTO.convertToPermissionWrapper(@resourceRangeRepository).getResourceRange(), 'write')")
     @Transactional
     public int save(@RequestBody ResourceRangePermissionWrapperDTO wrapperDTO) {
 

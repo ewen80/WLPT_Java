@@ -10,11 +10,13 @@ import pw.ewen.WLPT.repositories.RoleRepository;
  */
 public class UserDTO {
 
-    private String id;
+    private long id;
+    private String userId;
     private String name;
-    private String roleId;
+    private long roleId;
     private String password;
     private String picture;
+    private boolean deleted;
 
     private static class UserConverter implements DTOConvert<UserDTO, User>{
         private RoleRepository roleRepository;
@@ -30,21 +32,23 @@ public class UserDTO {
         public User doForward(UserDTO dto) {
             Assert.notNull(this.roleRepository);
 
-            Role role = roleRepository.findByroleId(dto.getRoleId());
-            User user = new User(dto.getId(), dto.getName(), dto.getPassword(), role);
-
+            Role role = roleRepository.findOne(dto.getRoleId());
+            User user = new User(dto.getId(), dto.getUserId(), dto.getName(), dto.getPassword(), role);
+            user.setDeleted(dto.isDeleted());
             return user;
         }
 
         @Override
         public UserDTO doBackward(User user) {
             UserDTO dto = new UserDTO();
-            dto.setId(user.getUserId());
+            dto.setId(user.getId());
+            dto.setUserId(user.getUserId());
             dto.setName(user.getName());
             dto.setPassword(user.getPassword());
             dto.setPicture(user.getPicture());
+            dto.setDeleted(user.isDeleted());
             if(user.getRole() != null){
-                dto.setRoleId(user.getRole().getRoleId());
+                dto.setRoleId(user.getRole().getId());
             }
 
             return dto;
@@ -69,12 +73,20 @@ public class UserDTO {
         return converter.doForward(this);
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getName() {
@@ -85,11 +97,11 @@ public class UserDTO {
         this.name = name;
     }
 
-    public String getRoleId() {
+    public long getRoleId() {
         return roleId;
     }
 
-    public void setRoleId(String roleId) {
+    public void setRoleId(long roleId) {
         this.roleId = roleId;
     }
 
@@ -107,5 +119,13 @@ public class UserDTO {
 
     public void setPicture(String picture) {
         this.picture = picture;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }
