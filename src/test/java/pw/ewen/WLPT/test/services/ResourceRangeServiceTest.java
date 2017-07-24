@@ -69,7 +69,7 @@ public class ResourceRangeServiceTest {
 
     @Test
     public void testGetByResourceType(){
-        List<ResourceRange> ranges = this.resourceRangeService.getByResourceType(this.type1.getClassName());
+        List<ResourceRange> ranges = this.resourceRangeService.getByResourceType(this.type1.getId());
         assertThat(ranges)
                 .hasSize(2)
                 .extracting("Role.id")

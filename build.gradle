@@ -7,9 +7,9 @@ buildscript {
     }
 }
 
-plugins {
+//plugins {
 //    id "at.comm_unity.gradle.plugins.jpamodelgen" version "1.1.2"
-}
+//}
 
 apply plugin: 'java'
 apply plugin: 'idea'
@@ -68,7 +68,7 @@ tasks.withType(Test) {
     reports.html.destination = file("${reporting.baseDir}/${name}")
 }
 
-bootRun.doFirst {
+ def aspectJLTW = {
     //为了进行spring LTW 织入，添加jvmArgs
     def args = []
     configurations.javaAgent.files.each {
@@ -78,10 +78,15 @@ bootRun.doFirst {
     //远程调试用，启用aspectJ后，直接debug无法进入断点，必须启用远程调试
     args.add("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005")
     jvmArgs =  args
-
-    println(jvmArgs)
 }
 
+integrationTest.doFirst {
+    aspectJLTW()
+}
+
+//bootRun.doFirst aspectJLTW
+//test.doFirst aspectJLTW
+//integrationTest aspectJLTW
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
@@ -107,10 +112,6 @@ dependencies {
             "org.springframework.boot:spring-boot-starter-test",
             "org.springframework.security:spring-security-test",
             files("libs/GroboTestingJUnit-1.2.1-core.jar"),
-    )
-
-    integrationTestCompile(
-
     )
 }
 

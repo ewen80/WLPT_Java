@@ -15,6 +15,7 @@ import pw.ewen.WLPT.services.ResourceTypeService;
  */
 @Configuration
 @EnableSpringConfigured
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 @EnableLoadTimeWeaving(aspectjWeaving = EnableLoadTimeWeaving.AspectJWeaving.ENABLED)
 public class AopConfig {
 
