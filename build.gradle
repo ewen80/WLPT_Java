@@ -22,7 +22,7 @@ jar{
 
 sourceSets{
     //集成测试相关配置
-    integrationTest {
+    integration_test {
         java {
             compileClasspath += main.output + test.output
             runtimeClasspath += main.output + test.output
@@ -47,14 +47,14 @@ repositories {
 }
 
 configurations {
-    integrationTestCompile.extendsFrom testCompile
-    integrationTestRuntime.extendsFrom testRuntime
+    integration_testCompile.extendsFrom testCompile
+    integration_testRuntime.extendsFrom testRuntime
     javaAgent
 }
 
 task integrationTest(type: Test) {
-    testClassesDir = sourceSets.integrationTest.output.classesDir
-    classpath = sourceSets.integrationTest.runtimeClasspath
+    testClassesDir = sourceSets.integration_test.output.classesDir
+    classpath = sourceSets.integration_test.runtimeClasspath
     group = "verification"
 }
 
@@ -80,13 +80,10 @@ tasks.withType(Test) {
     jvmArgs =  args
 }
 
-integrationTest.doFirst {
-    aspectJLTW()
-}
 
-//bootRun.doFirst aspectJLTW
-//test.doFirst aspectJLTW
-//integrationTest aspectJLTW
+bootRun.doFirst aspectJLTW
+test.doFirst aspectJLTW
+integrationTest.doFirst  aspectJLTW
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
