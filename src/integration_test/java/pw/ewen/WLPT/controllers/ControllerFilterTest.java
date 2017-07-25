@@ -50,13 +50,15 @@ public class ControllerFilterTest {
     private RoleRepository roleRepository;
     @Autowired
     private MyResourceRepository myResourceRepository;
-
-    private MockMvc mvc;
     @Autowired
     private WebApplicationContext context;
 
+    private MockMvc mvc;
+
+
     @Before
     public void init(){
+        //将spring security注入spring mvc test
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .apply(springSecurity())
@@ -69,10 +71,6 @@ public class ControllerFilterTest {
         userRepository.save(user1);
         userRepository.save(user2);
 
-        MyResource r_15 = new MyResource(15);
-        MyResource r_20 = new MyResource(20);
-        myResourceRepository.save(r_15);
-        myResourceRepository.save(r_20);
     }
 
     /**
@@ -81,65 +79,41 @@ public class ControllerFilterTest {
      */
     @Test
     public void testEqual() throws Exception{
-        MvcResult result = this.mvc.perform(get("/users?filter={filter}", "name:user1"))
-                            .andReturn();
-        System.out.println(result.getResponse().getContentAsString());
-//                .andExpect(jsonPath("$[*].length", is(1)))
-//                .andExpect(jsonPath("$[0].userId", contains("user1")));
+         this.mvc.perform(get("/users?filter={filter}", "name:user1"))
+                 .andDo(print())
+                .andExpect(jsonPath("$.length()", is(1)))
+                .andExpect(jsonPath("$[0].userId", is("user1")));
     }
 
     @Test
     public void testNegation() throws Exception{
         this.mvc.perform(get("/users?filter={filter}", "name!user1"))
-                .andExpect(jsonPath("$.content[*].id", containsInAnyOrder("admin", "user2")));
-    }
-
-    @Test
-    public void testGreaterThan() throws Exception{
-        this.mvc.perform(get("/resources/all?filter={filter}", "number>15"))
-                .andExpect(jsonPath("$[*].number", containsInAnyOrder(20)));
-    }
-
-    @Test
-    public void testGreaterThanEqual() throws Exception{
-        this.mvc.perform(get("/resources/all?filter={filter}", "number>:20"))
-                .andExpect(jsonPath("$[*].number", containsInAnyOrder(20)));
-    }
-
-    @Test
-    public void testLessThan() throws Exception{
-        this.mvc.perform(get("/resources/all?filter={filter}", "number<16"))
-                .andExpect(jsonPath("$[*].number", containsInAnyOrder(15)));
-    }
-
-    @Test
-    public void testLessThanEqual() throws Exception{
-        this.mvc.perform(get("/resources/all?filter={filter}", "number<:15"))
-                .andExpect(jsonPath("$[*].number", containsInAnyOrder(15)));
+                .andExpect(jsonPath("$.length()", is(3)))
+                .andExpect(jsonPath("$[*].userId", containsInAnyOrder("admin", "guest", "user2")));
     }
 
     @Test
     public void testStartsWith() throws Exception{
         this.mvc.perform(get("/users?filter={filter}", "name:user*"))
-                .andExpect(jsonPath("$.content[*].name", containsInAnyOrder("user1","user2")));
+                .andExpect(jsonPath("$[*].name", containsInAnyOrder("user1","user2")));
     }
 
     @Test
     public void testEndsWith() throws  Exception{
         this.mvc.perform(get("/users?filter={filter}", "name:*1"))
                 .andDo(print())
-                .andExpect(jsonPath("$.content[*].name", containsInAnyOrder("user1")));
+                .andExpect(jsonPath("$[*].name", containsInAnyOrder("user1")));
     }
 
     @Test
     public void testContains() throws Exception{
         this.mvc.perform(get("/users?filter={filter}", "name:*ser*"))
-                .andExpect(jsonPath("$.content[*].name", containsInAnyOrder("user1","user2")));
+                .andExpect(jsonPath("$[*].name", containsInAnyOrder("user1","user2")));
     }
 
     @Test
     public void testMultiFilters() throws Exception{
         this.mvc.perform(get("/users?filter={filter}", "name:*ser*,name:user1"))
-                .andExpect(jsonPath("$.content[*].name", containsInAnyOrder("user1")));
+                .andExpect(jsonPath("$[*].name", containsInAnyOrder("user1")));
     }
 }

@@ -13,7 +13,9 @@ import org.springframework.security.acls.model.Permission;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 import pw.ewen.WLPT.domains.DTOs.permissions.PermissionDTO;
 import pw.ewen.WLPT.domains.DTOs.permissions.ResourceRangePermissionWrapperDTO;
 import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
@@ -31,6 +33,8 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -53,8 +57,9 @@ public class PermissionControllerTest {
     private ResourceTypeRepository resourceTypeRepository;
     @Autowired
     private PermissionService permissionService;
-
     @Autowired
+    private WebApplicationContext context;
+
     private MockMvc mvc;
 
     private ResourceRange rr1, rr2;
@@ -62,6 +67,12 @@ public class PermissionControllerTest {
 
     @Before
     public void init(){
+        //将spring security注入spring mvc test
+        mvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(springSecurity())
+                .build();
+
         Role role1 = new Role("role1", "role1");
         roleRepository.save(role1);
 
@@ -113,7 +124,7 @@ public class PermissionControllerTest {
         this.permissionService.insertPermission(rr1.getId(), BasePermission.READ);
 
         this.mvc.perform(get("/permissions/0"))
-                .andExpect(status().isNotFound());
+                .andExpect(jsonPath("$.length()", is(0)));
 
     }
 

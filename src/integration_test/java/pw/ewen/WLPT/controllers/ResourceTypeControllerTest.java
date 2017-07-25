@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
-@WithMockUser(username = "admin")
+@WithMockUser(authorities = "admin")
 public class ResourceTypeControllerTest {
 
     @Autowired
@@ -48,7 +48,7 @@ public class ResourceTypeControllerTest {
     public void testBooleanEqual_CanConvertToBoolean() throws Exception{
 
         this.mvc.perform(get("/resourcetypes?filter={filter}", "deleted:true"))
-                .andExpect(jsonPath("$.content[*].className", containsInAnyOrder("a")));
+                .andExpect(jsonPath("$[*].className", containsInAnyOrder("a")));
     }
 
     /**

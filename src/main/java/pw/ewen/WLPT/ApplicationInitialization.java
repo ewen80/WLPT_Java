@@ -40,8 +40,6 @@ public class ApplicationInitialization implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         this.initialRolesAndUsers();
         this.initialMenu();
-        this.authorizeMenu();
-
     }
 
 
@@ -112,26 +110,5 @@ public class ApplicationInitialization implements ApplicationRunner {
         menusAdminMenu.setPath("/admin/resources/menus");
         menusAdminMenu.setParent(adminMenu);
         menuRepository.save(menusAdminMenu);
-    }
-
-    //初始化菜单权限
-    //admin角色对所有菜单都有权限
-    private void authorizeMenu(){
-        String menuClassName = env.getProperty("resource.menu.classname");
-        if(menuClassName == null){
-            //如果配置文件找不到menu则抛出异常
-            throw new PropertyNotFound("menu");
-        } else {
-            ResourceType menuResourceType = this.resourceTypeRepository.findByClassName(menuClassName);
-            Role adminRole = this.roleRepository.findByroleId("admin");
-
-            ResourceRange haveAllMenuPermission = new ResourceRange("", adminRole, menuResourceType);
-            haveAllMenuPermission.setMatchAll(true);
-            haveAllMenuPermission = this.resourceRangeRepository.save(haveAllMenuPermission);
-
-//            此句无法执行，因为调用此方法需要有用户标识，初始化时候没有此用户标识
-//            this.permissionService.insertPermissions(haveAllMenuPermission.getId(), Arrays.asList(BasePermission.READ, BasePermission.WRITE));
-        }
-
     }
 }

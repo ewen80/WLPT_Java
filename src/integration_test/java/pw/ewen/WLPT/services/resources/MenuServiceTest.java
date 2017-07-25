@@ -18,6 +18,7 @@ import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.repositories.MenuRepository;
 import pw.ewen.WLPT.repositories.ResourceRangeRepository;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
+import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.security.UserContext;
 import pw.ewen.WLPT.services.MenuService;
 import pw.ewen.WLPT.services.PermissionService;
@@ -42,6 +43,8 @@ public class MenuServiceTest {
     private ResourceTypeRepository resourceTypeRepository;
     @Autowired
     private ResourceRangeRepository resourceRangeRepository;
+    @Autowired
+    private RoleRepository roleRepository;
     @Autowired
     private MenuService menuService;
     @Autowired
@@ -230,96 +233,6 @@ public class MenuServiceTest {
      * |    |-menu32
      * |    |-menu33
      */
-//    @Test
-//    public void generateUpflowTree(){
-//        List<Menu> leafMenus;
-//        SearchSpecification spec111 = new SearchSpecification(
-//                new SearchCriteria("name", SearchOperation.EQUALITY, "111"));
-//        SearchSpecification spec112 = new SearchSpecification(
-//                new SearchCriteria("name", SearchOperation.EQUALITY, "112"));
-//        SearchSpecification spec2 = new SearchSpecification(
-//                new SearchCriteria("name", SearchOperation.EQUALITY, "2"));
-//        SearchSpecification spec121 = new SearchSpecification(
-//                new SearchCriteria("name", SearchOperation.EQUALITY, "121"));
-//
-//
-//        leafMenus = Arrays.asList(this.menuRepository.findOne(spec111),
-//                        this.menuRepository.findOne(spec112),
-//                        this.menuRepository.findOne(spec2),
-//                        this.menuRepository.findOne(spec121));
-//
-//
-//        List<Menu> menus = this.menuService.generateUpflowTree(leafMenus);
-//
-//        assertThat(menus)
-//                .hasSize(2)
-//                .extracting("name")
-//                    .containsExactlyInAnyOrder("1", "2");
-////                    menu1
-////                     |-menu11
-////                * |  |   |-menu111
-////                * |  |   |-menu112
-//        assertThat(menus.get(0).getChildren())
-//                .hasSize(2)
-//                .extracting("name")
-//                    .containsExactlyInAnyOrder("11","12");
-////                     |-menu11
-////                * |  |   |-menu111
-////                * |  |   |-menu112
-//        assertThat(menus.get(0).getChildren().get(0).getChildren())
-//                .hasSize(2)
-//                .extracting("name")
-//                .containsExactlyInAnyOrder("111", "112");
-//
-//        assertThat(menus.get(0).getChildren().get(1).getChildren())
-//                .hasSize(1)
-//                .extracting("name")
-//                .containsExactlyInAnyOrder("121");
-//    }
-//
-//    /**
-//     * 测试没有任何权限设置过的情况下，生成叶子节点
-//     */
-//    @Test
-//    @WithMockUser(value = "admin")
-//    public void testGeneratePermissionLeafMenus_noAuthorizedMenus(){
-//        SearchSpecification spec1 = new SearchSpecification(
-//                new SearchCriteria("name", SearchOperation.EQUALITY, "1"));
-//        SearchSpecification spec2 = new SearchSpecification(
-//                new SearchCriteria("name", SearchOperation.EQUALITY, "2"));
-////        SearchSpecification spec3 = new SearchSpecification(
-////                new SearchCriteria("name", SearchOperation.EQUALITY, "3"));
-//
-//        List<Menu> menus = this.menuService.generatePermissionLeafMenus(Arrays.asList(this.menuRepository.findOne(spec1),
-//                                                                                    this.menuRepository.findOne(spec2))
-//                                                                        , userContext.getCurrentUser().getRole());
-//        assertThat(menus)
-//                .hasSize(10);
-//    }
-//
-//    /**
-//     * 测试有菜单权限设置的情况下，生成叶子节点
-//     */
-//    @Test
-//    @WithMockUser(value = "admin" ,authorities = {"admin"})
-//    public void testGeneratePermissionLeafMenus_authorizedMenus(){
-//        //添加权限
-//        this.addAuthorizedMenus();
-//
-//        SearchSpecification spec1 = new SearchSpecification(
-//                new SearchCriteria("name", SearchOperation.EQUALITY, "1"));
-////        SearchSpecification spec2 = new SearchSpecification(
-////                new SearchCriteria("name", SearchOperation.EQUALITY, "2"));
-////        SearchSpecification spec3 = new SearchSpecification(
-////                new SearchCriteria("name", SearchOperation.EQUALITY, "3"));
-//
-//
-//        List<Menu> menus = this.menuService.generatePermissionLeafMenus(this.menuRepository.findAll(spec1), this.userContext.getCurrentUser().getRole());
-//        assertThat(menus)
-//                .extracting("name")
-//                .containsExactlyInAnyOrder("111","121","122");
-//    }
-//
     /**
      * 测试最终生成的菜单节点树
      */
@@ -338,26 +251,26 @@ public class MenuServiceTest {
 
     //对 menu111,menu11,menu12,menu2有权限
     private void addAuthorizedMenus(){
-        ResourceType resourceType = new ResourceType("pw.ewen.WLPT.domains.entities.Menu","Menu","");
-        resourceTypeRepository.save(resourceType);
+        ResourceType resourceType = this.resourceTypeRepository.findByClassName("pw.ewen.WLPT.domains.entities.Menu");
+        Role role = this.roleRepository.findByroleId("admin");
 
-        ResourceRange resourceRange = new ResourceRange("name=='111'", new Role("admin", "admin"), resourceType);
+        ResourceRange resourceRange = new ResourceRange("name=='111'", role, resourceType);
         resourceRangeRepository.save(resourceRange);
 
         this.permissionService.insertPermission(resourceRange.getId(), BasePermission.READ);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        ResourceRange resourceRange2 = new ResourceRange("name=='11'", new Role("admin", "admin"), resourceType);
+        ResourceRange resourceRange2 = new ResourceRange("name=='11'", role, resourceType);
         resourceRangeRepository.save(resourceRange2);
 
         this.permissionService.insertPermission(resourceRange2.getId(), BasePermission.READ);
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        ResourceRange resourceRange3 = new ResourceRange("name=='12'", new Role("admin", "admin"), resourceType);
+        ResourceRange resourceRange3 = new ResourceRange("name=='12'", role, resourceType);
         resourceRangeRepository.save(resourceRange3);
 
         this.permissionService.insertPermission(resourceRange3.getId(), BasePermission.READ);
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        ResourceRange resourceRange4 = new ResourceRange("name=='2'", new Role("admin", "admin"), resourceType);
+        ResourceRange resourceRange4 = new ResourceRange("name=='2'", role, resourceType);
         resourceRangeRepository.save(resourceRange4);
 
         this.permissionService.insertPermission(resourceRange4.getId(), BasePermission.READ);

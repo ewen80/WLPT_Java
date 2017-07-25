@@ -72,7 +72,7 @@ public class ResourceRangeServiceTest {
         List<ResourceRange> ranges = this.resourceRangeService.getByResourceType(this.type1.getId());
         assertThat(ranges)
                 .hasSize(2)
-                .extracting("Role.id")
+                .extracting("Role.roleId")
                 .containsOnly("role1","role2");
     }
 }
