@@ -7,9 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MockMvcBuilder;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.WebApplicationContext;
 import pw.ewen.WLPT.domains.entities.MyResource;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
@@ -19,7 +25,11 @@ import pw.ewen.WLPT.repositories.UserRepository;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.is;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 /**
@@ -31,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 //如果不添加@Transactional则@Before中的语句不会每次执行方法后自动反执行,会导致insert多次数据
 @Transactional
-@WithMockUser(value = "admin")
+@WithMockUser(authorities = "admin")
 public class ControllerFilterTest {
 
     @Autowired
@@ -41,11 +51,17 @@ public class ControllerFilterTest {
     @Autowired
     private MyResourceRepository myResourceRepository;
 
-    @Autowired
     private MockMvc mvc;
+    @Autowired
+    private WebApplicationContext context;
 
     @Before
     public void init(){
+        mvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(springSecurity())
+                .build();
+
         Role role1 = new Role("role1", "role1");
         roleRepository.save(role1);
         User user1 = new User("user1", "user1", "password", role1);
@@ -65,8 +81,11 @@ public class ControllerFilterTest {
      */
     @Test
     public void testEqual() throws Exception{
-        this.mvc.perform(get("/users?filter={filter}", "name:user1"))
-                .andExpect(jsonPath("$.content[*].id", contains("user1")));
+        MvcResult result = this.mvc.perform(get("/users?filter={filter}", "name:user1"))
+                            .andReturn();
+        System.out.println(result.getResponse().getContentAsString());
+//                .andExpect(jsonPath("$[*].length", is(1)))
+//                .andExpect(jsonPath("$[0].userId", contains("user1")));
     }
 
     @Test
@@ -108,6 +127,7 @@ public class ControllerFilterTest {
     @Test
     public void testEndsWith() throws  Exception{
         this.mvc.perform(get("/users?filter={filter}", "name:*1"))
+                .andDo(print())
                 .andExpect(jsonPath("$.content[*].name", containsInAnyOrder("user1")));
     }
 

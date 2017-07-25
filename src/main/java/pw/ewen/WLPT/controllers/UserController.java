@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.access.prepost.PreFilter;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domains.DTOs.UserDTO;
 import pw.ewen.WLPT.domains.entities.User;
@@ -20,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import static java.util.stream.Collectors.toList;
-
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -57,9 +57,10 @@ public class UserController {
 	@PostFilter("hasAuthority('admin') || hasPermission(filterObject.convertToUser(@roleRepository), 'read')")
 	public Collection<UserDTO> getUsers(@RequestParam(value="filter",defaultValue = "") String filter){
 		Collection<User> users = this.userService.findAll(filter);
-		return users.stream()
-				.map( UserDTO::convertFromUser)
-				.collect(toList());
+		Collection<UserDTO> dtos = users.stream()
+										.map( UserDTO::convertFromUser)
+										.collect(toList());
+		return dtos;
 	}
 
 	@RequestMapping(value="/{userId}", method=RequestMethod.GET, produces="application/json")

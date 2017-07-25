@@ -63,7 +63,7 @@ public class ResourceTypeSpecificationTest {
         SearchSpecification spec1 = new SearchSpecification(
                 new SearchCriteria("name", SearchOperation.EQUALITY, "user1"));
         SearchSpecification spec2 = new SearchSpecification(
-                new SearchCriteria("id", SearchOperation.EQUALITY, "user1"));
+                new SearchCriteria("userId", SearchOperation.EQUALITY, "user1"));
         List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec1).and(spec2));
 
         assertThat(user1).isIn(results);
