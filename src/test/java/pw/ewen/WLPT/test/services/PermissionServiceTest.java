@@ -154,7 +154,7 @@ public class PermissionServiceTest {
     public void deletePermissionWhenExist() throws Exception{
         permissionService.insertPermission(resourceRange.getId(), BasePermission.READ);
 
-        Boolean result =  permissionService.deletePermission(resourceRange.getId(), BasePermission.READ);
+        Boolean result =  permissionService.deletePermission(resourceRange.getId(), BasePermission.READ, true);
         Assert.isTrue(result);
     }
 
@@ -163,7 +163,7 @@ public class PermissionServiceTest {
      */
     @Test
     public void deletePermission_PermissionNotExist() {
-        Boolean result = permissionService.deletePermission(this.resourceRange.getId(), BasePermission.READ);
+        Boolean result = permissionService.deletePermission(this.resourceRange.getId(), BasePermission.READ, true);
         Assert.isTrue(!result);
     }
 
@@ -172,7 +172,7 @@ public class PermissionServiceTest {
      */
     @Test(expected = EntityNotFoundException.class)
     public void deletePermission_NotExistResourceRange() {
-        permissionService.deletePermission(0, BasePermission.READ);
+        permissionService.deletePermission(0, BasePermission.READ, true);
 
     }
 
@@ -183,7 +183,7 @@ public class PermissionServiceTest {
     public void deletePermissionWhenNotSame() throws Exception{
         permissionService.insertPermission(resourceRange.getId(), BasePermission.READ);
 
-        Boolean result = permissionService.deletePermission(resourceRange.getId(), BasePermission.WRITE);
+        Boolean result = permissionService.deletePermission(resourceRange.getId(), BasePermission.WRITE, true);
         Assert.isTrue(!result);
     }
 
@@ -196,7 +196,7 @@ public class PermissionServiceTest {
         permissionService.insertPermission(resourceRange.getId(), BasePermission.WRITE);
         permissionService.insertPermission(resourceRange1.getId(), BasePermission.READ);
 
-        permissionService.deleteResourceRangeAllPermissions(resourceRange.getId());
+        permissionService.deleteResourceRangeAllPermissions(resourceRange.getId(), true);
 
         ResourceRangePermissionWrapper wrapper = permissionService.getByResourceRange(resourceRange.getId());
         assertThat(wrapper.getPermissions()).hasSize(0);

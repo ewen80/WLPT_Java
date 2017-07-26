@@ -74,10 +74,10 @@ public class PermissionControllerTest {
                 .build();
 
         Role role1 = new Role("role1", "role1");
-        roleRepository.save(role1);
+        role1 = roleRepository.save(role1);
 
         this.rt1 = new ResourceType("className1","name1","",false);
-        resourceTypeRepository.save(rt1);
+        this.rt1 = resourceTypeRepository.save(rt1);
 
         this.rr1 = new ResourceRange("filter1", role1, this.rt1);
         this.rr1 = resourceRangeRepository.save(this.rr1);
@@ -121,7 +121,7 @@ public class PermissionControllerTest {
     @Test
     public void NoResourceRange() throws  Exception {
 
-        this.permissionService.insertPermission(rr1.getId(), BasePermission.READ);
+        this.permissionService.insertPermission(this.rr1.getId(), BasePermission.READ);
 
         this.mvc.perform(get("/permissions/0"))
                 .andExpect(jsonPath("$.length()", is(0)));

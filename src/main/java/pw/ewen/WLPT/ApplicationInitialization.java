@@ -6,6 +6,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.env.Environment;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.stereotype.Component;
+import pw.ewen.WLPT.configs.property.PropertyConfig;
 import pw.ewen.WLPT.domains.entities.*;
 import pw.ewen.WLPT.exceptions.enviroment.PropertyNotFound;
 import pw.ewen.WLPT.repositories.*;
@@ -21,7 +22,7 @@ import java.util.Arrays;
 public class ApplicationInitialization implements ApplicationRunner {
 
     @Autowired
-    private Environment env;
+    private PropertyConfig propertyConfig;
     @Autowired
     private MenuRepository menuRepository;
     @Autowired
@@ -46,25 +47,31 @@ public class ApplicationInitialization implements ApplicationRunner {
 
     //初始化角色（默认为admin,guest）
     private void initialRoles(){
-        Role adminRole = new Role("admin","admin");
+        Role adminRole = new Role(propertyConfig.getDefaultAdminRoleId(),propertyConfig.getDefaultAdminRoleName());
         this.roleRepository.save(adminRole);
 
-        Role guestRole = new Role("guest","guest");
+        Role guestRole = new Role(propertyConfig.getDefaultGuestRoleId(),propertyConfig.getDefaultGuestRoleName());
         this.roleRepository.save(guestRole);
     }
 
     //初始化用户（默认为admin,guest）
     private void initialUsers(){
         //保存管理员用户
-        Role adminRole = this.roleRepository.findByroleId("admin");
+        Role adminRole = this.roleRepository.findByroleId(propertyConfig.getDefaultAdminRoleId());
         if(adminRole != null){
-            User adminUser = new User("admin","admin","admin",adminRole);
+            User adminUser = new User(propertyConfig.getDefaultAdminUserId(),
+                    propertyConfig.getDefaultAdminUserName(),
+                    propertyConfig.getDefaultAdminUserPassword(),
+                    adminRole);
             this.userRepository.save(adminUser);
         }
         //保存来宾客户
-        Role guestRole = this.roleRepository.findByroleId("guest");
+        Role guestRole = this.roleRepository.findByroleId(propertyConfig.getDefaultGuestRoleId());
         if(guestRole != null){
-            User guestUser = new User("guest","guest","guest",guestRole);
+            User guestUser = new User(propertyConfig.getDefaultGuestUserId(),
+                    propertyConfig.getDefaultGuestUserName(),
+                    propertyConfig.getDefaultGuestUserPassword(),
+                    guestRole);
             this.userRepository.save(guestUser);
         }
     }

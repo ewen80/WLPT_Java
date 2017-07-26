@@ -54,7 +54,7 @@ public class UserController {
 //		return userResults.map(new userDTOConverter());
 //	}
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
-	@PostFilter("hasAuthority('admin') || hasPermission(filterObject.convertToUser(@roleRepository), 'read')")
+	@PostFilter("hasAuthority(@propertyConfig.getDefaultAdminRoleId()) || hasPermission(filterObject.convertToUser(@roleRepository), 'read')")
 	public Collection<UserDTO> getUsers(@RequestParam(value="filter",defaultValue = "") String filter){
 		Collection<User> users = this.userService.findAll(filter);
 		Collection<UserDTO> dtos = users.stream()
@@ -64,21 +64,21 @@ public class UserController {
 	}
 
 	@RequestMapping(value="/{userId}", method=RequestMethod.GET, produces="application/json")
-	@PostAuthorize("hasAuthority('admin') || hasPermission(returnObject.convertToUser(@roleRepository), 'read')")
+	@PostAuthorize("hasAuthority(@propertyConfig.getDefaultAdminRoleId()) || hasPermission(returnObject.convertToUser(@roleRepository), 'read')")
 	public UserDTO findOne(@PathVariable("userId") String userId){
 		User user = this.userService.findOne(userId);
 		return user == null ? null : UserDTO.convertFromUser(user);
 	}
 
 	@RequestMapping(method=RequestMethod.POST, produces="application/json")
-	@PreAuthorize("hasAuthority('admin') || hasPermission(#dto.convertToUser(@roleRepository), 'write')")
+	@PreAuthorize("hasAuthority(@propertyConfig.getDefaultAdminRoleId()) || hasPermission(#dto.convertToUser(@roleRepository), 'write')")
 	public UserDTO save(@RequestBody UserDTO dto){
 		User user = dto.convertToUser(this.roleRepository);
 		return UserDTO.convertFromUser(this.userService.save(user));
     }
 
     @RequestMapping(method=RequestMethod.DELETE, produces = "application/json")
-	@PreFilter("hasAuthority('admin') || hasPermission(@userService.findOne(filterObject ), 'write')")
+	@PreFilter("hasAuthority(@propertyConfig.getDefaultAdminRoleId()) || hasPermission(@userService.findOne(filterObject ), 'write')")
     public void delete(@RequestBody Collection<Long> ids){
 		this.userService.delete(ids);
 	}

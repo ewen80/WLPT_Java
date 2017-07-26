@@ -21,12 +21,17 @@ public class ResourceRangeService {
     private ResourceRangeRepository resourceRangeRepository;
     private RoleRepository roleRepository;
     private ResourceTypeRepository resourceTypeRepository;
+    private PermissionService permissionService;
 
     @Autowired
-    public ResourceRangeService(ResourceRangeRepository resourceRangeRepository, RoleRepository roleRepository, ResourceTypeRepository resourceTypeRepository) {
+    public ResourceRangeService(ResourceRangeRepository resourceRangeRepository,
+                                RoleRepository roleRepository,
+                                ResourceTypeRepository resourceTypeRepository,
+                                PermissionService permissionService) {
         this.resourceRangeRepository = resourceRangeRepository;
         this.roleRepository = roleRepository;
         this.resourceTypeRepository = resourceTypeRepository;
+        this.permissionService = permissionService;
     }
 
 //    public List<ResourceRange> getByResourceType(String resourceTypeClassName){
@@ -54,6 +59,8 @@ public class ResourceRangeService {
     public void delete(Collection<Long> ids){
         for(Long id : ids){
             this.resourceRangeRepository.delete(id);
+            //删除ACL权限
+            this.permissionService.deleteResourceRangesAllPermissions(ids, true);
         }
     }
 }

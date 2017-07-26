@@ -45,14 +45,14 @@ public class MenuController {
     }
 
     @RequestMapping(method=RequestMethod.POST, produces="application/json")
-    @PreAuthorize("hasAuthority('admin') || hasPermission(#dto.convertToMenu(@menuRepository), 'write')")
+    @PreAuthorize("hasAuthority(@propertyConfig.getDefaultAdminRoleId()) || hasPermission(#dto.convertToMenu(@menuRepository), 'write')")
     public MenuDTO save(@RequestBody MenuDTO dto){
         Menu menu = dto.convertToMenu(this.menuRepository);
         return MenuDTO.convertFromMenu(this.menuService.save(menu));
     }
 
     @RequestMapping(method=RequestMethod.DELETE, value="/{menuId}")
-    @PreAuthorize("hasAuthority('admin') || hasPermission(@menuRepository.findOne(#menuId), 'write')")
+    @PreAuthorize("hasAuthority(@propertyConfig.getDefaultAdminRoleId()) || hasPermission(@menuRepository.findOne(#menuId), 'write')")
     public void delete(@PathVariable("menuId") Long menuId) throws NumberFormatException{
         if(menuId != null){
             this.menuService.delete(menuId);

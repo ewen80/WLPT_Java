@@ -31,7 +31,7 @@ public class RoleController {
      * @return
      */
     @RequestMapping(value="/all", method=RequestMethod.GET, produces="application/json")
-    @PostFilter("hasAuthority('admin') || hasPermission(filterObject, 'read')")
+    @PostFilter("hasAuthority(@propertyConfig.getDefaultAdminRoleId()) || hasPermission(filterObject, 'read')")
     public List<Role> getAllRoles(){
         return  this.roleService.getAllRoles();
     }
@@ -54,7 +54,7 @@ public class RoleController {
      * @return  角色数据
      */
     @RequestMapping(value="/{roleId}", method=RequestMethod.GET, produces="application/json")
-    @PostAuthorize("hasAuthority('admin') || hasPermission(returnObject, 'read')")
+    @PostAuthorize("hasAuthority(@propertyConfig.getDefaultAdminRoleId()) || hasPermission(returnObject, 'read')")
     public Role getOneRole(@PathVariable("roleId") String roleId){
         return this.roleService.getOneRole(roleId);
     }
@@ -65,7 +65,7 @@ public class RoleController {
      * @return  保存的角色数据
      */
     @RequestMapping(method=RequestMethod.POST, produces = "application/json")
-    @PreAuthorize("hasAuthority('admin') || hasPermission(#role, 'write')")
+    @PreAuthorize("hasAuthority(@propertyConfig.getDefaultAdminRoleId()) || hasPermission(#role, 'write')")
     public Role save(@RequestBody Role role){
         return this.roleService.save(role);
     }
@@ -75,7 +75,7 @@ public class RoleController {
      * @param roleIds   角色roleIds
      */
     @RequestMapping(value = "/{ids}", method=RequestMethod.DELETE, produces = "application/json")
-    @PreFilter("hasAuthority('admin') ||  hasPermission(@roleService.findByIds(#ids), 'write')")
+    @PreFilter("hasAuthority(@propertyConfig.getDefaultAdminRoleId()) ||  hasPermission(@roleService.findByIds(#ids), 'write')")
     public void delete(@PathVariable("ids") String roleIds){
 //        String[] arrRoleIds = roleIds.split(",");
 //        ArrayList<Long> longIds = new ArrayList<>();

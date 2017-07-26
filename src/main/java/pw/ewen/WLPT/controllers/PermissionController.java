@@ -41,7 +41,7 @@ public class PermissionController {
      * 多个ResourceRange用,分割
      */
     @RequestMapping(value = "/{resourceRangeIds}", method = RequestMethod.GET, produces = "application/json")
-    @PostFilter("hasAuthority('admin') || hasPermission(filterObject.convertToPermissionWrapper(@resourceRangeRepository).getResourceRange(), 'read')")
+    @PostFilter("hasAuthority(@propertyConfig.getDefaultAdminRoleId()) || hasPermission(filterObject.convertToPermissionWrapper(@resourceRangeRepository).getResourceRange(), 'read')")
     public Set<ResourceRangePermissionWrapperDTO> getByResourceRanges(@PathVariable("resourceRangeIds") String resourceRangeIds) throws PermissionNotFoundException,IllegalArgumentException{
         Set<ResourceRangePermissionWrapperDTO> wrappers = new HashSet<>();
 
@@ -67,11 +67,11 @@ public class PermissionController {
      * @return int  插入的权限记录数
      */
     @RequestMapping(method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    @PreAuthorize("hasAuthority('admin') || hasPermission(#wrapperDTO.convertToPermissionWrapper(@resourceRangeRepository).getResourceRange(), 'write')")
+    @PreAuthorize("hasAuthority(@propertyConfig.getDefaultAdminRoleId()) || hasPermission(#wrapperDTO.convertToPermissionWrapper(@resourceRangeRepository).getResourceRange(), 'write')")
     @Transactional
     public int save(@RequestBody ResourceRangePermissionWrapperDTO wrapperDTO) {
 
-        this.permissionService.deleteResourceRangeAllPermissions(wrapperDTO.getResourceRangeId());
+        this.permissionService.deleteResourceRangeAllPermissions(wrapperDTO.getResourceRangeId(), true);
 
         int insertNumber = 0;
 

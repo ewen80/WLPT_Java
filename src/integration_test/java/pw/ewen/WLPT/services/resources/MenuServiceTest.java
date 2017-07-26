@@ -24,7 +24,9 @@ import pw.ewen.WLPT.services.MenuService;
 import pw.ewen.WLPT.services.PermissionService;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -81,6 +83,11 @@ public class MenuServiceTest {
     private Menu menu31;
     private Menu menu32;
     private Menu menu33;
+
+    private ResourceRange resourceRange;
+    private ResourceRange resourceRange2;
+    private ResourceRange resourceRange3;
+    private ResourceRange resourceRange4;
 
     @BeforeTransaction
     public void beforeTransaction(){
@@ -247,6 +254,15 @@ public class MenuServiceTest {
                 .hasSize(2)
                 .extracting("name")
                 .containsExactlyInAnyOrder("1", "2");
+        //删除ACL中的所有权限避免和其他测试发生冲突，因为 addAuthorizedMenus() 方法是private并且spring @Transaction以及所有AOP只能作用于直接调用的public方法，嵌套调用的方法无法被代理
+        this.clearResourceRangePermissions();
+    }
+
+    private void clearResourceRangePermissions(){
+        List<Long> resourceRangeList = new ArrayList<>();
+        Collections.addAll(resourceRangeList, resourceRange.getId(), resourceRange2.getId(), resourceRange3.getId(), resourceRange4.getId());
+        this.permissionService.deleteResourceRangesAllPermissions(resourceRangeList, true);
+
     }
 
     //对 menu111,menu11,menu12,menu2有权限
@@ -254,23 +270,23 @@ public class MenuServiceTest {
         ResourceType resourceType = this.resourceTypeRepository.findByClassName("pw.ewen.WLPT.domains.entities.Menu");
         Role role = this.roleRepository.findByroleId("admin");
 
-        ResourceRange resourceRange = new ResourceRange("name=='111'", role, resourceType);
+        resourceRange = new ResourceRange("name=='111'", role, resourceType);
         resourceRangeRepository.save(resourceRange);
 
         this.permissionService.insertPermission(resourceRange.getId(), BasePermission.READ);
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        ResourceRange resourceRange2 = new ResourceRange("name=='11'", role, resourceType);
+        resourceRange2 = new ResourceRange("name=='11'", role, resourceType);
         resourceRangeRepository.save(resourceRange2);
 
         this.permissionService.insertPermission(resourceRange2.getId(), BasePermission.READ);
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        ResourceRange resourceRange3 = new ResourceRange("name=='12'", role, resourceType);
+        resourceRange3 = new ResourceRange("name=='12'", role, resourceType);
         resourceRangeRepository.save(resourceRange3);
 
         this.permissionService.insertPermission(resourceRange3.getId(), BasePermission.READ);
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        ResourceRange resourceRange4 = new ResourceRange("name=='2'", role, resourceType);
+        resourceRange4 = new ResourceRange("name=='2'", role, resourceType);
         resourceRangeRepository.save(resourceRange4);
 
         this.permissionService.insertPermission(resourceRange4.getId(), BasePermission.READ);

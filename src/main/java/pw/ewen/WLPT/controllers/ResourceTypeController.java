@@ -41,7 +41,7 @@ public class ResourceTypeController {
 //    }
 
     @RequestMapping(method = RequestMethod.GET, produces="application/json")
-    @PostFilter("hasAuthority('admin') || hasPermission(filterObject, 'read')")
+    @PostFilter("hasAuthority(@propertyConfig.getDefaultAdminRoleId()) || hasPermission(filterObject, 'read')")
     public Collection<ResourceType> getResources(@RequestParam(value = "filter", defaultValue = "") String filter){
         return  this.resourceTypeService.findAll(filter);
     }
@@ -51,7 +51,7 @@ public class ResourceTypeController {
      * @param className 资源类全限定名
      */
     @RequestMapping(value="/{className}", method=RequestMethod.GET, produces="application/json")
-    @PostAuthorize("hasAuthority('admin') || hasPermission(returnObject, 'read')")
+    @PostAuthorize("hasAuthority(@propertyConfig.getDefaultAdminRoleId()) || hasPermission(returnObject, 'read')")
     public ResourceType findByClassName(@PathVariable("className") String className){
         return this.resourceTypeService.findByClassName(className.replace('$','.'));
     }
@@ -61,7 +61,7 @@ public class ResourceTypeController {
      * @param resourceType 资源类型
      */
     @RequestMapping(method=RequestMethod.POST, produces = "application/json")
-    @PreAuthorize("hasAuthority('admin') || hasPermission(#resourceType, 'write')")
+    @PreAuthorize("hasAuthority(@propertyConfig.getDefaultAdminRoleId()) || hasPermission(#resourceType, 'write')")
     public ResourceType save(@RequestBody ResourceType resourceType){
         return this.resourceTypeService.save(resourceType);
     }
@@ -70,7 +70,7 @@ public class ResourceTypeController {
      * 删除,如果有对应的ResourceRange则软删除
      */
     @RequestMapping(method=RequestMethod.DELETE, produces = "application/json")
-    @PreFilter("hasAuthority('admin') || hasPermission(@resourceTypeService.findOne(filterObject ), 'write')")
+    @PreFilter("hasAuthority(@propertyConfig.getDefaultAdminRoleId()) || hasPermission(@resourceTypeService.findOne(filterObject ), 'write')")
     public void delete(@RequestBody Collection<Long> ids){
         Collection<ResourceType> resourceTypes = this.resourceTypeService.findByIds(ids);
         this.resourceTypeService.delete(resourceTypes);

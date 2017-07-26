@@ -30,7 +30,7 @@ public class ResourceRangeController {
     private ResourceTypeRepository resourceTypeRepository;
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    @PostFilter("hasAuthority('admin') || hasPermission(filterObject.convertToResourceRange(@roleRepository,@resourceTypeRepository), 'read')")
+    @PostFilter("hasAuthority(@propertyConfig.getDefaultAdminRoleId()) || hasPermission(filterObject.convertToResourceRange(@roleRepository,@resourceTypeRepository), 'read')")
     public List<ResourceRangeDTO> getByResourceType(@RequestParam(value = "resourceId", defaultValue = "") Long resourceTypeId){
         return service.getByResourceType(resourceTypeId)
                 .stream()
@@ -39,7 +39,7 @@ public class ResourceRangeController {
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
-    @PreAuthorize("hasAuthority('admin') || hasPermission(#dto.convertToResourceRange(@roleRepository,@resourceTypeRepository), 'write')")
+    @PreAuthorize("hasAuthority(@propertyConfig.getDefaultAdminRoleId()) || hasPermission(#dto.convertToResourceRange(@roleRepository,@resourceTypeRepository), 'write')")
     public ResourceRangeDTO save(@RequestBody ResourceRangeDTO dto){
         ResourceRange range = dto.convertToResourceRange(this.roleRepository, this.resourceTypeRepository);
         range =  this.service.save(range);
@@ -47,7 +47,7 @@ public class ResourceRangeController {
     }
 
     @RequestMapping(method=RequestMethod.DELETE, produces = "application/json")
-    @PreFilter("hasAuthority('admin') || hasPermission(@resourceRangeService.findOne(filterObject), 'write')")
+    @PreFilter("hasAuthority(@propertyConfig.getDefaultAdminRoleId()) || hasPermission(@resourceRangeService.findOne(filterObject), 'write')")
     public void delete(@RequestBody Collection<Long> ids){
         this.service.delete(ids);
     }

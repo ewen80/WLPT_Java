@@ -102,9 +102,10 @@ public class PermissionService {
 
     /**
      * 删除权限规则
+     * @Param deleteResourceRange 当ResourceRange的所有ACE全部被删除后，是否将ResourceRange本身删除
      * @Return 如果删除一条ACE则返回true，如果没有找到对应ACE，即没有实际删除数据返回false
      */
-    public boolean deletePermission(long resourceRangeId, Permission permission) {
+    public boolean deletePermission(long resourceRangeId, Permission permission, boolean deleteResourceRange) {
         Assert.notNull(permission);
 
         MutableAcl mutableAcl;
@@ -119,6 +120,13 @@ public class PermissionService {
                 try{
                     int matchedIndex = findAceIndex(aces, permission);
                     mutableAcl.deleteAce(matchedIndex);
+                    aces = mutableAcl.getEntries();
+                    //ACE已经为空并且设置为可以删除ResourceRange则删除ACL本身
+                    if(aces.size()==0 && deleteResourceRange){
+                        aclService.deleteAcl(oi, true);
+                    }
+                    //同步数据库
+                    aclService.updateAcl(mutableAcl);
                     return true;
                 }catch(RuntimeException e){
                     //没有找到规则
@@ -134,17 +142,28 @@ public class PermissionService {
     }
 
     /**
-     * 删除ResourceRange和Role的所有权限
+     * 删除ResourceRange的所有权限
      * @param resourceRangeId
      *
      */
-    public void deleteResourceRangeAllPermissions(long resourceRangeId) {
+    public void deleteResourceRangeAllPermissions(long resourceRangeId, boolean deleteResourceRange) {
         ResourceRangePermissionWrapper permissionWrapper = this.getByResourceRange(resourceRangeId);
-
+        //删除所有acl entry
         if(permissionWrapper != null) {
             for(Permission p : permissionWrapper.getPermissions()) {
-                this.deletePermission(resourceRangeId, p);
+                this.deletePermission(resourceRangeId, p, deleteResourceRange);
             }
+        }
+    }
+
+    /**
+     * 删除ResourceRanges的所有权限
+     * @param resourceRangeIds
+     *
+     */
+    public void deleteResourceRangesAllPermissions(Collection<Long> resourceRangeIds, boolean deleteResourceRange){
+        for(long id: resourceRangeIds){
+            this.deleteResourceRangeAllPermissions(id, deleteResourceRange);
         }
     }
 
