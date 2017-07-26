@@ -1,5 +1,6 @@
 package pw.ewen.WLPT.configs.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ import org.springframework.security.acls.model.AclService;
 import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import pw.ewen.WLPT.configs.property.PropertyConfig;
 
 import javax.sql.DataSource;
 
@@ -25,6 +27,13 @@ import javax.sql.DataSource;
  */
 @Configuration
 public class SecurityAclConfig {
+
+    private PropertyConfig propertyConfig;
+
+    @Autowired
+    public SecurityAclConfig(PropertyConfig propertyConfig){
+        this.propertyConfig = propertyConfig;
+    }
 
     @Bean
     PermissionEvaluator getAclPermissionEvaluator(AclService aclService, ObjectIdentityRetrievalStrategy objectIdentityRetrievalStrategy){
@@ -71,7 +80,7 @@ public class SecurityAclConfig {
      */
     @Bean
     SimpleGrantedAuthority getGrantedAuthority(){
-        return new SimpleGrantedAuthority("admin");
+        return new SimpleGrantedAuthority(propertyConfig.getDefaultAdminRoleId());
     }
 
 }

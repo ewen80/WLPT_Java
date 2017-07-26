@@ -10,6 +10,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+import pw.ewen.WLPT.annotations.WithAdminUser;
 import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 
@@ -24,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
-@WithMockUser(authorities = "admin")
+@WithAdminUser
 public class ResourceTypeControllerTest {
 
     @Autowired

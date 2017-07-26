@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
+import pw.ewen.WLPT.annotations.WithAdminUser;
 import pw.ewen.WLPT.domains.entities.MyResource;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
@@ -41,7 +42,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 //如果不添加@Transactional则@Before中的语句不会每次执行方法后自动反执行,会导致insert多次数据
 @Transactional
-@WithMockUser(authorities = "admin")
+//@WithAdminUser(authorities = "admin")
+@WithAdminUser
 public class ControllerFilterTest {
 
     @Autowired

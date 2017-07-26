@@ -1,6 +1,7 @@
 package pw.ewen.WLPT.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
+import pw.ewen.WLPT.annotations.WithAdminUser;
 import pw.ewen.WLPT.domains.DTOs.permissions.PermissionDTO;
 import pw.ewen.WLPT.domains.DTOs.permissions.ResourceRangePermissionWrapperDTO;
 import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
@@ -27,9 +29,7 @@ import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.services.PermissionService;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -46,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 @SpringBootTest
-@WithMockUser(value = "admin", authorities = "admin")
+@WithAdminUser
 public class PermissionControllerTest {
 
     @Autowired
@@ -85,7 +85,6 @@ public class PermissionControllerTest {
         this.rr2 = new ResourceRange("filter2", role1, this.rt1);
         this.rr2 = resourceRangeRepository.save(this.rr2);
     }
-
 
     /**
      * ResourceRange和Role都存在
@@ -213,8 +212,6 @@ public class PermissionControllerTest {
                 .content(jsonString))
                 .andExpect(status().isOk())
                 .andExpect(content().string("0"));
-//                .param("resourceRangeId", "0")
-//                .param("permissions", "W,"));
 
     }
 }

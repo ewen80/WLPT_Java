@@ -85,7 +85,7 @@ public class PermissionService {
             mutableAcl.setOwner(sid);
             mutableAcl.setEntriesInheriting(false);
             mutableAcl.insertAce(0, permission, sid, true);
-            aclService.updateAcl(mutableAcl);
+            mutableAcl = aclService.updateAcl(mutableAcl);
         } else {
             throw new EntityNotFoundException();
         }
@@ -124,9 +124,11 @@ public class PermissionService {
                     //ACE已经为空并且设置为可以删除ResourceRange则删除ACL本身
                     if(aces.size()==0 && deleteResourceRange){
                         aclService.deleteAcl(oi, true);
+                    } else {
+                        //修改同步数据库
+                        aclService.updateAcl(mutableAcl);
                     }
-                    //同步数据库
-                    aclService.updateAcl(mutableAcl);
+
                     return true;
                 }catch(RuntimeException e){
                     //没有找到规则

@@ -11,6 +11,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.transaction.AfterTransaction;
 import org.springframework.test.context.transaction.BeforeTransaction;
+import pw.ewen.WLPT.annotations.WithAdminUser;
 import pw.ewen.WLPT.domains.entities.Menu;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.domains.entities.ResourceType;
@@ -244,7 +245,7 @@ public class MenuServiceTest {
      * 测试最终生成的菜单节点树
      */
     @Test
-    @WithMockUser(value = "admin" ,authorities = {"admin"})
+    @WithAdminUser
     public void testPermissionMenuTree(){
         this.addAuthorizedMenus();
 
