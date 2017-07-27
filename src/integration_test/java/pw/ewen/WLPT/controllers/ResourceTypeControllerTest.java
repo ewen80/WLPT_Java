@@ -59,6 +59,5 @@ public class ResourceTypeControllerTest {
     @Test(expected = Exception.class)
     public void testBooleanEqual_CanNotConvertToBoolean() throws Exception{
         this.mvc.perform(get("/resourcetypes?filter={filter}", "deleted:True"));
-
     }
 }
