@@ -86,6 +86,13 @@ public class PermissionControllerTest {
         this.rr2 = resourceRangeRepository.save(this.rr2);
     }
 
+    @After
+    public void clear(){
+        Collection<Long> resourceRanges = new ArrayList<>();
+        Collections.addAll(resourceRanges, this.rr1.getId(), this.rr2.getId());
+        this.permissionService.deleteResourceRangesAllPermissions(resourceRanges, true);
+    }
+
     /**
      * ResourceRange和Role都存在
      * @throws Exception
@@ -167,7 +174,6 @@ public class PermissionControllerTest {
         dto.setResourceRangeId(rr1.getId());
 
         Set<PermissionDTO> permissions = new HashSet<>();
-//        permissions.add(new PermissionDTO(BasePermission.READ.getMask()));
         permissions.add(new PermissionDTO(BasePermission.WRITE.getMask()));
         dto.setPermissions(permissions);
 
@@ -179,8 +185,6 @@ public class PermissionControllerTest {
                 .content(jsonString))
                 .andExpect(status().isOk());
 
-//                .param("resourceRangeId", String.valueOf(rr1.getId()))
-//                .param("permissions", "W,"));
 
         ResourceRangePermissionWrapper wrapper = this.permissionService.getByResourceRange(rr1.getId());
 
@@ -200,7 +204,6 @@ public class PermissionControllerTest {
         dto.setResourceRangeId(0);
 
         Set<PermissionDTO> permissions = new HashSet<>();
-//        permissions.add(new PermissionDTO(BasePermission.READ.getMask()));
         permissions.add(new PermissionDTO(BasePermission.WRITE.getMask()));
         dto.setPermissions(permissions);
 
