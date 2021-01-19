@@ -1,5 +1,7 @@
 buildscript {
     repositories {
+        //阿里云仓库
+        maven { url 'https://maven.aliyun.com/repository/public/' }
         mavenCentral()
     }
     dependencies {
@@ -9,67 +11,33 @@ buildscript {
 
 plugins {
 //    id "at.comm_unity.gradle.plugins.jpamodelgen" version "1.1.2"
+    id 'application'
 }
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    //阿里云仓库
+    maven { url 'https://maven.aliyun.com/repository/public/' }
+    mavenCentral()
+}
+
+group = 'WLPT'
+version = '0.1.0'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 
-jar{
-	baseName = 'wlpt'
-	version = '0.1.0'
-}
-
-sourceSets{
-    //集成测试相关配置
-    integrationTest {
-        java {
-            compileClasspath += main.output + test.output
-            runtimeClasspath += main.output + test.output
-            srcDir 'src/integration_test/java'
-        }
-        resources.srcDir file('src/integration_test/resources')
-    }
-    main{
-        java{
-            exclude '**/DatabaseConfig.java'
-        }
-    }
-}
-
-//jpaModelgen {
-//    library = "org.hibernate:hibernate-jpamodelgen:5.2.6.Final"
-//}
-
-// In this section you declare where to find the dependencies of your project
-repositories {
-    mavenCentral()
-}
-
-configurations {
-    integrationTestCompile.extendsFrom testCompile
-    integrationTestRuntime.extendsFrom testRuntime
-}
-
-task integrationTest(type: Test) {
-    testClassesDir = sourceSets.integrationTest.output.classesDir
-    classpath = sourceSets.integrationTest.runtimeClasspath
-    group = "verification"
-}
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-check.dependsOn integrationTest
-integrationTest.mustRunAfter test
-
-tasks.withType(Test) {
-    reports.html.destination = file("${reporting.baseDir}/${name}")
+application {
+    mainClass = 'pw.ewen.WLPT.Application'
 }
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
-    compile(
+    implementation (
 //            "org.springframework.boot:spring-boot-devtools",
             "org.springframework.boot:spring-boot-starter-data-jpa",
             "org.springframework.boot:spring-boot-starter-web",
@@ -86,11 +54,55 @@ dependencies {
             "org.springframework.security:spring-security-test",
             files("libs/GroboTestingJUnit-1.2.1-core.jar"),
     )
-
-    integrationTestCompile(
-
-    )
 }
+
+//jar{
+//	baseName = 'wlpt'
+//	version = '0.1.0'
+//}
+
+//sourceSets{
+//    //集成测试相关配置
+//    integrationTest {
+//        java {
+//            compileClasspath += main.output + test.output
+//            runtimeClasspath += main.output + test.output
+//            srcDir 'src/integration_test/java'
+//        }
+//        resources.srcDir file('src/integration_test/resources')
+//    }
+//    main{
+//        java{
+//            exclude '**/DatabaseConfig.java'
+//        }
+//    }
+//}
+
+//jpaModelgen {
+//    library = "org.hibernate:hibernate-jpamodelgen:5.2.6.Final"
+//}
+
+//configurations {
+//    integrationTestCompile.extendsFrom testCompile
+//    integrationTestRuntime.extendsFrom testRuntime
+//}
+
+//task integrationTest(type: Test) {
+//    testClassesDir = sourceSets.integrationTest.output.classesDir
+//    classpath = sourceSets.integrationTest.runtimeClasspath
+//    group = "verification"
+//}
+
+
+
+//check.dependsOn integrationTest
+//integrationTest.mustRunAfter test
+
+//tasks.withType(Test) {
+//    reports.html.destination = file("${reporting.baseDir}/${name}")
+//}
+
+
 
 //-------------------------------------------------------------------------------------------------
 // 用于生成JPA的 JPA Static Metamodel Classes,动态查询需要使用
