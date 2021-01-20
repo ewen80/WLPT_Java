@@ -7,7 +7,7 @@ import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import pw.ewen.WLPT.domains.Resource;
-import pw.ewen.WLPT.exceptions.security.MatchedMultipleResourceRangeException;
+import pw.ewen.WLPT.exceptions.security.MatchedMultipleResourceRangesException;
 import pw.ewen.WLPT.repositories.ResourceRangeRepository;
 
 import javax.persistence.*;
@@ -89,7 +89,7 @@ public class ResourceRange {
     @Transient
     public ResourceRange matchRangeByResourceAndRole(Resource domainObject, Role role, ResourceRangeRepository resourceRangeRepository){
         //从ResourceRange仓储中获取所有和当前角色以及指定资源对应的filter
-        List ranges = resourceRangeRepository.findByRole_idAndResourceType_className(role.getId(), domainObject.getClass().getTypeName());
+        List<ResourceRange> ranges = resourceRangeRepository.findByRole_idAndResourceType_className(role.getId(), domainObject.getClass().getTypeName());
         //遍历所有filter进行判断表达式是否为true
         ExpressionParser parser = new SpelExpressionParser();
         EvaluationContext context = new StandardEvaluationContext(domainObject);
@@ -118,11 +118,8 @@ public class ResourceRange {
         }
         if(matchedRangesNumber > 1){
             //匹配到多条记录
-            throw new MatchedMultipleResourceRangeException("matched multipile resourcrange object to domains object: " + domainObject.toString());
-        }else if(matchedResourceRange == null) {
-            //没有匹配到记录
-            return null;
-        }
+            throw new MatchedMultipleResourceRangesException("matched multipile resource ranges object to domains object: " + domainObject.toString());
+        } //没有匹配到记录，matchedResourceRange=null，函数返回null
 
         return matchedResourceRange;
     }

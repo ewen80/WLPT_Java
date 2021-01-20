@@ -31,9 +31,8 @@ public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRe
         //查找ResourceRepository中当前SID对应的ResourceRange
         Role currentUserRole = userContext.getCurrentUser().getRole();
         ResourceRange resourceRange = getResourceRange(domainObject, currentUserRole);
-        if(resourceRange == null){
-            throw new IdentityUnavailableException("从Resource获取匹配的ResourceRange时出错，返回Null");
-        }else{
+        if(resourceRange.getClass().equals(NeverMatchedResourceRange.class)) throw new IdentityUnavailableException("从Resource未匹配到对应的ResourceRange");
+        else{
             return new ObjectIdentityImpl(resourceRange);
         }
 //        return null;
@@ -41,7 +40,7 @@ public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRe
 
     /**
      * 从domain object获得ResourceRange范围对象
-     * @Return 匹配的ResourceRange，如果没有匹配对象则返回一个固定ResourceRange(任何用户不能对此ResourceRange有权限)
+     * @return 匹配的ResourceRange，如果没有匹配对象则返回NeverMatchedResourceRange(任何用户不能对此ResourceRange有权限)
      */
     private ResourceRange getResourceRange(Object domainObject, Role role)  {
         ResourceRange range = new ResourceRange();
@@ -52,7 +51,7 @@ public class ObjectIdentityRetrievalStrategyWLPTImpl implements ObjectIdentityRe
             matchedRange = matchedRange == null ? new NeverMatchedResourceRange() : matchedRange;
             return  matchedRange;
         }else{
-            throw new IllegalArgumentException("domainObject should be Resource Type");
+            throw new IllegalArgumentException("domain object should be Resource Type");
         }
 
     }

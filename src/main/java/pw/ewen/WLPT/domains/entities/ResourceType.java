@@ -96,9 +96,6 @@ public class ResourceType implements Serializable {
 
     /**
      * 根据Resource返回对应的ResourceType
-     * @param resource
-     * @param repository
-     * @return
      */
     @Autowired
     public static ResourceType getFromResouce(Resource resource, ResourceTypeRepository repository){
