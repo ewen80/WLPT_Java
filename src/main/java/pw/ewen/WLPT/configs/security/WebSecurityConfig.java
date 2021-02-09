@@ -51,7 +51,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                                 .antMatchers("/authentication").permitAll() //对认证服务不做安全检查
                                 .anyRequest().authenticated()                            //其他访问都需要经过认证
                             .and()
-                                .httpBasic();   //Basic Authentication 认证方式
+                                .httpBasic()   //Basic Authentication 认证方式
+                            .and()
+                            .logout();
+
 
         http.csrf().disable(); //关闭CSRF检查
         http.cors();//允许CORS跨域请求
