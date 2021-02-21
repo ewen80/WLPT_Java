@@ -5,6 +5,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import pw.ewen.WLPT.domains.DTOs.UserDTO;
+import pw.ewen.WLPT.domains.entities.User;
+import pw.ewen.WLPT.services.UserService;
+
 import java.util.Base64;
 
 
@@ -21,23 +25,32 @@ public class AuthenticationApi {
 
         private boolean result;
         private String info;
+        private UserDTO user;
 
-        public boolean getResult() { return this.result;}
+
         public String getInfo() { return this.info;}
-
-        public void setResult(boolean result) {
-            this.result = result;
-        }
-
         public void setInfo(String info) {
             this.info = info;
         }
 
+        public boolean getResult() { return this.result;}
+        public void setResult(boolean result) {
+            this.result = result;
+        }
 
+        public UserDTO getUser() {
+            return user;
+        }
+
+        public void setUser(UserDTO user) {
+            this.user = user;
+        }
     }
 
     @Autowired
     private UserDetailsService userDetailsService;
+    @Autowired
+    private UserService userService;
 
     //用户认证接口
     @RequestMapping(method= RequestMethod.GET, produces="application/json")
@@ -52,6 +65,11 @@ public class AuthenticationApi {
             String encodedAuthString = new String(encodedBytes);
             if (authToken.equals(encodedAuthString)) {
                 authInfo.result = true;
+                authInfo.info = "认证成功";
+
+                User user = this.userService.findOne(userid);
+                UserDTO dto = UserDTO.convertFromUser(user);
+                authInfo.setUser(dto);
             } else {
                 authInfo.result = false;
                 authInfo.info = "密码不正确";
