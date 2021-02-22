@@ -16,10 +16,10 @@ import java.io.Serializable;
 public class User implements Serializable {
 	private static final long serialVersionUID = 5844614718392473692L;
 	
-	private String id;
-	private String name;
+	private String id;	// 用户ID
+	private String name;	//用户姓名
 	@JsonBackReference(value = "user")
-	private Role role;
+	private Role role;	// 用户角色
 	private String password;
 	private String picture;
 	
