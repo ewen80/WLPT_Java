@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //      后期考虑换成JWT方式，因为session-cookie方式，只适合客户端是浏览器的情况
         http
             .authorizeRequests().antMatchers("/h2console/**").permitAll()   //对嵌入式数据库console不做安全检查
-                                .antMatchers("/authentication").permitAll() //对认证服务不做安全检查
+//                                .antMatchers("/authentication").permitAll() //对认证服务不做安全检查
                                 .anyRequest().authenticated()                            //其他访问都需要经过认证
                             .and()
                                 .httpBasic()   //Basic Authentication 认证方式

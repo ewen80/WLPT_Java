@@ -52,6 +52,12 @@ public class AuthenticationApi {
     @Autowired
     private UserService userService;
 
+    //客户端刷新服务器认证接口
+    @RequestMapping(method = RequestMethod.PUT, value = "refresh")
+    public String refresh() {
+        return "OK";
+    }
+
     //用户认证接口
     @RequestMapping(method= RequestMethod.GET, produces="application/json")
     public AuthenticationInfo authenticate(@RequestParam(value = "userid", defaultValue = "") String userid,
