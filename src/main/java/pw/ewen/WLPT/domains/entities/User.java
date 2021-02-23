@@ -21,7 +21,7 @@ public class User implements Serializable {
 	@JsonBackReference(value = "user")
 	private Role role;	// 用户角色
 	private String password;
-	private String picture;
+	private String avatar;
 	
 	protected User(){}
 	
@@ -53,11 +53,11 @@ public class User implements Serializable {
 	public void setPassword(String password){ this.password = password;}
 
 	@Column(nullable = true)
-	public String getPicture() {
-		return picture;
+	public String getAvatar() {
+		return avatar;
 	}
-	public void setPicture(String picture) {
-		this.picture = picture;
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 
 	@ManyToOne

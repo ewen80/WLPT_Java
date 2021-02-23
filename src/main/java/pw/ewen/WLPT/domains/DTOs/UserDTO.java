@@ -14,7 +14,7 @@ public class UserDTO {
     private String name;
     private String roleId;
     private String password;
-    private String picture;
+    private String avatar;
 
     private static class UserConverter implements DTOConvert<UserDTO, User>{
         private RoleRepository roleRepository;
@@ -32,6 +32,9 @@ public class UserDTO {
 
             Role role = roleRepository.findOne(dto.getRoleId());
             User user = new User(dto.getId(), dto.getName(), dto.getPassword(), role);
+            if(!dto.getAvatar().isEmpty()) {
+                user.setAvatar(dto.getAvatar());
+            }
 
             return user;
         }
@@ -42,7 +45,7 @@ public class UserDTO {
             dto.setId(user.getId());
             dto.setName(user.getName());
             dto.setPassword(user.getPassword());
-            dto.setPicture(user.getPicture());
+            dto.setAvatar(user.getAvatar());
             if(user.getRole() != null){
                 dto.setRoleId(user.getRole().getId());
             }
@@ -93,19 +96,19 @@ public class UserDTO {
         this.roleId = roleId;
     }
 
-    public String getPassword() {
+    protected String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    protected void setPassword(String password) {
         this.password = password;
     }
 
-    public String getPicture() {
-        return picture;
+    public String getAvatar() {
+        return avatar;
     }
 
-    public void setPicture(String picture) {
-        this.picture = picture;
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }
