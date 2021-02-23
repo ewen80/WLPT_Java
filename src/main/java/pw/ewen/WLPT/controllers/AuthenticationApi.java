@@ -53,9 +53,9 @@ public class AuthenticationApi {
     private UserService userService;
 
     //客户端刷新服务器认证接口
-    @RequestMapping(method = RequestMethod.PUT, value = "refresh")
-    public String refresh() {
-        return "OK";
+    @RequestMapping(method = RequestMethod.PUT, value = "refresh", produces = "application/json")
+    public boolean refresh() {
+        return true;
     }
 
     //用户认证接口
