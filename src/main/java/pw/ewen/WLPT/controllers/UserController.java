@@ -26,7 +26,7 @@ public class UserController {
 	}
 
 	//将user对象转为DTO对象的内部辅助类
-	class userDTOConverter implements Converter<User, UserDTO>{
+	class UserDTOConverter implements Converter<User, UserDTO>{
 		@Override
 		public UserDTO convert(User source) {
 			return  UserDTO.convertFromUser(source);
@@ -46,7 +46,7 @@ public class UserController {
 			UserSpecificationBuilder builder = new UserSpecificationBuilder();
 			userResults =  this.userService.findAll(builder.build(filter), new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
 		}
-		return userResults.map(new userDTOConverter());
+		return userResults.map(new UserDTOConverter());
 	}
 
 	@RequestMapping(value="/{userId}", method=RequestMethod.GET, produces="application/json")

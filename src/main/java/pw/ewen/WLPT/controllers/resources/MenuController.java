@@ -51,7 +51,7 @@ public class MenuController {
 
     @RequestMapping(method=RequestMethod.DELETE, value="/{menuId}")
     public void delete(@PathVariable("menuId") String menuId) throws NumberFormatException{
-        Long longMenuId = Long.valueOf(menuId);
+        long longMenuId = Long.parseLong(menuId);
         this.menuService.delete(longMenuId);
     }
 }
