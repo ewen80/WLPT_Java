@@ -36,7 +36,6 @@ public class ApplicationInitialization implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         this.initialMenu();
-        this.authorizeMenu();
     }
 
     //初始化菜单数据
@@ -73,20 +72,5 @@ public class ApplicationInitialization implements ApplicationRunner {
         menusAdminMenu.setPath("/admin/resources/menus");
         menusAdminMenu.setParent(adminMenu);
         menuRepository.save(menusAdminMenu);
-    }
-    //初始化菜单权限
-    //admin角色对所有菜单都有权限
-    private void authorizeMenu(){
-        ResourceType menuResourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.Menu", "menu", "系统菜单");
-        this.resourceTypeRepository.save(menuResourceType);
-
-        Role adminRole = this.roleRepository.findOne("admin");
-
-        ResourceRange haveAllMenuPermission = new ResourceRange("", adminRole, menuResourceType);
-        haveAllMenuPermission.setMatchAll(true);
-        this.resourceRangeRepository.save(haveAllMenuPermission);
-
-        //添加ACL权限
-        permissionService.insertPermission(haveAllMenuPermission.getId(), BasePermission.ADMINISTRATION);
     }
 }

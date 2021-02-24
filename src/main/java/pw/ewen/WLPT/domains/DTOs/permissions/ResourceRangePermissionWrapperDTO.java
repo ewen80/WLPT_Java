@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 /**
  * Created by wen on 17-4-16.
+ * ResourceRange的权限配置类
  */
 public class ResourceRangePermissionWrapperDTO {
 

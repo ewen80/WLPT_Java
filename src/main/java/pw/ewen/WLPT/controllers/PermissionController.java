@@ -7,8 +7,14 @@ import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domains.DTOs.permissions.PermissionDTO;
 import pw.ewen.WLPT.domains.DTOs.permissions.ResourceRangePermissionWrapperDTO;
 import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
+import pw.ewen.WLPT.domains.entities.ResourceRange;
+import pw.ewen.WLPT.domains.entities.ResourceType;
+import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.exceptions.domain.PermissionNotFoundException;
 import pw.ewen.WLPT.services.PermissionService;
+import pw.ewen.WLPT.services.ResourceRangeService;
+import pw.ewen.WLPT.services.ResourceTypeService;
+import pw.ewen.WLPT.services.RoleService;
 
 import javax.transaction.Transactional;
 import java.util.Arrays;
@@ -25,12 +31,21 @@ import java.util.Set;
 public class PermissionController {
 
     private PermissionService permissionService;
+    private ResourceTypeService resourceTypeService;
+    private ResourceRangeService resourceRangeService;
+    private RoleService roleService;
 
     public static final Permission[] SUPPORT_PERMISSIONS = { BasePermission.READ, BasePermission.WRITE };
 
     @Autowired
-    public PermissionController(PermissionService permissionService) {
+    public PermissionController(PermissionService permissionService,
+                                ResourceTypeService resourceTypeService,
+                                ResourceRangeService resourceRangeService,
+                                RoleService roleService) {
         this.permissionService = permissionService;
+        this.resourceTypeService = resourceTypeService;
+        this.resourceRangeService = resourceRangeService;
+        this.roleService = roleService;
     }
 
     /**
@@ -87,11 +102,21 @@ public class PermissionController {
     }
 
     /**
-     * 系统权限初始化
+     * 系统权限初始化，使用admin用户执行该API
      * @return
      */
-    @RequestMapping(method = RequestMethod.GET, value = "sysinit", produces = "application/json")
-    public boolean init() {
-        return true;
+    @Transactional
+    @RequestMapping(method = RequestMethod.GET, value = "init", produces = "application/json")
+    public void init() {
+        ResourceType menuResourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.Menu", "menu", "菜单");
+        this.resourceTypeService.save((menuResourceType));
+
+        Role adminRole = this.roleService.findone("admin");
+
+        ResourceRange haveAllMenuPermission = new ResourceRange("", adminRole, menuResourceType);
+        haveAllMenuPermission.setMatchAll(true);
+        this.resourceRangeService.save(haveAllMenuPermission);
+
+        this.permissionService.insertPermissions(haveAllMenuPermission.getId(), Arrays.asList(SUPPORT_PERMISSIONS));
     }
 }
