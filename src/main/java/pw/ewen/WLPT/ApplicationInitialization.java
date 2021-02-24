@@ -3,6 +3,7 @@ package pw.ewen.WLPT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.stereotype.Component;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.domains.entities.ResourceType;
@@ -76,7 +77,7 @@ public class ApplicationInitialization implements ApplicationRunner {
     //初始化菜单权限
     //admin角色对所有菜单都有权限
     private void authorizeMenu(){
-        ResourceType menuResourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.Menu", "menu");
+        ResourceType menuResourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.Menu", "menu", "系统菜单");
         this.resourceTypeRepository.save(menuResourceType);
 
         Role adminRole = this.roleRepository.findOne("admin");
@@ -84,5 +85,8 @@ public class ApplicationInitialization implements ApplicationRunner {
         ResourceRange haveAllMenuPermission = new ResourceRange("", adminRole, menuResourceType);
         haveAllMenuPermission.setMatchAll(true);
         this.resourceRangeRepository.save(haveAllMenuPermission);
+
+        //添加ACL权限
+        permissionService.insertPermission(haveAllMenuPermission.getId(), BasePermission.ADMINISTRATION);
     }
 }

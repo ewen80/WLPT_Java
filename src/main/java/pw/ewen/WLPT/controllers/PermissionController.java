@@ -85,4 +85,13 @@ public class PermissionController {
         }
         return insertNumber;
     }
+
+    /**
+     * 系统权限初始化
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "sysinit", produces = "application/json")
+    public boolean init() {
+        return true;
+    }
 }
