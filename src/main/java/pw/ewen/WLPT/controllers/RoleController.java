@@ -9,6 +9,7 @@ import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.exceptions.domain.DeleteHaveUsersRoleException;
 import pw.ewen.WLPT.repositories.RoleRepository;
+import pw.ewen.WLPT.services.RoleService;
 
 import java.util.List;
 import java.util.Set;
@@ -20,10 +21,11 @@ import java.util.Set;
 @RequestMapping(value = "/roles")
 public class RoleController {
     private RoleRepository roleRepository;
+    private RoleService roleService;
 
     @Autowired
-    public RoleController(RoleRepository roleRepository) {
-        this.roleRepository = roleRepository;
+    public RoleController(RoleService roleService) {
+        this.roleService = roleService;
     }
 
     /**
@@ -32,7 +34,7 @@ public class RoleController {
      */
     @RequestMapping(value="/all", method=RequestMethod.GET, produces="application/json")
     public List<Role> getAllRoles(){
-        return  this.roleRepository.findAll();
+        return  this.roleService.findAll();
     }
 
     /**
@@ -44,7 +46,7 @@ public class RoleController {
     @RequestMapping(method = RequestMethod.GET, produces="application/json")
     public Page<Role> getRolesWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
                                        @RequestParam(value = "pageSize", defaultValue = "20") int pageSize){
-        return roleRepository.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
+        return roleService.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
     }
 
     /**
@@ -54,13 +56,8 @@ public class RoleController {
      */
     @RequestMapping(value="/{roleId}", method=RequestMethod.GET, produces="application/json")
     public Role getOneRole(@PathVariable("roleId") String roleId){
-        return roleRepository.findOne(roleId);
+        return roleService.findOne(roleId);
     }
-
-//    @RequestMapping(value = "/byname/{name}", method=RequestMethod.GET, produces = "application/json")
-//    public List<Role> getRolesByName(@PathVariable("name") String name){
-//        return roleRepository.findByName(name);
-//    }
 
     /**
      * 保存角色信息
@@ -69,7 +66,7 @@ public class RoleController {
      */
     @RequestMapping(method=RequestMethod.POST, produces = "application/json")
     public Role save(@RequestBody Role role){
-        return this.roleRepository.save(role);
+        return this.roleService.save(role);
     }
 
     /**
