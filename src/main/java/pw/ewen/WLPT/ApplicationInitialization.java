@@ -36,8 +36,38 @@ public class ApplicationInitialization implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         this.initialMenu();
-        this.authorizeMenu();
     }
 
 
+<<<<<<< HEAD
+=======
+        Menu adminMenu = new Menu();
+        adminMenu.setName("后台管理");
+        menuRepository.save(adminMenu);
+
+        Menu usersAdminMenu = new Menu();
+        usersAdminMenu.setName("用户管理");
+        usersAdminMenu.setPath("/admin/users");
+        usersAdminMenu.setParent(adminMenu);
+        menuRepository.save(usersAdminMenu);
+
+        Menu rolesAdminMenu = new Menu();
+        rolesAdminMenu.setName("角色管理");
+        rolesAdminMenu.setPath("/admin/roles");
+        rolesAdminMenu.setParent(adminMenu);
+        menuRepository.save(rolesAdminMenu);
+
+        Menu resourcesAdminMenu = new Menu();
+        resourcesAdminMenu.setName("资源管理");
+        resourcesAdminMenu.setPath("/admin/resources");
+        resourcesAdminMenu.setParent(adminMenu);
+        menuRepository.save(resourcesAdminMenu);
+
+        Menu menusAdminMenu = new Menu();
+        menusAdminMenu.setName("菜单管理");
+        menusAdminMenu.setPath("/admin/resources/menus");
+        menusAdminMenu.setParent(adminMenu);
+        menuRepository.save(menusAdminMenu);
+    }
+>>>>>>> 3061c9d2cd27923bb33af2f8fb1dff0aa997da04
 }
