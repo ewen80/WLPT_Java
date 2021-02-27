@@ -12,6 +12,11 @@ import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.repositories.specifications.UserSpecificationBuilder;
 import pw.ewen.WLPT.services.UserService;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static java.util.Arrays.asList;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -63,6 +68,7 @@ public class UserController {
 
     @RequestMapping(value = "/{userIds}", method=RequestMethod.DELETE, produces = "application/json")
     public void delete(@PathVariable("userIds") String userIds){
-		this.userService.delete(userIds);
+		List<String> ids = Arrays.asList(userIds.split(","));
+		this.userService.delete(ids);
 	}
 }

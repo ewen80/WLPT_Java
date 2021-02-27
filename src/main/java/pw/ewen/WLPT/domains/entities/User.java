@@ -22,6 +22,7 @@ public class User implements Serializable {
 	private Role role;	// 用户角色
 	private String password;
 	private String avatar;
+	private boolean deleted = false;	//软删除标志
 	
 	protected User(){}
 	

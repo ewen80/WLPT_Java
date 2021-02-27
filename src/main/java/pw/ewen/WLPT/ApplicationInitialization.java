@@ -39,8 +39,6 @@ public class ApplicationInitialization implements ApplicationRunner {
     }
 
 
-<<<<<<< HEAD
-=======
         Menu adminMenu = new Menu();
         adminMenu.setName("后台管理");
         menuRepository.save(adminMenu);
@@ -69,5 +67,4 @@ public class ApplicationInitialization implements ApplicationRunner {
         menusAdminMenu.setParent(adminMenu);
         menuRepository.save(menusAdminMenu);
     }
->>>>>>> 3061c9d2cd27923bb33af2f8fb1dff0aa997da04
 }

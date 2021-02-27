@@ -20,12 +20,10 @@ import java.util.Set;
 //		property = "id")
 public class Role implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1888955493407366629L;
 	private String id;
 	private String name;
+	private boolean deleted = false;	//软删除标志
 
 	@JsonManagedReference(value = "user")
 	private Set<User> users;

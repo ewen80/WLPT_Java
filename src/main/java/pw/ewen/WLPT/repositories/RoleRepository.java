@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import pw.ewen.WLPT.domains.entities.Role;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, String>, JpaSpecificationExecutor<Role> {
+public interface RoleRepository extends JpaRepository<Role, String>, JpaSpecificationExecutor<Role>, SoftDelete<String> {
 //    List<Role> findByName(String name);
 }
 

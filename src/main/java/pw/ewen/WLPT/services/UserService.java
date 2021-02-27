@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.repositories.UserRepository;
 
+import java.util.List;
+
 /**
  * Created by wenliang on 17-4-14.
  */
@@ -53,11 +55,7 @@ public class UserService {
         return this.userRepository.save(user);
     }
 
-    //TODO:不能直接删除,只能软删除
-    public void delete(String userIds){
-        String[] arrUserIds = userIds.split(",");
-        for(String id : arrUserIds){
-            this.userRepository.delete(id);
-        }
+    public int delete(List<String> userIds){
+        return this.userRepository.softdelete(userIds);
     }
 }

@@ -5,6 +5,9 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import pw.ewen.WLPT.domains.entities.User;
 
+/**
+ * update by wenliang on 20210226
+ */
 @Repository
-public interface UserRepository extends JpaRepository<User, String>, JpaSpecificationExecutor<User> {
+public interface UserRepository extends JpaRepository<User, String>, JpaSpecificationExecutor<User>, SoftDelete<String> {
 }
