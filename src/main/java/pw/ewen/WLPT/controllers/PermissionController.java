@@ -111,7 +111,7 @@ public class PermissionController {
         ResourceType menuResourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.Menu", "menu", "菜单");
         this.resourceTypeService.save((menuResourceType));
 
-        Role adminRole = this.roleService.findone("admin");
+        Role adminRole = this.roleService.findOne("admin");
 
         ResourceRange haveAllMenuPermission = new ResourceRange("", adminRole, menuResourceType);
         haveAllMenuPermission.setMatchAll(true);

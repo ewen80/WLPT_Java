@@ -1,73 +1,118 @@
 package pw.ewen.WLPT.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.domains.entities.Role;
+import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
-import pw.ewen.WLPT.services.ResourceTypeService;
+import pw.ewen.WLPT.repositories.ResourceRangeRepository;
+import pw.ewen.WLPT.repositories.ResourceTypeRepository;
+import pw.ewen.WLPT.repositories.RoleRepository;
+import pw.ewen.WLPT.repositories.resources.MenuRepository;
+import pw.ewen.WLPT.services.*;
 import pw.ewen.WLPT.services.resources.MenuService;
 
 /**
  * 系统首次运行初始化，一旦正式上线运行不可再调用此方法，否则菜单、账号等数据会被初始化
+ * created by wenliang on 20210226
  */
 @RestController
 public class OnceInitController {
 
     private MenuService menuService;
     private ResourceTypeService resourceTypeService;
+    private PermissionService permissionService;
+    private RoleService roleService;
+    private UserService userService;
+    private ResourceRangeService resourceRangeService;
 
+    @Autowired
+    public OnceInitController(MenuService menuService,
+                              ResourceTypeService resourceTypeService,
+                              PermissionService permissionService,
+                              RoleService roleService,
+                              UserService userService,
+                              ResourceRangeService resourceRangeService) {
+        this.menuService = menuService;
+        this.resourceTypeService = resourceTypeService;
+        this.permissionService = permissionService;
+        this.roleService = roleService;
+        this.userService = userService;
+        this.resourceRangeService = resourceRangeService;
+    }
 
     //初始化菜单数据
     private void initialMenu() {
         Menu homeMenu = new Menu();
         homeMenu.setName("Home");
         homeMenu.setPath("/");
-        menuRepository.save(homeMenu);
+        this.menuService.save(homeMenu);
 
         Menu adminMenu = new Menu();
         adminMenu.setName("后台管理");
-        menuRepository.save(adminMenu);
+        this.menuService.save(adminMenu);
 
         Menu usersAdminMenu = new Menu();
         usersAdminMenu.setName("用户管理");
         usersAdminMenu.setPath("/admin/users");
         usersAdminMenu.setParent(adminMenu);
-        menuRepository.save(usersAdminMenu);
+        this.menuService.save(usersAdminMenu);
 
         Menu rolesAdminMenu = new Menu();
         rolesAdminMenu.setName("角色管理");
         rolesAdminMenu.setPath("/admin/roles");
         rolesAdminMenu.setParent(adminMenu);
-        menuRepository.save(rolesAdminMenu);
+        this.menuService.save(rolesAdminMenu);
 
         Menu resourcesAdminMenu = new Menu();
         resourcesAdminMenu.setName("资源管理");
         resourcesAdminMenu.setPath("/admin/resources");
         resourcesAdminMenu.setParent(adminMenu);
-        menuRepository.save(resourcesAdminMenu);
+        this.menuService.save(resourcesAdminMenu);
 
         Menu menusAdminMenu = new Menu();
         menusAdminMenu.setName("菜单管理");
         menusAdminMenu.setPath("/admin/resources/menus");
         menusAdminMenu.setParent(adminMenu);
-        menuRepository.save(menusAdminMenu);
+        this.menuService.save(menusAdminMenu);
     }
     //初始化菜单权限
     //admin角色对所有菜单都有权限
     private void authorizeMenu(){
         ResourceType menuResourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.Menu", "menu", "系统菜单");
-        this.resourceTypeRepository.save(menuResourceType);
+        this.resourceTypeService.save(menuResourceType);
 
-        Role adminRole = this.roleRepository.findOne("admin");
+        Role adminRole = this.roleService.findOne("admin");
 
         ResourceRange haveAllMenuPermission = new ResourceRange("", adminRole, menuResourceType);
         haveAllMenuPermission.setMatchAll(true);
-        this.resourceRangeRepository.save(haveAllMenuPermission);
+        this.resourceRangeService.save(haveAllMenuPermission);
 
         //添加ACL权限
         permissionService.insertPermission(haveAllMenuPermission.getId(), BasePermission.ADMINISTRATION);
+    }
+
+    // 初始化用户和角色，生成角色："admin"、"anonymous".生成用户："admin"
+    private void initUserAndRole() {
+        Role role_admin = new Role("admin", "admin");
+        this.roleService.save(role_admin);
+        Role role_anonymous = new Role("anonymous", "anonymous");
+        this.roleService.save(role_anonymous);
+
+        User user_admin = new User("admin", "admin", "admin", role_admin);
+        this.userService.save(user_admin);
+    }
+
+    @RequestMapping(value = "/onceinit", method = RequestMethod.PUT)
+    public void onceInit() {
+        this.initUserAndRole();
+        this.initialMenu();
+        this.authorizeMenu();
     }
 
 }

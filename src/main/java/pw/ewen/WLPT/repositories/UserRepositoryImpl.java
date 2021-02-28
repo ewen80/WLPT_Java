@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 /**
  * 用于实现软删除功能
+ * created by wenliang on 20210227
  */
 public class UserRepositoryImpl implements SoftDelete<String>{
 

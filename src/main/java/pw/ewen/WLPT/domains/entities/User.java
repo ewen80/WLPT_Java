@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 /*
  * 系统用户
- * 一个用户只能属于一个角色（后期可以扩展至属于多个角色）
+ * 一个用户只能且必须属于一个角色（后期可以扩展至属于多个角色）
  */
 @Entity
 //@JsonIdentityInfo(
@@ -23,9 +23,8 @@ public class User implements Serializable {
 	private String password;
 	private String avatar;
 	private boolean deleted = false;	//软删除标志
-	
-	protected User(){}
-	
+
+	protected  User(){}
 	public User(String id, String name, String password, Role role){
 		this.id = id;
 		this.name = name;
@@ -67,10 +66,11 @@ public class User implements Serializable {
 		return role;
 	}
 	public void setRole(Role role) {
-		this.role = role;
+ 		this.role = role;
 	}
 
 	@Override
+	// 用户id相同则认为两个user相同
 	public boolean equals(Object obj) {
 		if(obj instanceof  User){
 			if(this.id.equals(((User) obj).getId())){

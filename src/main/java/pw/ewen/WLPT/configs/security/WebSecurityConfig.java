@@ -47,8 +47,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         //      采用BASIC AUTHENTICATION主要是为了方便快速开发
         //      后期考虑换成JWT方式，因为session-cookie方式，只适合客户端是浏览器的情况
         http
-            .authorizeRequests().antMatchers("/h2console/**").permitAll()   //对嵌入式数据库console不做安全检查
-//                                .antMatchers("/authentication").permitAll() //对认证服务不做安全检查
+            .authorizeRequests().antMatchers("/h2console/**").permitAll()   //对嵌入式数据库console不做用户认证
+//                                .antMatchers("/authentication").permitAll() //对认证服务不做用户认证
+                                .antMatchers("/onceinit").permitAll() //对系统首次初始化请求不做用户认证
                                 .anyRequest().authenticated()                            //其他访问都需要经过认证
                             .and()
                                 .httpBasic()   //Basic Authentication 认证方式

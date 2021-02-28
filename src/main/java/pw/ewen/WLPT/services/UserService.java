@@ -55,6 +55,11 @@ public class UserService {
         return this.userRepository.save(user);
     }
 
+    /**
+     * 删除用户
+     * @param userIds
+     * @return
+     */
     public int delete(List<String> userIds){
         return this.userRepository.softdelete(userIds);
     }
