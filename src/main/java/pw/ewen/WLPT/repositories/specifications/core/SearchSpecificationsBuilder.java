@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  * Created by wenliang on 17-3-30.
  */
 public class SearchSpecificationsBuilder<T> {
-    private List<SearchCriteria> params = new ArrayList<SearchCriteria>();
+    private final List<SearchCriteria> params = new ArrayList<>();
 
     //生成builder原材料
     private SearchSpecificationsBuilder<T> with(

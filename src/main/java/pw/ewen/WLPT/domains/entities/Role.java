@@ -2,10 +2,7 @@ package pw.ewen.WLPT.domains.entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -56,7 +53,7 @@ public class Role implements Serializable {
 		this.name = name;
 	}
 
-	@OneToMany(mappedBy="role")
+	@OneToMany(mappedBy="role", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	public Set<User> getUsers() {
 		return users;
 	}

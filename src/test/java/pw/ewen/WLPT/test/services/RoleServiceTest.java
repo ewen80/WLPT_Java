@@ -7,35 +7,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import pw.ewen.WLPT.domains.entities.Role;
-import pw.ewen.WLPT.domains.entities.User;
-import pw.ewen.WLPT.repositories.UserRepository;
 import pw.ewen.WLPT.services.RoleService;
+
+import javax.persistence.AssociationOverride;
 
 import static org.junit.Assert.*;
 
 /**
- * created by wenliang on 20210228
+ * created by  wenliang on 2021-03-01
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
-public class UserServiceTest {
+public class RoleServiceTest {
 
-    @Autowired
-    private UserRepository userRepository;
     @Autowired
     private RoleService roleService;
 
-    private Role role1;
-    private User  user1, user2, user3;
-
     @Before
     public void setUp() throws Exception {
-        role1 = new Role("role1", "role1");
-        user1 = new User("user1", "user1", "", role1);
-        roleService.save(role1);
+
     }
 
-    // 能够找到所有users
+    @Test
+    public void findOne() {
+    }
+
     @Test
     public void findAll() {
     }
@@ -45,14 +41,14 @@ public class UserServiceTest {
     }
 
     @Test
-    public void findOne() {
-    }
-
-    @Test
     public void save() {
+        Role role1 = new Role("role1", "role1");
+        this.roleService.save(role1);
+        assertEquals(this.roleService.findOne("role1"), role1);
     }
 
     @Test
     public void delete() {
+
     }
 }

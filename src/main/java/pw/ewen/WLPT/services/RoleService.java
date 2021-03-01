@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.repositories.RoleRepository;
+import pw.ewen.WLPT.repositories.specifications.UserSpecificationBuilder;
 
 import java.util.List;
 
@@ -17,10 +18,13 @@ import java.util.List;
 public class RoleService {
 
     private RoleRepository roleRepository;
+    private UserService userService;
 
     @Autowired
-    public RoleService(RoleRepository roleRepository) {
+    public RoleService(RoleRepository roleRepository,
+                       UserService userService) {
         this.roleRepository = roleRepository;
+        this.userService = userService;
     }
 
     /**
@@ -64,7 +68,9 @@ public class RoleService {
      */
     @Transactional
     public void delete(String[] ids) {
-
+        UserSpecificationBuilder builder = new UserSpecificationBuilder();
+        String filter = "id";
+        this.userService.findAll()
     }
 
 }

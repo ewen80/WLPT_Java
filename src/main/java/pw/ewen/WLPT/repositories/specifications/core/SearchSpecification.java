@@ -28,7 +28,7 @@ public class SearchSpecification<T> implements Specification<T> {
         String[] nestPropery = key.split("\\.");
         javax.persistence.criteria.Path<String> property = null;
         if(nestPropery.length > 1){
-            for(int i=0;i<nestPropery.length;i++){
+            for(int i = 0; i < nestPropery.length; i++){
                 property = property == null ? root.get(nestPropery[i]) : property.get(nestPropery[i]);
             }
         }else{
@@ -40,22 +40,25 @@ public class SearchSpecification<T> implements Specification<T> {
             case NEGATION:
                 return builder.notEqual(root.get(criteria.getKey()), criteria.getValue());
             case GREATER_THAN:
-                return builder.greaterThan(root.<String> get(criteria.getKey()), criteria.getValue().toString());
+                return builder.greaterThan(root.get(criteria.getKey()), criteria.getValue().toString());
             case GREATER_THAN_EQUALITY:
                 return builder.greaterThanOrEqualTo(root.<String>get(criteria.getKey()), criteria.getValue().toString());
             case LESS_THAN:
-                return builder.lessThan(root.<String> get(criteria.getKey()), criteria.getValue().toString());
+                return builder.lessThan(root.get(criteria.getKey()), criteria.getValue().toString());
             case LESS_THAN_EQUALITY:
-                return builder.lessThanOrEqualTo(root.<String> get(criteria.getKey()), criteria.getValue().toString());
+                return builder.lessThanOrEqualTo(root.get(criteria.getKey()), criteria.getValue().toString());
             case LIKE:
-                return builder.like(root.<String> get(criteria.getKey()), criteria.getValue().toString());
+                return builder.like(root.get(criteria.getKey()), criteria.getValue().toString());
             case STARTS_WITH:
-                return builder.like(root.<String> get(criteria.getKey()), criteria.getValue() + "%");
+                return builder.like(root.get(criteria.getKey()), criteria.getValue() + "%");
             case ENDS_WITH:
-                return builder.like(root.<String> get(criteria.getKey()), "%" + criteria.getValue());
+                return builder.like(root.get(criteria.getKey()), "%" + criteria.getValue());
             case CONTAINS:
-                return builder.like(root.<String> get(
+                return builder.like(root.get(
                         criteria.getKey()), "%" + criteria.getValue() + "%");
+            case IN:
+
+                return builder.in(root.get(criteria.getKey(), criteria.getValue().toString()));
             default:
                 return null;
         }

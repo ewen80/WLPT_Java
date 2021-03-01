@@ -5,9 +5,9 @@ package pw.ewen.WLPT.repositories.specifications.core;
  * 查询操作符
  */
 public enum SearchOperation {
-    EQUALITY, NEGATION, GREATER_THAN, GREATER_THAN_EQUALITY, LESS_THAN, LESS_THAN_EQUALITY, LIKE, STARTS_WITH, ENDS_WITH, CONTAINS;
+    EQUALITY, NEGATION, GREATER_THAN, GREATER_THAN_EQUALITY, LESS_THAN, LESS_THAN_EQUALITY, LIKE, STARTS_WITH, ENDS_WITH, CONTAINS, IN;
 
-    public static final String[] SIMPLE_OPERATION_SET = { ":", "!", ">", ">:", "<", "<:", "~" };
+    public static final String[] SIMPLE_OPERATION_SET = { ":", "!", ">", ">:", "<", "<:", "~", "()" };
 
     public static SearchOperation getSimpleOperation(String input) {
         switch (input) {
@@ -25,6 +25,8 @@ public enum SearchOperation {
                 return LESS_THAN_EQUALITY;
             case "~":   //Like
                 return LIKE;
+            case "()":  //IN
+                return IN;
             default:
                 return null;
         }
