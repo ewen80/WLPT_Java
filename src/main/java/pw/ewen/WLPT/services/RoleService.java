@@ -70,7 +70,7 @@ public class RoleService {
     public void delete(String[] ids) {
         UserSpecificationBuilder builder = new UserSpecificationBuilder();
         String filter = "id";
-        this.userService.findAll()
+//        this.userService.findAll()
     }
 
 }

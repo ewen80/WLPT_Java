@@ -17,6 +17,7 @@ import pw.ewen.WLPT.repositories.specifications.core.SearchCriteria;
 import pw.ewen.WLPT.repositories.specifications.core.SearchOperation;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecification;
 
+import java.util.HashSet;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,6 +39,7 @@ public class ResourceTypeSpecificationTest {
 
     private User user1;
     private User user2;
+    private User user3;
     private Role role1;
     private MyResource resource1;
     private MyResource resource2;
@@ -49,8 +51,10 @@ public class ResourceTypeSpecificationTest {
 
         this.user1 = new User("user1", "user1", "15", role1);
         this.user2 = new User("user2", "user2", "20", role1);
+        this.user3 = new User("user3", "user3", "25", role1);
         userRepository.save(user1);
         userRepository.save(user2);
+        userRepository.save(user3);
 
         this.resource1 = new MyResource(15);
         this.resource2 = new MyResource(20);
@@ -160,6 +164,19 @@ public class ResourceTypeSpecificationTest {
         List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
         assertThat(user2).isIn(results);
         assertThat(user1).isIn(results);
+    }
+
+    @Test
+    public void testIn() {
+        HashSet<String> inValues= new HashSet<>();
+        inValues.add("user1");
+        inValues.add("user2");
+        SearchSpecification spec = new SearchSpecification(
+                new SearchCriteria("name", SearchOperation.IN, inValues));
+        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
+        assertThat(user1).isIn(results);
+        assertThat(user2).isIn(results);
+        assertThat(user3).isNotIn(results);
     }
 
     @Test

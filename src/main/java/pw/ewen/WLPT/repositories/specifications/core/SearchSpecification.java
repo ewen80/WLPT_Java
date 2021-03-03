@@ -6,6 +6,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -57,8 +60,16 @@ public class SearchSpecification<T> implements Specification<T> {
                 return builder.like(root.get(
                         criteria.getKey()), "%" + criteria.getValue() + "%");
             case IN:
-
-                return builder.in(root.get(criteria.getKey(), criteria.getValue().toString()));
+                // criteria.getValue() 内保存in()内部的值，以HashSet存在
+                CriteriaBuilder.In<String> inClause = builder.in(root.get(criteria.getKey()));
+                if ( criteria.getValue() instanceof HashSet) {
+                    HashSet inValues = (HashSet) criteria.getValue();
+                    for (Object v : inValues) {
+                        inClause.value(v.toString());
+                    }
+                    return inClause;
+                }
+                return null;
             default:
                 return null;
         }
