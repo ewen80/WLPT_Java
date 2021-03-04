@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pw.ewen.WLPT.domains.entities.resources.MyResource;
 import pw.ewen.WLPT.repositories.resources.MyResourceRepository;
-import pw.ewen.WLPT.repositories.specifications.MyResourceSpecificationBuilder;
+import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class MyResourceController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/all")
     public List<MyResource> getAll(@RequestParam(name = "filter", value = "") String filter){
-        MyResourceSpecificationBuilder builder = new MyResourceSpecificationBuilder();
+        SearchSpecificationsBuilder<MyResource> builder = new SearchSpecificationsBuilder<>();
         return resourceRepository.findAll(builder.build(filter));
     }
 }

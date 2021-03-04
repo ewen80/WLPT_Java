@@ -6,8 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pw.ewen.WLPT.domains.entities.Role;
+import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.repositories.RoleRepository;
-import pw.ewen.WLPT.repositories.specifications.UserSpecificationBuilder;
+import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 
 import java.util.List;
 
@@ -68,8 +69,8 @@ public class RoleService {
      */
     @Transactional
     public void delete(String[] ids) {
-        UserSpecificationBuilder builder = new UserSpecificationBuilder();
-        String filter = "id";
+        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
+        String filter = "id()";
 //        this.userService.findAll()
     }
 

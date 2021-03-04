@@ -5,9 +5,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.apache.commons.lang3.StringUtils.split;
 
 /**
  * Created by wenliang on 17-3-30.
@@ -33,13 +37,17 @@ public class SearchSpecificationsBuilder<T> {
                 } else if (endWithAsterisk) {
                     op = SearchOperation.STARTS_WITH;
                 }
+            } else if (op == SearchOperation.IN) {
+                //如果是包含操作，将value中下划线分割的字符串转换成HashSet
+                String[] arrValue = StringUtils.split(value.toString(), '_');
+                value = new HashSet<>(Arrays.asList(arrValue));
             }
             params.add(new SearchCriteria(key, op, value));
         }
         return this;
     }
 
-    //进行build
+    //对过滤字符串分析，并进行build生成Specification<>
     public Specification<T> build(String filterString) {
 
         String operationSetExper = StringUtils.join(SearchOperation.SIMPLE_OPERATION_SET, '|');

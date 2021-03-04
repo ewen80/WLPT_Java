@@ -7,7 +7,7 @@ import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.repositories.ResourceRangeRepository;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.RoleRepository;
-import pw.ewen.WLPT.repositories.specifications.ResourceRangeSpecificationBuilder;
+import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class ResourceRangeService {
     public List<ResourceRange> getByResourceType(String resourceTypeClassName){
         Assert.hasText(resourceTypeClassName);
 
-        ResourceRangeSpecificationBuilder builder = new ResourceRangeSpecificationBuilder();
+        SearchSpecificationsBuilder<ResourceRange> builder = new SearchSpecificationsBuilder<>();
         return this.resourceRangeRepository.findAll(builder.build("resourceType.className:"+resourceTypeClassName));
     }
 

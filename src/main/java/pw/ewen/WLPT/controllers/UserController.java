@@ -9,13 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domains.DTOs.UserDTO;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.repositories.RoleRepository;
-import pw.ewen.WLPT.repositories.specifications.UserSpecificationBuilder;
+import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 import pw.ewen.WLPT.services.UserService;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static java.util.Arrays.asList;
 
 @RestController
 @RequestMapping("/users")
@@ -48,7 +46,7 @@ public class UserController {
 		if(filter.isEmpty()){
 			userResults =  this.userService.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
 		}else{
-			UserSpecificationBuilder builder = new UserSpecificationBuilder();
+			SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
 			userResults =  this.userService.findAll(builder.build(filter), new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
 		}
 		return userResults.map(new UserDTOConverter());

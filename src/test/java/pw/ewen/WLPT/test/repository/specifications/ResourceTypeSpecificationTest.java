@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
@@ -16,6 +17,7 @@ import pw.ewen.WLPT.repositories.resources.MyResourceRepository;
 import pw.ewen.WLPT.repositories.specifications.core.SearchCriteria;
 import pw.ewen.WLPT.repositories.specifications.core.SearchOperation;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecification;
+import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 
 import java.util.HashSet;
 import java.util.List;
@@ -25,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Created by wen on 17-3-29.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @Transactional
 @SpringBootTest
 public class ResourceTypeSpecificationTest {
@@ -64,21 +66,21 @@ public class ResourceTypeSpecificationTest {
     }
     @Test
     public void testEqual() {
-        SearchSpecification spec1 = new SearchSpecification(
-                new SearchCriteria("name", SearchOperation.EQUALITY, "user1"));
-        SearchSpecification spec2 = new SearchSpecification(
-                new SearchCriteria("id", SearchOperation.EQUALITY, "user1"));
-        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec1).and(spec2));
-
+        String filter = "name:user1";
+        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
+        List<User> results = userRepository.findAll(builder.build(filter));
         assertThat(user1).isIn(results);
+
+        filter = "id:user1";
+        results = userRepository.findAll(builder.build(filter));
         assertThat(user2).isNotIn(results);
     }
 
     @Test
     public void testNegation() {
-        SearchSpecification spec1 = new SearchSpecification(
-                new SearchCriteria("name", SearchOperation.NEGATION, "user1"));
-        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec1));
+        String filter = "name!user1";
+        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
+        List<User> results = userRepository.findAll(builder.build(filter));
 
         assertThat(user2).isIn(results);
         assertThat(user1).isNotIn(results);
@@ -86,45 +88,45 @@ public class ResourceTypeSpecificationTest {
 
     @Test
     public void testGreaterThan(){
-        SearchSpecification spec = new SearchSpecification(
-                new SearchCriteria("password", SearchOperation.GREATER_THAN, "15"));
-        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
+        String filter = "password>15";
+        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
+        List<User> results = userRepository.findAll(builder.build(filter));
         assertThat(user1).isNotIn(results);
         assertThat(user2).isIn(results);
     }
 
     @Test
     public void testGreaterThanEqual(){
-        SearchSpecification spec = new SearchSpecification(
-                new SearchCriteria("password", SearchOperation.GREATER_THAN_EQUALITY, "20"));
-        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
+        String filter = "password>:20";
+        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
+        List<User> results = userRepository.findAll(builder.build(filter));
         assertThat(user1).isNotIn(results);
         assertThat(user2).isIn(results);
     }
 
     @Test
     public void testLessThan(){
-        SearchSpecification spec = new SearchSpecification(
-                new SearchCriteria("password", SearchOperation.LESS_THAN, "16"));
-        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
+        String filter = "password<16";
+        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
+        List<User> results = userRepository.findAll(builder.build(filter));
         assertThat(user2).isNotIn(results);
         assertThat(user1).isIn(results);
     }
 
     @Test
     public void testLessThanEqual(){
-        SearchSpecification spec = new SearchSpecification(
-                new SearchCriteria("password", SearchOperation.LESS_THAN_EQUALITY, "15"));
-        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
+        String filter = "password<:15";
+        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
+        List<User> results = userRepository.findAll(builder.build(filter));
         assertThat(user2).isNotIn(results);
         assertThat(user1).isIn(results);
     }
 
     @Test
     public void testLike1(){
-        SearchSpecification spec = new SearchSpecification(
-                new SearchCriteria("name", SearchOperation.LIKE, "user"));
-        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
+        String filter = "name~user";
+        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
+        List<User> results = userRepository.findAll(builder.build(filter));
         assertThat(results).isEmpty();
 //        assertThat(user2).isNotIn(results);
 //        assertThat(user1).isNotIn(results);
@@ -132,48 +134,45 @@ public class ResourceTypeSpecificationTest {
 
     @Test
     public void testLike2(){
-        SearchSpecification spec = new SearchSpecification(
-                new SearchCriteria("name", SearchOperation.LIKE, "user%"));
-        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
+        String filter = "name~user%";
+        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
+        List<User> results = userRepository.findAll(builder.build(filter));
         assertThat(user2).isIn(results);
         assertThat(user1).isIn(results);
     }
 
     @Test
     public void testStartsWith(){
-        SearchSpecification spec = new SearchSpecification(
-                new SearchCriteria("name", SearchOperation.STARTS_WITH, "user"));
-        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
+        String filter = "name:user*";
+        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
+        List<User> results = userRepository.findAll(builder.build(filter));
         assertThat(user2).isIn(results);
         assertThat(user1).isIn(results);
     }
 
     @Test
     public void testEndsWith(){
-        SearchSpecification spec = new SearchSpecification(
-                new SearchCriteria("name", SearchOperation.ENDS_WITH, "er1"));
-        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
+        String filter = "name:*er1";
+        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
+        List<User> results = userRepository.findAll(builder.build(filter));
         assertThat(user2).isNotIn(results);
         assertThat(user1).isIn(results);
     }
 
     @Test
     public void testContains(){
-        SearchSpecification spec = new SearchSpecification(
-                new SearchCriteria("name", SearchOperation.CONTAINS, "ser"));
-        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
+        String filter = "name:*ser*";
+        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
+        List<User> results = userRepository.findAll(builder.build(filter));
         assertThat(user2).isIn(results);
         assertThat(user1).isIn(results);
     }
 
     @Test
     public void testIn() {
-        HashSet<String> inValues= new HashSet<>();
-        inValues.add("user1");
-        inValues.add("user2");
-        SearchSpecification spec = new SearchSpecification(
-                new SearchCriteria("name", SearchOperation.IN, inValues));
-        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec));
+        String filter = "name()user1_user2";
+        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
+        List<User> results = userRepository.findAll(builder.build(filter));
         assertThat(user1).isIn(results);
         assertThat(user2).isIn(results);
         assertThat(user3).isNotIn(results);
@@ -181,12 +180,10 @@ public class ResourceTypeSpecificationTest {
 
     @Test
     public void testMultiFilters(){
-        SearchSpecification spec1 = new SearchSpecification(
-                new SearchCriteria("name", SearchOperation.EQUALITY, "user1"));
-        SearchSpecification spec2 = new SearchSpecification(
-                new SearchCriteria("name", SearchOperation.CONTAINS, "ser"));
+        String filter = "name:user1,name:*ser*";
+        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
+        List<User> results = userRepository.findAll(builder.build(filter));
 
-        List<User> results = userRepository.findAll(org.springframework.data.jpa.domain.Specifications.where(spec1).and(spec2));
         assertThat(user1).isIn(results);
         assertThat(user2).isNotIn(results);
     }

@@ -39,6 +39,10 @@ compileJava {
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
 
+compileTestJava {
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
 // In this section you declare the dependencies for your production and test code
 dependencies {
     implementation (

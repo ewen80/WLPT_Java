@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
-import pw.ewen.WLPT.repositories.specifications.ResourceTypeSpecificationBuilder;
+import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 
 /**
  * Created by wen on 17-3-12.
@@ -32,7 +32,7 @@ public class ResourceTypeController {
     public Page<ResourceType> getResourcesWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
                                                    @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
                                                    @RequestParam(value = "filter", defaultValue = "") String filter){
-        ResourceTypeSpecificationBuilder builder = new ResourceTypeSpecificationBuilder();
+        SearchSpecificationsBuilder<ResourceType> builder = new SearchSpecificationsBuilder<>();
         if(filter.isEmpty()){
             return resourceTypeRepository.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
         }else{
