@@ -5,9 +5,10 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-/*
+/**
  * 系统角色
  */
 @Entity
@@ -20,7 +21,6 @@ public class Role implements Serializable {
 	private static final long serialVersionUID = 1888955493407366629L;
 	private String id;
 	private String name;
-	private boolean deleted = false;	//软删除标志
 
 	@JsonManagedReference(value = "user")
 	private Set<User> users;
@@ -81,7 +81,7 @@ public class Role implements Serializable {
 
 		Role role = (Role) o;
 
-		return id != null ? id.equals(role.id) : role.id == null;
+		return Objects.equals(id, role.id);
 	}
 
 	@Override

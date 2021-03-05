@@ -11,8 +11,6 @@ import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.repositories.UserRepository;
 import pw.ewen.WLPT.services.RoleService;
 
-import static org.junit.Assert.*;
-
 /**
  * created by wenliang on 20210228
  */
@@ -31,7 +29,7 @@ public class UserServiceTest {
     @Before
     public void setUp() throws Exception {
         role1 = new Role("role1", "role1");
-        user1 = new User("user1", "user1", "", role1);
+        user1 = new User("user1", "user1", "");
         roleService.save(role1);
     }
 

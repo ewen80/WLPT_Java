@@ -69,7 +69,7 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
     public  void setup(){
         role1 = new Role("role1", "role1");
         roleRepository.save(role1);
-        user1 = new User("user1", "user1", "user1", role1);
+        user1 = new User("user1", "user1", "user1");
         userRepository.save(user1);
 
         sid1 = new GrantedAuthoritySid(role1.getId());

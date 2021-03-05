@@ -6,11 +6,19 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import pw.ewen.WLPT.domains.entities.ResourceRange;
+import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.domains.entities.Role;
+import pw.ewen.WLPT.domains.entities.User;
+import pw.ewen.WLPT.exceptions.domain.DeleteRoleException;
+import pw.ewen.WLPT.services.ResourceRangeService;
+import pw.ewen.WLPT.services.ResourceTypeService;
 import pw.ewen.WLPT.services.RoleService;
+import pw.ewen.WLPT.services.UserService;
 
-import javax.persistence.AssociationOverride;
+import javax.transaction.Transactional;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 
 /**
@@ -18,10 +26,17 @@ import static org.junit.Assert.*;
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
+@Transactional
 public class RoleServiceTest {
 
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private ResourceRangeService resourceRangeService;
+    @Autowired
+    private ResourceTypeService resourceTypeService;
 
     @Before
     public void setUp() throws Exception {
@@ -49,6 +64,20 @@ public class RoleServiceTest {
 
     @Test
     public void delete() {
+        Role role1 = new Role("role1", "role1");
+        User user1 = new User("user1", "user1", "");
+        role1.getUsers().add(user1);
+        roleService.save(role1);
 
+
+        ResourceType rt = new ResourceType("ResourceTypeClass", "resourcetype");
+        rt = resourceTypeService.save(rt);
+
+        ResourceRange rr = new ResourceRange("", role1, rt);
+        rr = resourceRangeService.save(rr);
+
+        assertThatThrownBy(()-> {
+            roleService.delete("role1");
+        }).isInstanceOf(DeleteRoleException.class);
     }
 }

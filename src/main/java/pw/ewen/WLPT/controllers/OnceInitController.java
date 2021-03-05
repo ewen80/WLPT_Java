@@ -10,10 +10,6 @@ import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
-import pw.ewen.WLPT.repositories.ResourceRangeRepository;
-import pw.ewen.WLPT.repositories.ResourceTypeRepository;
-import pw.ewen.WLPT.repositories.RoleRepository;
-import pw.ewen.WLPT.repositories.resources.MenuRepository;
 import pw.ewen.WLPT.services.*;
 import pw.ewen.WLPT.services.resources.MenuService;
 
@@ -100,7 +96,7 @@ public class OnceInitController {
     // 初始化用户和角色，生成角色："admin"、"anonymous".生成用户："admin"
     private void initUserAndRole() {
         Role role_admin = new Role("admin", "admin");
-        User user_admin = new User("admin", "admin", "admin", role_admin);
+        User user_admin = new User("admin", "admin", "admin");
         role_admin.getUsers().add(user_admin);
         this.roleService.save(role_admin);
         Role role_anonymous = new Role("anonymous", "anonymous");

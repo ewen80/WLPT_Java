@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import pw.ewen.WLPT.domains.entities.Role;
@@ -14,12 +13,8 @@ import pw.ewen.WLPT.domains.entities.resources.MyResource;
 import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.repositories.UserRepository;
 import pw.ewen.WLPT.repositories.resources.MyResourceRepository;
-import pw.ewen.WLPT.repositories.specifications.core.SearchCriteria;
-import pw.ewen.WLPT.repositories.specifications.core.SearchOperation;
-import pw.ewen.WLPT.repositories.specifications.core.SearchSpecification;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 
-import java.util.HashSet;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @Transactional
 @SpringBootTest
-public class ResourceTypeSpecificationTest {
+public class SpecificationTest {
 
     @Autowired
     UserRepository userRepository;
@@ -51,9 +46,9 @@ public class ResourceTypeSpecificationTest {
         Role role1 = new Role("role1", "role1");
         roleRepository.save(role1);
 
-        this.user1 = new User("user1", "user1", "15", role1);
-        this.user2 = new User("user2", "user2", "20", role1);
-        this.user3 = new User("user3", "user3", "25", role1);
+        this.user1 = new User("user1", "user1", "15");
+        this.user2 = new User("user2", "user2", "20");
+        this.user3 = new User("user3", "user3", "25");
         userRepository.save(user1);
         userRepository.save(user2);
         userRepository.save(user3);
