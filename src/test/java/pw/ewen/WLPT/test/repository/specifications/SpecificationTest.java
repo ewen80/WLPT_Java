@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @Transactional
 @SpringBootTest
-public class ResourceTypeSpecificationTest {
+public class SpecificationTest {
 
     @Autowired
     UserRepository userRepository;

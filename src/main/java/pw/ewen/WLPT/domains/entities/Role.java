@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-/*
+/**
  * 系统角色
  */
 @Entity
@@ -18,30 +18,31 @@ import java.util.Set;
 public class Role implements Serializable {
 
 	private static final long serialVersionUID = 1888955493407366629L;
+	@Id
 	private String id;
 	private String name;
-	private boolean deleted = false;	//软删除标志
 
 	@JsonManagedReference(value = "user")
-	private Set<User> users;
+	@OneToMany(mappedBy="role", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+	private Set<User> users = new HashSet<>();
+
 	@JsonManagedReference(value = "range")
-	private Set<ResourceRange>	resourceRanges;
+	@OneToMany(mappedBy = "role")
+	private Set<ResourceRange>	resourceRanges = new HashSet<>();
 
 	protected Role(){}
 	public Role(String id, String name) {
 		this.name = name;
 		this.id = id;
-		this.users = new HashSet<>();
-		this.resourceRanges = new HashSet<>();
 	}
 
-	@Id
+
 //	@GeneratedValue(generator="UUID")
 //	@GenericGenerator(name="UUID", strategy="uuid")
 	public String getId() {
 		return id;
 	}
-	public void setId(String id) {
+	private void setId(String id) {
 		this.id = id;
 	}
 	
@@ -53,7 +54,6 @@ public class Role implements Serializable {
 		this.name = name;
 	}
 
-	@OneToMany(mappedBy="role", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	public Set<User> getUsers() {
 		return users;
 	}
@@ -61,7 +61,6 @@ public class Role implements Serializable {
 		this.users = users;
 	}
 
-	@OneToMany(mappedBy = "role")
 	public Set<ResourceRange> getResourceRanges() { return this.resourceRanges;}
 	public void setResourceRanges(Set<ResourceRange> resourceRanges) { this.resourceRanges = resourceRanges;}
 

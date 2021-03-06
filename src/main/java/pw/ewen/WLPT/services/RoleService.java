@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
+import pw.ewen.WLPT.exceptions.domain.DeleteRoleException;
 import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 
@@ -64,14 +65,33 @@ public class RoleService {
     }
 
     /**
-     * 通过id删除角色，如果角色下有用户则抛出异常
-     * @param ids
+     * 通过角色ids删除角色，如果角色下有用户和权限配置则抛出异常
+     * @param roleIds   角色id数组
      */
     @Transactional
-    public void delete(String[] ids) {
-        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
-        String filter = "id()";
-//        this.userService.findAll()
+    public void delete(String[] roleIds) throws DeleteRoleException {
+        for(String id : roleIds) {
+            this.delete(id);
+        }
+    }
+
+    /**
+     * 通过角色id删除角色，如果角色下有用户和权限配置则抛出异常
+     * @param roleId    角色id
+     * @throws DeleteRoleException
+     */
+    public  void delete(String roleId) throws DeleteRoleException {
+        if(checkCanDelete(roleId)) {
+            this.roleRepository.delete(roleId);
+        } else {
+            throw new DeleteRoleException("删除角色失败，该角色可能还有用户或者权限配置。");
+        }
+    }
+
+    // 检查角色下面是否有用户和权限配置
+    private boolean checkCanDelete(String roleId) {
+        Role role = this.roleRepository.findOne(roleId);
+        return role.getUsers().size() == 0 && role.getResourceRanges().size() == 0;
     }
 
 }

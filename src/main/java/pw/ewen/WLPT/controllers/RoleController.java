@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
-import pw.ewen.WLPT.exceptions.domain.DeleteHaveUsersRoleException;
+import pw.ewen.WLPT.exceptions.domain.DeleteRoleException;
 import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.services.RoleService;
 
@@ -84,7 +84,7 @@ public class RoleController {
                 if(users.isEmpty()){
                     this.roleRepository.delete(id);
                 }else{
-                    throw new DeleteHaveUsersRoleException("试图删除角色:"+role.toString()+"失败，因为该角色下有用户");
+                    throw new DeleteRoleException("试图删除角色:"+role.toString()+"失败，因为该角色下有用户");
                 }
             }
         }

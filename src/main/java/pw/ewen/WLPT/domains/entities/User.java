@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.*;
 import java.io.Serializable;
 
-/*
+/**
  * 系统用户
  * 一个用户只能且必须属于一个角色（后期可以扩展至属于多个角色）
  */
@@ -15,10 +15,13 @@ import java.io.Serializable;
 //		property = "id")
 public class User implements Serializable {
 	private static final long serialVersionUID = 5844614718392473692L;
-	
+
+	@Id
 	private String id;	// 用户ID
 	private String name;	//用户姓名
 	@JsonBackReference(value = "user")
+	@ManyToOne
+	@JoinColumn(name="role_Id", nullable = false)
 	private Role role;	// 用户角色
 	private String password;
 	private String avatar;
@@ -32,11 +35,11 @@ public class User implements Serializable {
 		this.role = role;
 	}
 
-	@Id
+
 	public String getId() {
 		return id;
 	}
-	public void setId(String id) {
+	private void setId(String id) {
 		this.id = id;
 	}
 	
@@ -60,8 +63,6 @@ public class User implements Serializable {
 		this.avatar = avatar;
 	}
 
-	@ManyToOne
-	@JoinColumn(name="role_Id")
 	public Role getRole() {
 		return role;
 	}

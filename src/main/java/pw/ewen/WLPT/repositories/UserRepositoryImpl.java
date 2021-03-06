@@ -16,7 +16,7 @@ public class UserRepositoryImpl implements SoftDelete<String>{
     private EntityManager em;
 
     public int softdelete(List<String> ids) {
-        String strIds = ids.stream().collect(Collectors.joining(","));
+        String strIds = String.join(",", ids);
         String softDeleteSql =
                 "UPDATE User SET deleted=true WHERE id in (" + strIds + ")";
         return em.createQuery(softDeleteSql).executeUpdate();
