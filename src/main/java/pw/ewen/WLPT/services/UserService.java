@@ -43,6 +43,14 @@ public class UserService {
     }
 
     /**
+     * 返回所有用户，没有过滤条件
+     * @return
+     */
+    public List<User> findAll() {
+        return this.userRepository.findAll();
+    }
+
+    /**
      * 返回一个用户
      * @param id
      * @return 如果没有找到返回null

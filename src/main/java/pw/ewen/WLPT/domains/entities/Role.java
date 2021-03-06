@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -20,14 +21,16 @@ public class Role implements Serializable {
 	private static final long serialVersionUID = 1888955493407366629L;
 	@Id
 	private String id;
+
+	@Column(nullable = false)
 	private String name;
 
 	@JsonManagedReference(value = "user")
-	@OneToMany(mappedBy="role", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy="role", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private Set<User> users = new HashSet<>();
 
 	@JsonManagedReference(value = "range")
-	@OneToMany(mappedBy = "role")
+	@OneToMany(mappedBy = "role", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private Set<ResourceRange>	resourceRanges = new HashSet<>();
 
 	protected Role(){}
@@ -42,11 +45,11 @@ public class Role implements Serializable {
 	public String getId() {
 		return id;
 	}
-	private void setId(String id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 	
-	@Column(nullable = false)
+
 	public String getName() {
 		return name;
 	}
@@ -80,7 +83,7 @@ public class Role implements Serializable {
 
 		Role role = (Role) o;
 
-		return id != null ? id.equals(role.id) : role.id == null;
+		return Objects.equals(id, role.id);
 	}
 
 	@Override

@@ -18,13 +18,21 @@ public class User implements Serializable {
 
 	@Id
 	private String id;	// 用户ID
+
+	@Column(nullable = false)
 	private String name;	//用户姓名
+
 	@JsonBackReference(value = "user")
 	@ManyToOne
 	@JoinColumn(name="role_Id", nullable = false)
 	private Role role;	// 用户角色
+
+	@Column(nullable = false)
 	private String password;
+
+	@Column(nullable = true)
 	private String avatar;
+
 	private boolean deleted = false;	//软删除标志
 
 	protected  User(){}
@@ -39,11 +47,10 @@ public class User implements Serializable {
 	public String getId() {
 		return id;
 	}
-	private void setId(String id) {
+	public void setId(String id) {
 		this.id = id;
 	}
-	
-	@Column(nullable = false)
+
 	public String getName() {
 		return name;
 	}
@@ -51,11 +58,9 @@ public class User implements Serializable {
 		this.name = name;
 	}
 
-	@Column(nullable = false)
 	public String getPassword(){ return password;}
 	public void setPassword(String password){ this.password = password;}
 
-	@Column(nullable = true)
 	public String getAvatar() {
 		return avatar;
 	}

@@ -16,7 +16,7 @@ import java.util.Set;
  * created by wenliang on 2021/3/6
  */
 @Component
-@Transactional
+//@Transactional
 public class ApplicationInit implements ApplicationRunner {
 
     @Autowired
@@ -32,7 +32,9 @@ public class ApplicationInit implements ApplicationRunner {
 //        User u1  = new User("u1", "u1name", "", r1);
 //        userService.save(u1);
 //
-//        Set<User> users = roleService.findOne("r1").getUsers();
-//        users.size();
+////        Set<User> users = roleService.findOne("r1").getUsers();
+//        Role rr = roleService.findOne("r1");
+//        System.out.println("getUsersSize:" + rr.getName());
+
     }
 }

@@ -20,13 +20,10 @@ import java.util.List;
 public class RoleService {
 
     private RoleRepository roleRepository;
-    private UserService userService;
 
     @Autowired
-    public RoleService(RoleRepository roleRepository,
-                       UserService userService) {
+    public RoleService(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
-        this.userService = userService;
     }
 
     /**
@@ -68,7 +65,6 @@ public class RoleService {
      * 通过角色ids删除角色，如果角色下有用户和权限配置则抛出异常
      * @param roleIds   角色id数组
      */
-    @Transactional
     public void delete(String[] roleIds) throws DeleteRoleException {
         for(String id : roleIds) {
             this.delete(id);

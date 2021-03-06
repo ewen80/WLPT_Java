@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pw.ewen.WLPT.domains.Resource;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -90,7 +91,7 @@ public class ResourceType implements Serializable {
     /**
      * 资源范围
      */
-    @OneToMany(mappedBy = "resourceType")
+    @OneToMany(mappedBy = "resourceType", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     public Set<ResourceRange> getResourceRanges() { return this.resourceRanges;}
     public void setResourceRanges(Set<ResourceRange> resourceRanges) { this.resourceRanges = resourceRanges;}
 
