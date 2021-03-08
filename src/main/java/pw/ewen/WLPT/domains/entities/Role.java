@@ -19,23 +19,27 @@ import java.util.Set;
 public class Role implements Serializable {
 
 	private static final long serialVersionUID = 1888955493407366629L;
+	@Id
 	private String id;
+
+	@Column(nullable = false)
 	private String name;
 
 	@JsonManagedReference(value = "user")
-	private Set<User> users;
+	@OneToMany(mappedBy="role", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	private Set<User> users = new HashSet<>();
+
 	@JsonManagedReference(value = "range")
-	private Set<ResourceRange>	resourceRanges;
+	@OneToMany(mappedBy = "role", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+	private Set<ResourceRange>	resourceRanges = new HashSet<>();
 
 	protected Role(){}
 	public Role(String id, String name) {
 		this.name = name;
 		this.id = id;
-		this.users = new HashSet<>();
-		this.resourceRanges = new HashSet<>();
 	}
 
-	@Id
+
 //	@GeneratedValue(generator="UUID")
 //	@GenericGenerator(name="UUID", strategy="uuid")
 	public String getId() {
@@ -45,7 +49,7 @@ public class Role implements Serializable {
 		this.id = id;
 	}
 	
-	@Column(nullable = false)
+
 	public String getName() {
 		return name;
 	}
@@ -53,7 +57,6 @@ public class Role implements Serializable {
 		this.name = name;
 	}
 
-	@OneToMany(mappedBy="role", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	public Set<User> getUsers() {
 		return users;
 	}
@@ -61,7 +64,6 @@ public class Role implements Serializable {
 		this.users = users;
 	}
 
-	@OneToMany(mappedBy = "role")
 	public Set<ResourceRange> getResourceRanges() { return this.resourceRanges;}
 	public void setResourceRanges(Set<ResourceRange> resourceRanges) { this.resourceRanges = resourceRanges;}
 

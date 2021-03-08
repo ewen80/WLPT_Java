@@ -25,21 +25,18 @@ public class OnceInitController {
     private PermissionService permissionService;
     private RoleService roleService;
     private UserService userService;
-    private ResourceRangeService resourceRangeService;
 
     @Autowired
     public OnceInitController(MenuService menuService,
                               ResourceTypeService resourceTypeService,
                               PermissionService permissionService,
                               RoleService roleService,
-                              UserService userService,
-                              ResourceRangeService resourceRangeService) {
+                              UserService userService) {
         this.menuService = menuService;
         this.resourceTypeService = resourceTypeService;
         this.permissionService = permissionService;
         this.roleService = roleService;
         this.userService = userService;
-        this.resourceRangeService = resourceRangeService;
     }
 
     //初始化菜单数据
@@ -80,17 +77,16 @@ public class OnceInitController {
     //初始化菜单权限
     //admin角色对所有菜单都有权限
     private void authorizeMenu(){
-        ResourceType menuResourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.Menu", "menu", "系统菜单");
-        this.resourceTypeService.save(menuResourceType);
-
         Role adminRole = this.roleService.findOne("admin");
 
+        ResourceType menuResourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.Menu", "menu", "系统菜单");
         ResourceRange haveAllMenuPermission = new ResourceRange("", adminRole, menuResourceType);
         haveAllMenuPermission.setMatchAll(true);
-        this.resourceRangeService.save(haveAllMenuPermission);
+        menuResourceType.getResourceRanges().add(haveAllMenuPermission);
+        this.resourceTypeService.save(menuResourceType);
 
-        //添加ACL权限
-        permissionService.insertPermission(haveAllMenuPermission.getId(), BasePermission.ADMINISTRATION);
+        //添加ACL权限,对所有菜单有写权限（写权限包含读权限）
+        permissionService.insertPermission(haveAllMenuPermission.getId(), BasePermission.WRITE);
     }
 
     // 初始化用户和角色，生成角色："admin"、"anonymous".生成用户："admin"

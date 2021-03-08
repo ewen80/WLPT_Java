@@ -43,16 +43,7 @@ public class UserService {
     }
 
     /**
-     * 返回所有符合搜索条件的用户
-     * @param spec  过滤表达式
-     * @return
-     */
-    public  List<User> findAll(Specification<User> spec) {
-        return this.userRepository.findAll(spec);
-    }
-
-    /**
-     * 返回所有用户
+     * 返回所有用户，没有过滤条件
      * @return
      */
     public List<User> findAll() {
