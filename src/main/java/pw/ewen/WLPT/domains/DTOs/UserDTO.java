@@ -31,7 +31,7 @@ public class UserDTO {
             Assert.notNull(this.roleRepository);
 
             Role role = roleRepository.findOne(dto.getRoleId());
-            User user = new User(dto.getId(), dto.getName(), dto.getPassword());
+            User user = new User(dto.getId(), dto.getName(), dto.getPassword(), role);
             if(!dto.getAvatar().isEmpty()) {
                 user.setAvatar(dto.getAvatar());
             }

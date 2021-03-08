@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .authorizeRequests().antMatchers("/h2console/**").permitAll()   //对嵌入式数据库console不做用户认证
 //                                .antMatchers("/authentication").permitAll() //对认证服务不做用户认证
-                                .antMatchers("/onceinit").permitAll() //对系统首次初始化请求不做用户认证
+//                                .antMatchers("/onceinit").permitAll() //对系统首次初始化请求不做用户认证
                                 .anyRequest().authenticated()                            //其他访问都需要经过认证
                             .and()
                                 .httpBasic()   //Basic Authentication 认证方式

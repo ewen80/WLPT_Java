@@ -36,10 +36,11 @@ public class User implements Serializable {
 	private boolean deleted = false;	//软删除标志
 
 	protected  User(){}
-	public User(String id, String name, String password){
+	public User(String id, String name, String password, Role role){
 		this.id = id;
 		this.name = name;
 		this.password = password;
+		this.role = role;
 	}
 
 

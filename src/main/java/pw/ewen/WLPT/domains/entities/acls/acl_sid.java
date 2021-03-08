@@ -1,6 +1,7 @@
 package pw.ewen.WLPT.domains.entities.acls;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * created by wenliang on 2021-03-08
@@ -8,7 +9,9 @@ import javax.persistence.*;
  */
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames={"sid", "principal"}))
-public class acl_sid {
+public class acl_sid implements Serializable {
+
+    private static final long serialVersionUID = -5823503649328681538L;
 
     @Id
     @GeneratedValue

@@ -32,6 +32,15 @@ public class ApplicationInit implements ApplicationRunner {
     private ResourceTypeService resourceTypeService;
     private PermissionService permissionService;
 
+    @Autowired
+    public ApplicationInit(RoleService roleService, UserService userService, MenuService menuService, ResourceTypeService resourceTypeService, PermissionService permissionService) {
+        this.roleService = roleService;
+        this.userService = userService;
+        this.menuService = menuService;
+        this.resourceTypeService = resourceTypeService;
+        this.permissionService = permissionService;
+    }
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         initUserAndRole();
@@ -50,14 +59,16 @@ public class ApplicationInit implements ApplicationRunner {
         Role adminRole = roleService.findOne("admin");
         if(adminRole == null) {
             // 新建admin角色
-            roleService.save(new Role("admin", "admin"));
+            adminRole = roleService.save(new Role("admin", "admin"));
         }
 
         // 检查是否存在admin用户，没有就新建，默认加入admin角色
         User adminUser = userService.findOne("admin");
         if(adminUser == null) {
             //新建用户admin
-            userService.save(new User("admin", "管理员", "admin"));
+            User user = new User("admin", "管理员", "admin", adminRole);
+            adminRole.getUsers().add(user);
+            userService.save(user);
         }
     }
 

@@ -92,7 +92,7 @@ public class OnceInitController {
     // 初始化用户和角色，生成角色："admin"、"anonymous".生成用户："admin"
     private void initUserAndRole() {
         Role role_admin = new Role("admin", "admin");
-        User user_admin = new User("admin", "admin", "admin");
+        User user_admin = new User("admin", "admin", "admin", role_admin);
         role_admin.getUsers().add(user_admin);
         this.roleService.save(role_admin);
         Role role_anonymous = new Role("anonymous", "anonymous");
