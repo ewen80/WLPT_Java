@@ -19,6 +19,13 @@ import static org.apache.commons.lang3.StringUtils.split;
 public class SearchSpecificationsBuilder<T> {
     private final List<SearchCriteria> params = new ArrayList<>();
 
+    /**
+     * 重置查询条件
+     */
+    public void reset() {
+        params.clear();
+    }
+
     //生成builder原材料
     private SearchSpecificationsBuilder<T> with(
             String key, String operation, Object value, String prefix, String suffix) {
@@ -52,7 +59,7 @@ public class SearchSpecificationsBuilder<T> {
 
         String operationSetExper = StringUtils.join(SearchOperation.SIMPLE_OPERATION_SET, '|');
         Pattern pattern = Pattern.compile(
-                "(\\S+?)(" + operationSetExper + ")(\\*?)(\\w+?)(\\*?),");
+                "(\\S+?)(" + operationSetExper + ")(\\*?)(\\w+?|[\\u4E00-\\u9FA5]+?)(\\*?),");
         Matcher matcher = pattern.matcher(filterString + ",");
         while (matcher.find()) {
             this.with(

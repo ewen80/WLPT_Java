@@ -3,6 +3,7 @@ package pw.ewen.WLPT.services.resources;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.GrantedAuthoritySid;
 import org.springframework.security.acls.model.*;
@@ -44,15 +45,33 @@ public class MenuService {
      * 获取所有菜单
      * @return
      */
-    public List<Menu> getAll() {
+    public List<Menu> findAll() {
         return this.menuRepository.findAll(new Sort("orderId"));
+    }
+
+    /**
+     * 获取符合条件的菜单
+     * @param spec  过滤表达式
+     * @return
+     */
+    public List<Menu> findAll(Specification<Menu> spec) {
+        return menuRepository.findAll(spec);
+    }
+
+    /**
+     * 获取一个菜单
+     * @param id    菜单id
+     * @return
+     */
+    public Menu findOne(long id) {
+        return this.menuRepository.findOne(id);
     }
 
     /**
      * 获取所有顶级菜单
      * @return
      */
-    public List<Menu> getTree() {
+    public List<Menu> findTree() {
         return this.menuRepository.findByParentOrderByOrderId(null);
     }
 
@@ -65,8 +84,8 @@ public class MenuService {
      * @param role 角色
      * @return
      */
-    public List<Menu> getPermissionMenuTree(Role role){
-        List<Menu> allMenus = this.getAll();
+    public List<Menu> findPermissionMenuTree(Role role){
+        List<Menu> allMenus = this.findAll();
         List<Menu> myMenus = this.authorizedmenus(allMenus, role, Arrays.asList(BasePermission.READ, BasePermission.WRITE));
         List<Menu> authorizedLeafMenus = this.generatePermissionLeafMenus(myMenus, role);
         List<Menu> permissionMenuTree = this.generateUpflowTree(authorizedLeafMenus);
@@ -77,18 +96,18 @@ public class MenuService {
      * @param user  用户
      * @return
      */
-    public List<Menu> getPermissionMenuTree(User user){
-        return this.getPermissionMenuTree(user.getRole());
+    public List<Menu> findPermissionMenuTree(User user){
+        return this.findPermissionMenuTree(user.getRole());
     }
     /**
      * 获取用户有权限的菜单节点
      * @param userId  用户id
      * @return  userId对应的有权限的菜单树，如果userId没有对应的用户则返回null
      */
-    public List<Menu> getPermissionMenuTree(String userId){
+    public List<Menu> findPermissionMenuTree(String userId){
         User user = this.userService.findOne(userId);
         if(user != null){
-            return this.getPermissionMenuTree(user);
+            return this.findPermissionMenuTree(user);
         } else {
             return null;
         }

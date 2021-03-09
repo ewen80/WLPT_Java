@@ -31,7 +31,7 @@ public class MenuController {
      */
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public List<Menu> getTree() {
-        return this.menuService.getTree();
+        return this.menuService.findTree();
     }
 
     /**
@@ -40,7 +40,7 @@ public class MenuController {
      */
     @RequestMapping(method = RequestMethod.GET, produces = "application/json", value = "/authorized/{userId}")
     public List<Menu> getAuthorizedMenuTree(@PathVariable("userId") String userId){
-        return this.menuService.getPermissionMenuTree(userId);
+        return this.menuService.findPermissionMenuTree(userId);
     }
 
     @RequestMapping(method=RequestMethod.POST, produces="application/json")

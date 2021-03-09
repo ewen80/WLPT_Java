@@ -11,12 +11,11 @@ import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
-import pw.ewen.WLPT.services.PermissionService;
-import pw.ewen.WLPT.services.ResourceTypeService;
-import pw.ewen.WLPT.services.RoleService;
-import pw.ewen.WLPT.services.UserService;
+import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
+import pw.ewen.WLPT.services.*;
 import pw.ewen.WLPT.services.resources.MenuService;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -25,19 +24,25 @@ import java.util.Set;
  */
 @Component
 public class ApplicationInit implements ApplicationRunner {
-
     private RoleService roleService;
     private UserService userService;
     private MenuService menuService;
     private ResourceTypeService resourceTypeService;
+    private ResourceRangeService resourceRangeService;
     private PermissionService permissionService;
 
     @Autowired
-    public ApplicationInit(RoleService roleService, UserService userService, MenuService menuService, ResourceTypeService resourceTypeService, PermissionService permissionService) {
+    public ApplicationInit(RoleService roleService,
+                           UserService userService,
+                           MenuService menuService,
+                           ResourceTypeService resourceTypeService,
+                           ResourceRangeService resourceRangeService,
+                           PermissionService permissionService) {
         this.roleService = roleService;
         this.userService = userService;
         this.menuService = menuService;
         this.resourceTypeService = resourceTypeService;
+        this.resourceRangeService = resourceRangeService;
         this.permissionService = permissionService;
     }
 
@@ -45,7 +50,7 @@ public class ApplicationInit implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         initUserAndRole();
         initialMenu();
-
+        authorizeMenu();
     }
 
     // 初始化用户和角色，生成角色："admin"、"anonymous".生成用户："admin"
@@ -74,38 +79,66 @@ public class ApplicationInit implements ApplicationRunner {
 
     //初始化菜单数据
     private void initialMenu() {
-        Menu homeMenu = new Menu();
-        homeMenu.setName("Home");
-        homeMenu.setPath("/");
-        this.menuService.save(homeMenu);
 
-        Menu adminMenu = new Menu();
-        adminMenu.setName("后台管理");
-        this.menuService.save(adminMenu);
+        SearchSpecificationsBuilder<Menu> builder = new SearchSpecificationsBuilder<>();
+        Menu    homeMenu = null,
+                adminMenu = null,
+                usersAdminMenu = null,
+                rolesAdminMenu = null,
+                resourcesAdminMenu = null,
+                menusAdminMenu = null;
 
-        Menu usersAdminMenu = new Menu();
-        usersAdminMenu.setName("用户管理");
-        usersAdminMenu.setPath("/admin/users");
-        usersAdminMenu.setParent(adminMenu);
-        this.menuService.save(usersAdminMenu);
+        List<Menu> homeMenus = menuService.findAll(builder.build("name:Home"));
+        if(homeMenus.size() == 0) {
+            homeMenu = new Menu();
+            homeMenu.setName("Home");
+            homeMenu.setPath("/");
+            this.menuService.save(homeMenu);
+        }
 
-        Menu rolesAdminMenu = new Menu();
-        rolesAdminMenu.setName("角色管理");
-        rolesAdminMenu.setPath("/admin/roles");
-        rolesAdminMenu.setParent(adminMenu);
-        this.menuService.save(rolesAdminMenu);
+        List<Menu> adminMenus = menuService.findAll(builder.build("name:后台管理"));
+        if(adminMenus.size() == 0) {
+            adminMenu = new Menu();
+            adminMenu.setName("后台管理");
+            this.menuService.save(adminMenu);
+        }
 
-        Menu resourcesAdminMenu = new Menu();
-        resourcesAdminMenu.setName("资源管理");
-        resourcesAdminMenu.setPath("/admin/resources");
-        resourcesAdminMenu.setParent(adminMenu);
-        this.menuService.save(resourcesAdminMenu);
+        List<Menu> usersAdminMenus = menuService.findAll(builder.build("name:用户管理"));
+        if(usersAdminMenus.size() == 0) {
+            usersAdminMenu = new Menu();
+            usersAdminMenu.setName("用户管理");
+            usersAdminMenu.setPath("/admin/users");
+            usersAdminMenu.setParent(adminMenu);
+            this.menuService.save(usersAdminMenu);
+        }
 
-        Menu menusAdminMenu = new Menu();
-        menusAdminMenu.setName("菜单管理");
-        menusAdminMenu.setPath("/admin/resources/menus");
-        menusAdminMenu.setParent(adminMenu);
-        this.menuService.save(menusAdminMenu);
+        List<Menu> rolesAdminMenus = menuService.findAll(builder.build("name:角色管理"));
+        if(rolesAdminMenus.size() == 0) {
+            rolesAdminMenu = new Menu();
+            rolesAdminMenu.setName("角色管理");
+            rolesAdminMenu.setPath("/admin/roles");
+            rolesAdminMenu.setParent(adminMenu);
+            this.menuService.save(rolesAdminMenu);
+        }
+
+        List<Menu> resourcesAdminMenus = menuService.findAll(builder.build("name:资源管理"));
+        if(resourcesAdminMenus.size() == 0) {
+            resourcesAdminMenu = new Menu();
+            resourcesAdminMenu.setName("资源管理");
+            resourcesAdminMenu.setPath("/admin/resources");
+            resourcesAdminMenu.setParent(adminMenu);
+            this.menuService.save(resourcesAdminMenu);
+        }
+
+        List<Menu> menusAdminMenus = menuService.findAll(builder.build("name:菜单管理"));
+        if(menusAdminMenus.size() == 0) {
+            menusAdminMenu = new Menu();
+            menusAdminMenu.setName("菜单管理");
+            menusAdminMenu.setPath("/admin/resources/menus");
+            menusAdminMenu.setParent(adminMenu);
+            this.menuService.save(menusAdminMenu);
+        }
+
     }
 
     //初始化菜单权限
@@ -116,10 +149,13 @@ public class ApplicationInit implements ApplicationRunner {
         ResourceType menuResourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.Menu", "menu", "系统菜单");
         ResourceRange haveAllMenuPermission = new ResourceRange("", adminRole, menuResourceType);
         haveAllMenuPermission.setMatchAll(true);
+        resourceRangeService.save(haveAllMenuPermission);
+
         menuResourceType.getResourceRanges().add(haveAllMenuPermission);
         this.resourceTypeService.save(menuResourceType);
 
+
         //添加ACL权限,对所有菜单有写权限（写权限包含读权限）
-        permissionService.insertPermission(haveAllMenuPermission.getId(), BasePermission.WRITE);
+//        permissionService.insertPermission(haveAllMenuPermission.getId(), BasePermission.WRITE);
     }
 }

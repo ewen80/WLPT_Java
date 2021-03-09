@@ -75,7 +75,7 @@ public class PermissionServiceTest {
         testRole1 = new Role("role2", "role2");
         roleRepository.save(testRole1);
 
-        testUser = new User("user1", "user1", "user1");
+        testUser = new User("user1", "user1", "user1", testRole1);
         userRepository.save(testUser);
 
         testSid = new GrantedAuthoritySid(testRole.getId());

@@ -28,6 +28,10 @@ public class ResourceRangeService {
         this.resourceTypeRepository = resourceTypeRepository;
     }
 
+    public ResourceRange findOne(long id) {
+        return resourceRangeRepository.findOne(id);
+    }
+
     public List<ResourceRange> getByResourceType(String resourceTypeClassName){
         Assert.hasText(resourceTypeClassName);
 

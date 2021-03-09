@@ -43,12 +43,12 @@ public class SpecificationTest {
 
     @Before
     public void init(){
-        Role role1 = new Role("role1", "role1");
+        role1 = new Role("role1", "role1");
         roleRepository.save(role1);
 
-        this.user1 = new User("user1", "user1", "15");
-        this.user2 = new User("user2", "user2", "20");
-        this.user3 = new User("user3", "user3", "25");
+        this.user1 = new User("user1", "用户1", "15", role1);
+        this.user2 = new User("user2", "user2", "20", role1);
+        this.user3 = new User("user3", "user3", "25", role1);
         userRepository.save(user1);
         userRepository.save(user2);
         userRepository.save(user3);
@@ -61,13 +61,17 @@ public class SpecificationTest {
     }
     @Test
     public void testEqual() {
-        String filter = "name:user1";
         SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
+
+        String filter = "name:用户";
         List<User> results = userRepository.findAll(builder.build(filter));
-        assertThat(user1).isIn(results);
+        assertThat(results).isEmpty();
+
+        builder.reset();
 
         filter = "id:user1";
         results = userRepository.findAll(builder.build(filter));
+        assertThat(user1).isIn(results);
         assertThat(user2).isNotIn(results);
     }
 

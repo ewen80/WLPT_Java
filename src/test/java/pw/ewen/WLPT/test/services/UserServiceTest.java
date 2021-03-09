@@ -29,7 +29,7 @@ public class UserServiceTest {
     @Before
     public void setUp() throws Exception {
         role1 = new Role("role1", "role1");
-        user1 = new User("user1", "user1", "");
+        user1 = new User("user1", "user1", "", role1);
         roleService.save(role1);
     }
 

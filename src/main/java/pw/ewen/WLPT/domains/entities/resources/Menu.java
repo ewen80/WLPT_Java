@@ -3,6 +3,7 @@ package pw.ewen.WLPT.domains.entities.resources;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import pw.ewen.WLPT.domains.Resource;
+import pw.ewen.WLPT.domains.entities.User;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -16,6 +17,9 @@ import java.util.List;
 @Entity
 public class Menu extends Resource implements Serializable {
 
+    private static final long serialVersionUID = 7179865199657578507L;
+
+    private long id;
     private String name;
     private String path;
     private String iconClass = "";
@@ -43,6 +47,16 @@ public class Menu extends Resource implements Serializable {
         this.orderId = orderId;
     }
 
+    @Override
+    @Id
+    public long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(long id) {
+        this.id = id;
+    }
 
     /**
      * 菜单名
@@ -69,7 +83,7 @@ public class Menu extends Resource implements Serializable {
     }
 
     /**
-     * 菜单图表类
+     * 菜单图标类
      * @return
      */
     public String getIconClass() {
@@ -118,5 +132,18 @@ public class Menu extends Resource implements Serializable {
     @JsonProperty
     public void setParent(Menu parent) {
         this.parent = parent;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Menu){
+            if(((Menu)obj).getId() == this.id) {
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
     }
 }
