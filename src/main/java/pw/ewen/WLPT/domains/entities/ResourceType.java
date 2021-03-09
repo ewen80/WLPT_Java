@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -20,6 +21,7 @@ import java.util.Set;
 @Entity
 public class ResourceType implements Serializable {
 
+    private static final long serialVersionUID = -2617247962702444217L;
     private String className;
     private String name;
     private String description;
@@ -104,14 +106,13 @@ public class ResourceType implements Serializable {
         return repository.getOne(resourceTypeName);
     }
 
-//    /**
-//     * 该类型下的具体资源
-//     */
-//    @OneToMany(mappedBy = "resourceType")
-//    public Set<MyResource> getResources() {
-//        return resources;
-//    }
-//    public void setResources(Set<MyResource> resources) {
-//        this.resources = resources;
-//    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        ResourceType type = (ResourceType)obj;
+
+        return Objects.equals(className, type.getClassName());
+    }
 }

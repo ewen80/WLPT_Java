@@ -13,11 +13,13 @@ import java.io.Serializable;
  * Created by wen on 17-4-9.
  */
 public class ResourceRangeDTO implements Serializable {
+
+    private static final long serialVersionUID = -6541329556847931902L;
+
     private long id;
     private String filter;
     private String roleId;
     private String resourceTypeClassName;
-    private boolean matchAll = false;
 
     //实现DTOConvert接口的内部类
     private static class ResourceRangeConverter implements DTOConvert<ResourceRangeDTO, ResourceRange>{
@@ -40,7 +42,6 @@ public class ResourceRangeDTO implements Serializable {
             ResourceRange range = new ResourceRange();
             range.setId(dto.getId());
             range.setFilter(dto.getFilter());
-            range.setMatchAll(dto.isMatchAll());
             Role role = roleRepository.findOne(dto.getRoleId());
             if(role != null){
                 range.setRole(role);
@@ -57,7 +58,6 @@ public class ResourceRangeDTO implements Serializable {
             ResourceRangeDTO dto = new ResourceRangeDTO();
             dto.setId(range.getId());
             dto.setFilter(range.getFilter());
-            dto.setMatchAll(range.isMatchAll());
             dto.setResourceTypeClassName(range.getResourceType().getClassName());
             dto.setRoleId(range.getRole().getId());
             return dto;
@@ -113,10 +113,10 @@ public class ResourceRangeDTO implements Serializable {
     }
 
     public boolean isMatchAll() {
-        return matchAll;
+        return this.filter.isEmpty();
     }
 
-    public void setMatchAll(boolean matchAll) {
-        this.matchAll = matchAll;
+    public void setMatchAll() {
+        this.filter = "";
     }
 }

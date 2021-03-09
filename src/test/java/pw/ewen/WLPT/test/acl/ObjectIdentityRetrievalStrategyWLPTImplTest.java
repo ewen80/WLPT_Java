@@ -103,7 +103,7 @@ public class ObjectIdentityRetrievalStrategyWLPTImplTest {
         ResourceRange matchAllResourceRange = new ResourceRange();
         matchAllResourceRange.setRole(this.userContext.getCurrentUser().getRole());
         matchAllResourceRange.setResourceType(ResourceType.getFromResouce(resource, resourceTypeRepository));
-        matchAllResourceRange.setMatchAll(true);
+        matchAllResourceRange.setMatchAll();
         matchAllResourceRange = resourceRangeRepository.save(matchAllResourceRange);
 
 //        GrantedAuthoritySid adminSid = new GrantedAuthoritySid("admin");

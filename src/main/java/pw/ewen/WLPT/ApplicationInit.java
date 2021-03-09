@@ -15,6 +15,8 @@ import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder
 import pw.ewen.WLPT.services.*;
 import pw.ewen.WLPT.services.resources.MenuService;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Set;
 
@@ -30,6 +32,7 @@ public class ApplicationInit implements ApplicationRunner {
     private ResourceTypeService resourceTypeService;
     private ResourceRangeService resourceRangeService;
     private PermissionService permissionService;
+
 
     @Autowired
     public ApplicationInit(RoleService roleService,
@@ -50,7 +53,6 @@ public class ApplicationInit implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         initUserAndRole();
         initialMenu();
-        authorizeMenu();
     }
 
     // 初始化用户和角色，生成角色："admin"、"anonymous".生成用户："admin"
@@ -141,21 +143,4 @@ public class ApplicationInit implements ApplicationRunner {
 
     }
 
-    //初始化菜单权限
-    //admin角色对所有菜单都有权限
-    private void authorizeMenu(){
-        Role adminRole = this.roleService.findOne("admin");
-
-        ResourceType menuResourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.Menu", "menu", "系统菜单");
-        ResourceRange haveAllMenuPermission = new ResourceRange("", adminRole, menuResourceType);
-        haveAllMenuPermission.setMatchAll(true);
-        resourceRangeService.save(haveAllMenuPermission);
-
-        menuResourceType.getResourceRanges().add(haveAllMenuPermission);
-        this.resourceTypeService.save(menuResourceType);
-
-
-        //添加ACL权限,对所有菜单有写权限（写权限包含读权限）
-//        permissionService.insertPermission(haveAllMenuPermission.getId(), BasePermission.WRITE);
-    }
 }

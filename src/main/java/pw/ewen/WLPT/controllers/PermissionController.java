@@ -114,7 +114,7 @@ public class PermissionController {
         Role adminRole = this.roleService.findOne("admin");
 
         ResourceRange haveAllMenuPermission = new ResourceRange("", adminRole, menuResourceType);
-        haveAllMenuPermission.setMatchAll(true);
+        haveAllMenuPermission.setMatchAll();
         this.resourceRangeService.save(haveAllMenuPermission);
 
         this.permissionService.insertPermissions(haveAllMenuPermission.getId(), Arrays.asList(SUPPORT_PERMISSIONS));

@@ -12,25 +12,39 @@ import pw.ewen.WLPT.repositories.ResourceRangeRepository;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by wen on 17-2-26.
  * 资源范围类
  * 代表某个范围的资源集合
- * Role和ResourceType不能为空,MatachAll只是在基于Role和ResourceType的基础上匹配全部资源(即忽略filter字段)
+ * Role和ResourceType不能为空,如果filter为空，表示角色对该对象有全部权限
  */
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames={"role_Id", "resourceType_Id"}))
 //@JsonIdentityInfo(
 //        generator = ObjectIdGenerators.PropertyGenerator.class,
 //        property = "id")
 public class ResourceRange {
+
     private long id;
     private String filter;
     @JsonBackReference(value = "range")
     private Role role;
     @JsonBackReference(value = "type")
     private ResourceType resourceType;
-    private boolean matchAll = false;
+
+//    private boolean matchAll = false;
+
+    @Id
+    @GeneratedValue
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
 
     public ResourceRange(){   }
@@ -40,12 +54,8 @@ public class ResourceRange {
         this.resourceType = resourceType;
     }
 
-    @Id
-    @GeneratedValue
-    public long getId(){ return this.id;}
-    public void setId(long value){ this.id = value;}
-
     //资源范围筛选依据（Spel）
+    @Column(nullable = false)
     public String getFilter() {
         return filter;
     }
@@ -71,12 +81,17 @@ public class ResourceRange {
         this.resourceType = resourceType;
     }
 
-    //本ResourceRange是否匹配所有Resource
+    /**
+     * 本ResourceRange是否匹配所有Resource
+     * @return
+     */
+    @Transient
     public boolean isMatchAll() {
-        return matchAll;
+        return this.filter.isEmpty();
     }
-    public void setMatchAll(boolean matchAll) {
-        this.matchAll = matchAll;
+
+    public void setMatchAll() {
+        this.filter = "";
     }
 
 
@@ -125,17 +140,12 @@ public class ResourceRange {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
 
-        ResourceRange that = (ResourceRange) o;
-
-        return id == that.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        // 如果role,filter和type都一样则认为两个range相等
+        ResourceRange rangeObj = (ResourceRange)obj;
+        return this.role.equals(rangeObj.getRole()) && this.filter.equals(rangeObj.getFilter()) && this.resourceType.equals(rangeObj.resourceType);
     }
 }
