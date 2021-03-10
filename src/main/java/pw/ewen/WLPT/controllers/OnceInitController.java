@@ -14,6 +14,8 @@ import pw.ewen.WLPT.domains.entities.resources.Menu;
 import pw.ewen.WLPT.services.*;
 import pw.ewen.WLPT.services.resources.MenuService;
 
+import java.util.List;
+
 /**
  * 系统首次运行初始化.
  * created by wenliang on 20210226
@@ -25,29 +27,28 @@ public class OnceInitController {
     private PermissionService permissionService;
     private RoleService roleService;
     private ResourceRangeService resourceRangeService;
+    private MenuService menuService;
 
     @Autowired
-    public OnceInitController(MenuService menuService,
-                              ResourceTypeService resourceTypeService,
+    public OnceInitController(ResourceTypeService resourceTypeService,
                               ResourceRangeService resourceRangeService,
                               PermissionService permissionService,
-                              RoleService roleService,
-                              UserService userService) {
+                              MenuService menuService,
+                              RoleService roleService) {
         this.resourceTypeService = resourceTypeService;
         this.permissionService = permissionService;
         this.roleService = roleService;
         this.resourceRangeService = resourceRangeService;
+        this.menuService = menuService;
     }
 
 
     //初始化菜单权限
     //admin角色对所有菜单都有权限
-    private void authorizeMenu(){
-        Role adminRole = this.roleService.findOne("admin");
-
+    private void authorizeMenu(Role role){
         ResourceType menuResourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.Menu", "menu", "系统菜单");
         this.resourceTypeService.save(menuResourceType);
-        ResourceRange matchAllRange = new ResourceRange("", adminRole, menuResourceType);
+        ResourceRange matchAllRange = new ResourceRange("", role, menuResourceType);
         this.resourceRangeService.save(matchAllRange);
 
         //添加ACL权限,对所有菜单有写权限（写权限包含读权限）
@@ -58,10 +59,12 @@ public class OnceInitController {
     /**
      * 对admin菜单进行授权。
      */
-    @RequestMapping(value = "/adminmenuinit", method = RequestMethod.PUT )
+    @RequestMapping(value = "/adminmenuinit", method = RequestMethod.PUT, produces = "application/json" )
     @Transactional
-    public void adminMenuInit() {
-        this.authorizeMenu();
+    public List<Menu> adminMenuInit() {
+        Role adminRole = this.roleService.findOne("admin");
+        this.authorizeMenu(adminRole);
+        return this.menuService.findPermissionMenuTree(adminRole);
     }
 
 }

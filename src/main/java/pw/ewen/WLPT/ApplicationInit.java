@@ -60,7 +60,7 @@ public class ApplicationInit implements ApplicationRunner {
         // 检查角色表中是否有anonymous角色,没有就新建
         Role anonymousRole = roleService.findOne("anonymous");
         if(anonymousRole == null) {
-            roleService.save(new Role("anonymous", "anonymous"));
+            anonymousRole = roleService.save(new Role("anonymous", "anonymous"));
         }
 
         Role adminRole = roleService.findOne("admin");
@@ -75,6 +75,15 @@ public class ApplicationInit implements ApplicationRunner {
             //新建用户admin
             User user = new User("admin", "管理员", "admin", adminRole);
             adminRole.getUsers().add(user);
+            userService.save(user);
+        }
+
+        // 检查是否存在guest用户，没有就新建，默认加入anonymous角色
+        User guestUser = userService.findOne("guest");
+        if(guestUser == null) {
+            // 新建用户guest
+            User user = new User("guest", "guest", "guest", anonymousRole);
+            anonymousRole.getUsers().add(user);
             userService.save(user);
         }
     }
