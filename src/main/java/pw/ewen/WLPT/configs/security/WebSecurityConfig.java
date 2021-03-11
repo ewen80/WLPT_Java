@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -19,6 +20,7 @@ import org.springframework.web.filter.CorsFilter;
 import pw.ewen.WLPT.repositories.UserRepository;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Created by wen on 17-2-8.
@@ -58,10 +60,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .httpBasic()   //Basic Authentication 认证方式
                 .and()
-                    .logout().logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());  // 退出登录后返回200
+                    .logout();//.logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());  // 退出登录后返回200
 
 
         http.csrf().disable(); //关闭CSRF检查
         http.cors();//允许CORS跨域请求
+    }
+
+    // 解决 /logout 出现cors错误
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.applyPermitDefaultValues();
+        configuration.addAllowedMethod(HttpMethod.PUT);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
