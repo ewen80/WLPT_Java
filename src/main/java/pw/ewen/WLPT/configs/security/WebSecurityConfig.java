@@ -60,7 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .httpBasic()   //Basic Authentication 认证方式
                 .and()
-                    .logout();//.logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());  // 退出登录后返回200
+                    .logout().logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());  // 退出登录后返回200
 
 
         http.csrf().disable(); //关闭CSRF检查

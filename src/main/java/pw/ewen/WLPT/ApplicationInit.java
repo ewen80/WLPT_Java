@@ -29,24 +29,15 @@ public class ApplicationInit implements ApplicationRunner {
     private RoleService roleService;
     private UserService userService;
     private MenuService menuService;
-    private ResourceTypeService resourceTypeService;
-    private ResourceRangeService resourceRangeService;
-    private PermissionService permissionService;
 
 
     @Autowired
     public ApplicationInit(RoleService roleService,
                            UserService userService,
-                           MenuService menuService,
-                           ResourceTypeService resourceTypeService,
-                           ResourceRangeService resourceRangeService,
-                           PermissionService permissionService) {
+                           MenuService menuService) {
         this.roleService = roleService;
         this.userService = userService;
         this.menuService = menuService;
-        this.resourceTypeService = resourceTypeService;
-        this.resourceRangeService = resourceRangeService;
-        this.permissionService = permissionService;
     }
 
     @Override
@@ -90,24 +81,29 @@ public class ApplicationInit implements ApplicationRunner {
 
     //初始化菜单数据
     private void initialMenu() {
-
         SearchSpecificationsBuilder<Menu> builder = new SearchSpecificationsBuilder<>();
-        Menu    homeMenu = null,
-                adminMenu = null,
-                usersAdminMenu = null,
-                rolesAdminMenu = null,
-                resourcesAdminMenu = null,
-                menusAdminMenu = null;
 
-        List<Menu> homeMenus = menuService.findAll(builder.build("name:Home"));
+        List<Menu> bizMenus = menuService.findAll(builder.build("name:业务区"));
+        Menu bizMenu = null;
+        if(bizMenus.size() == 0) {
+            bizMenu = new Menu();
+            bizMenu.setName("业务区");
+            bizMenu.setIconClass("anticon-appstore");
+            this.menuService.save(bizMenu);
+        }
+
+        List<Menu> homeMenus = menuService.findAll(builder.build("name:首页"));
+        Menu homeMenu = null;
         if(homeMenus.size() == 0) {
             homeMenu = new Menu();
-            homeMenu.setName("Home");
-            homeMenu.setPath("/");
+            homeMenu.setName("首页");
+            homeMenu.setPath("/home");
+            homeMenu.setParent(bizMenu);
             this.menuService.save(homeMenu);
         }
 
         List<Menu> adminMenus = menuService.findAll(builder.build("name:后台管理"));
+        Menu adminMenu = null;
         if(adminMenus.size() == 0) {
             adminMenu = new Menu();
             adminMenu.setName("后台管理");
@@ -115,6 +111,7 @@ public class ApplicationInit implements ApplicationRunner {
         }
 
         List<Menu> usersAdminMenus = menuService.findAll(builder.build("name:用户管理"));
+        Menu usersAdminMenu = null;
         if(usersAdminMenus.size() == 0) {
             usersAdminMenu = new Menu();
             usersAdminMenu.setName("用户管理");
@@ -124,6 +121,7 @@ public class ApplicationInit implements ApplicationRunner {
         }
 
         List<Menu> rolesAdminMenus = menuService.findAll(builder.build("name:角色管理"));
+        Menu rolesAdminMenu = null;
         if(rolesAdminMenus.size() == 0) {
             rolesAdminMenu = new Menu();
             rolesAdminMenu.setName("角色管理");
@@ -133,6 +131,7 @@ public class ApplicationInit implements ApplicationRunner {
         }
 
         List<Menu> resourcesAdminMenus = menuService.findAll(builder.build("name:资源管理"));
+        Menu resourcesAdminMenu = null;
         if(resourcesAdminMenus.size() == 0) {
             resourcesAdminMenu = new Menu();
             resourcesAdminMenu.setName("资源管理");
@@ -142,6 +141,7 @@ public class ApplicationInit implements ApplicationRunner {
         }
 
         List<Menu> menusAdminMenus = menuService.findAll(builder.build("name:菜单管理"));
+        Menu menusAdminMenu = null;
         if(menusAdminMenus.size() == 0) {
             menusAdminMenu = new Menu();
             menusAdminMenu.setName("菜单管理");
