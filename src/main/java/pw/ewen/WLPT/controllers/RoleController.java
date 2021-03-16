@@ -14,13 +14,9 @@ import pw.ewen.WLPT.services.RoleService;
 import java.util.List;
 import java.util.Set;
 
-/**
- * TODO:移植逻辑到services层
- */
 @RestController
 @RequestMapping(value = "/roles")
 public class RoleController {
-    private RoleRepository roleRepository;
     private RoleService roleService;
 
     @Autowired
@@ -45,8 +41,10 @@ public class RoleController {
      */
     @RequestMapping(method = RequestMethod.GET, produces="application/json")
     public Page<Role> getRolesWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
-                                       @RequestParam(value = "pageSize", defaultValue = "20") int pageSize){
-        return roleService.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
+                                       @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
+                                       @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
+                                       @RequestParam(value = "sortProperties", defaultValue = "name") String sortProperties){
+        return roleService.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.fromString(sortDirection),  sortProperties)));
     }
 
     /**
@@ -78,11 +76,11 @@ public class RoleController {
         String[] arrRoleIds = roleIds.split(",");
         //检查角色下是否有用户，有则不允许删除
         for(String id : arrRoleIds){
-            Role role = this.roleRepository.findOne(id);
+            Role role = this.roleService.findOne(id);
             if(role != null ){
                 Set<User> users = role.getUsers();
                 if(users.isEmpty()){
-                    this.roleRepository.delete(id);
+                    this.roleService.delete(id);
                 }else{
                     throw new DeleteRoleException("试图删除角色:"+role.toString()+"失败，因为该角色下有用户");
                 }

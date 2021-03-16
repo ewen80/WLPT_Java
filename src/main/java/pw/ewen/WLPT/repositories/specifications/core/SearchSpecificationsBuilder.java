@@ -59,7 +59,7 @@ public class SearchSpecificationsBuilder<T> {
 
         String operationSetExper = StringUtils.join(SearchOperation.SIMPLE_OPERATION_SET, '|');
         Pattern pattern = Pattern.compile(
-                "(\\S+?)(" + operationSetExper + ")(\\*?)(\\w+?|[\\u4E00-\\u9FA5]+?)(\\*?),");
+                "(\\S+?)(" + operationSetExper + ")(\\*?)(\\S+?|[\\u4E00-\\u9FA5]+?)(\\*?),");
         Matcher matcher = pattern.matcher(filterString + ",");
         while (matcher.find()) {
             this.with(

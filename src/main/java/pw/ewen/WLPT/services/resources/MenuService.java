@@ -86,10 +86,9 @@ public class MenuService {
      */
     public List<Menu> findPermissionMenuTree(Role role){
         List<Menu> allMenus = this.findAll();
-        List<Menu> myMenus = this.authorizedmenus(allMenus, role, Arrays.asList(BasePermission.READ, BasePermission.WRITE));
+        List<Menu> myMenus = this.authorizedmenus(allMenus, role, Arrays.asList(BasePermission.ADMINISTRATION, BasePermission.READ, BasePermission.WRITE));
         List<Menu> authorizedLeafMenus = this.generatePermissionLeafMenus(myMenus, role);
-        List<Menu> permissionMenuTree = this.generateUpflowTree(authorizedLeafMenus);
-        return permissionMenuTree;
+        return this.generateUpflowTree(authorizedLeafMenus);
     }
     /**
      * 获取用户有权限的菜单节点

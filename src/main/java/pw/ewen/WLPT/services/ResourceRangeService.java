@@ -32,11 +32,26 @@ public class ResourceRangeService {
         return resourceRangeRepository.findOne(id);
     }
 
-    public List<ResourceRange> getByResourceType(String resourceTypeClassName){
+    public List<ResourceRange> findByResourceType(String resourceTypeClassName){
         Assert.hasText(resourceTypeClassName);
 
         SearchSpecificationsBuilder<ResourceRange> builder = new SearchSpecificationsBuilder<>();
-        return this.resourceRangeRepository.findAll(builder.build("resourceType.className:"+resourceTypeClassName));
+        return this.resourceRangeRepository.findAll(builder.build("resourceType.className:" + resourceTypeClassName));
+    }
+
+    /**
+     * 根据角色和资源类型返回资源范围，一个角色和一个资源最多只能匹配到一个资源范围
+     * @param resourceTypeClassName 资源类名
+     * @param roleId 角色id
+     * @return 返回资源范围，如果没有匹配到则返回null
+     */
+    public ResourceRange findByResourceTypeAndRole(String resourceTypeClassName, String roleId) {
+        SearchSpecificationsBuilder<ResourceRange> builder = new SearchSpecificationsBuilder<>();
+        List<ResourceRange> resultList = this.resourceRangeRepository.findAll(builder.build("resourceType.className:" + resourceTypeClassName + ",role.id:" + roleId));
+        if(resultList.size() > 0) {
+            return resultList.get(0);
+        }
+        return null;
     }
 
     public ResourceRange save(ResourceRange range){

@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.domains.entities.Role;
@@ -48,11 +49,18 @@ public class OnceInitController {
     private void authorizeMenu(Role role){
         ResourceType menuResourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.Menu", "menu", "系统菜单");
         this.resourceTypeService.save(menuResourceType);
-        ResourceRange matchAllRange = new ResourceRange("", role, menuResourceType);
-        this.resourceRangeService.save(matchAllRange);
 
-        //添加ACL权限,对所有菜单有写权限（写权限包含读权限）
-        permissionService.insertPermission(matchAllRange.getId(), BasePermission.WRITE);
+        ResourceRange range = this.resourceRangeService.findByResourceTypeAndRole(menuResourceType.getClassName(), role.getId());
+        if(range == null) {
+            range = new ResourceRange("", role, menuResourceType);
+            this.resourceRangeService.save(range);
+        }
+
+        //添加ACL权限,对所有菜单有权限
+        ResourceRangePermissionWrapper wrapper = permissionService.getByResourceRange(range.getId());
+        if(wrapper == null || !wrapper.getPermissions().contains(BasePermission.ADMINISTRATION)) {
+            permissionService.insertPermission(range.getId(), BasePermission.ADMINISTRATION);
+        }
     }
 
 

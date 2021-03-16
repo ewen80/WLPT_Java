@@ -24,15 +24,12 @@ public class PermissionService {
 
     private final MutableAclService aclService;
     private ResourceRangeRepository resourceRangeRepository;
-    private RoleRepository roleRepository;
 
     @Autowired
     public PermissionService(MutableAclService aclService,
-                             ResourceRangeRepository resourceRangeRepository,
-                             RoleRepository roleRepository) {
+                             ResourceRangeRepository resourceRangeRepository) {
         this.aclService = aclService;
         this.resourceRangeRepository = resourceRangeRepository;
-        this.roleRepository = roleRepository;
     }
 
     /**

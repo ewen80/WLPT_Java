@@ -33,7 +33,7 @@ public class ResourceRangeController {
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public List<ResourceRangeDTO> getByResourceType(@RequestParam(value = "resourceclassname", defaultValue = "") String resourceTypeClassName){
-        return service.getByResourceType(resourceTypeClassName)
+        return service.findByResourceType(resourceTypeClassName)
                 .stream()
                 .map( ResourceRangeDTO::convertFromResourceRange)
                 .collect(Collectors.toList());

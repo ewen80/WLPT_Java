@@ -179,11 +179,10 @@ public class SpecificationTest {
 
     @Test
     public void testMultiFilters(){
-        String filter = "name:user1,name:*ser*";
+        String filter = "name:user1,name:user2";
         SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
         List<User> results = userRepository.findAll(builder.build(filter));
 
-        assertThat(user1).isIn(results);
-        assertThat(user2).isNotIn(results);
+        assertThat(results).isEmpty();
     }
 }
