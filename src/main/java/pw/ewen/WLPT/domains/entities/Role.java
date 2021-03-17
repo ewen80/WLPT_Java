@@ -26,7 +26,7 @@ public class Role implements Serializable {
 	private String name;
 
 	@Column
-	private String description;
+	private String description = "";
 
 	@JsonManagedReference(value = "user")
 	@OneToMany(mappedBy="role", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
