@@ -4,10 +4,12 @@ import org.springframework.util.Assert;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.repositories.RoleRepository;
+import pw.ewen.WLPT.services.RoleService;
 
 /**
  * Created by wenliang on 17-4-14.
  */
+// TODO: 取消password的明文传输
 public class UserDTO {
 
     private String id;
@@ -17,20 +19,20 @@ public class UserDTO {
     private String avatar;
 
     private static class UserConverter implements DTOConvert<UserDTO, User>{
-        private RoleRepository roleRepository;
+        private RoleService roleService;
 
         public UserConverter() {
         }
 
-        public UserConverter(RoleRepository roleRepository) {
-            this.roleRepository = roleRepository;
+        public UserConverter(RoleService roleService) {
+            this.roleService = roleService;
         }
 
         @Override
         public User doForward(UserDTO dto) {
-            Assert.notNull(this.roleRepository);
+            Assert.notNull(this.roleService);
 
-            Role role = roleRepository.findOne(dto.getRoleId());
+            Role role = roleService.findOne(dto.getRoleId());
             User user = new User(dto.getId(), dto.getName(), dto.getPassword(), role);
             if(!dto.getAvatar().isEmpty()) {
                 user.setAvatar(dto.getAvatar());
@@ -56,8 +58,8 @@ public class UserDTO {
 
     /**
      * 转化User对象为UserDTO对象
-     * @param user
-     * @return
+     * @param user 用户对象
+     * @return 用户DTO对象
      */
     public static UserDTO convertFromUser(User user){
         UserConverter converter = new UserConverter();
@@ -67,8 +69,8 @@ public class UserDTO {
     /**
      * 转化UserDTO对象为User对象
      */
-    public User convertToUser(RoleRepository roleRepository){
-        UserConverter converter = new UserConverter(roleRepository);
+    public User convertToUser(RoleService roleService){
+        UserConverter converter = new UserConverter(roleService);
         return converter.doForward(this);
     }
 

@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import pw.ewen.WLPT.domains.Resource;
+import pw.ewen.WLPT.domains.entities.ResourceRange;
+import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.domains.entities.resources.MyResource;
@@ -14,6 +17,8 @@ import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.repositories.UserRepository;
 import pw.ewen.WLPT.repositories.resources.MyResourceRepository;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
+import pw.ewen.WLPT.services.ResourceRangeService;
+import pw.ewen.WLPT.services.ResourceTypeService;
 
 import java.util.List;
 
@@ -33,6 +38,10 @@ public class SpecificationTest {
     RoleRepository roleRepository;
     @Autowired
     MyResourceRepository myResourceRepository;
+    @Autowired
+    ResourceTypeService resourceTypeService;
+    @Autowired
+    ResourceRangeService resourceRangeService;
 
     private User user1;
     private User user2;
@@ -175,6 +184,42 @@ public class SpecificationTest {
         assertThat(user1).isIn(results);
         assertThat(user2).isIn(results);
         assertThat(user3).isNotIn(results);
+    }
+
+    @Test
+    public void testNestedProperty() {
+        ResourceType type1 = new ResourceType("p1.p2.p3.c1", "p1.p2.p3.c1");
+        ResourceRange range1 = new ResourceRange("", role1, type1);
+        type1.getResourceRanges().add(range1);
+        resourceTypeService.save(type1);
+
+        ResourceType type2 = new ResourceType("p1.p2.p3.c2", "p1.p2.p3.c2");
+        ResourceRange range2 = new ResourceRange("", role1, type2);
+        type2.getResourceRanges().add(range2);
+        resourceTypeService.save(type2);
+
+        // 测试单条件
+        String filter = "resourceType.className:p1.p2.p3.c1";
+        SearchSpecificationsBuilder<ResourceRange> builder = new SearchSpecificationsBuilder<>();
+        List<ResourceRange> results1 = resourceRangeService.findAll(builder.build(filter));
+        assertThat(results1).hasSize(1);
+        builder.reset();
+
+        filter = "resourceType.className:p1.p2.p3.c0";
+        List<ResourceRange> results2 = resourceRangeService.findAll(builder.build(filter));
+        assertThat(results2).isEmpty();
+        builder.reset();
+
+        // 测试多条件
+        filter = "resourceType.className:p1.p2.p3.c1,role.id:role1";
+        List<ResourceRange> results3 = resourceRangeService.findAll(builder.build(filter));
+        assertThat(results3).hasSize(1);
+        builder.reset();
+
+        filter = "resourceType.className:p1.p2.p3.c0,role.id:role1";
+        List<ResourceRange> results4 = resourceRangeService.findAll(builder.build(filter));
+        assertThat(results4).isEmpty();
+        builder.reset();
     }
 
     @Test

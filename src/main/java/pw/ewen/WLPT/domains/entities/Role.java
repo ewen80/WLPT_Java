@@ -25,6 +25,9 @@ public class Role implements Serializable {
 	@Column(nullable = false)
 	private String name;
 
+	@Column
+	private String description;
+
 	@JsonManagedReference(value = "user")
 	@OneToMany(mappedBy="role", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	private Set<User> users = new HashSet<>();
@@ -37,6 +40,10 @@ public class Role implements Serializable {
 	public Role(String id, String name) {
 		this.name = name;
 		this.id = id;
+	}
+	public Role(String id, String name, String description) {
+		this(id, name);
+		this.setDescription(description);
 	}
 
 
@@ -55,6 +62,14 @@ public class Role implements Serializable {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Set<User> getUsers() {

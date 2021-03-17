@@ -9,6 +9,7 @@ import java.io.Serializable;
  * 系统用户
  * 一个用户只能且必须属于一个角色（后期可以扩展至属于多个角色）
  */
+// TODO: 修改password的明文保存
 @Entity
 //@JsonIdentityInfo(
 //		generator = ObjectIdGenerators.PropertyGenerator.class,

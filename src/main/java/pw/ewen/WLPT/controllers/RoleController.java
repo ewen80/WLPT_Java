@@ -1,14 +1,18 @@
 package pw.ewen.WLPT.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+import pw.ewen.WLPT.domains.DTOs.RoleDTO;
+import pw.ewen.WLPT.domains.DTOs.UserDTO;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.exceptions.domain.DeleteRoleException;
 import pw.ewen.WLPT.repositories.RoleRepository;
+import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 import pw.ewen.WLPT.services.RoleService;
 
 import java.util.List;
@@ -17,11 +21,19 @@ import java.util.Set;
 @RestController
 @RequestMapping(value = "/roles")
 public class RoleController {
-    private RoleService roleService;
+    private final RoleService roleService;
 
     @Autowired
     public RoleController(RoleService roleService) {
         this.roleService = roleService;
+    }
+
+    //将role对象转为DTO对象的内部辅助类
+    static class RoleDTOConverter implements Converter<Role, RoleDTO> {
+        @Override
+        public RoleDTO convert(Role source) {
+            return  RoleDTO.convertFromRole(source);
+        }
     }
 
     /**
@@ -37,14 +49,26 @@ public class RoleController {
      * 获取角色（分页）
      * @param pageIndex 第几页
      * @param pageSize  每页多少条
+     * @param sortDirection ASC正序  DESC倒序
+     * @param sortField 排序字段名
      * @return 角色数据
      */
     @RequestMapping(method = RequestMethod.GET, produces="application/json")
-    public Page<Role> getRolesWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
-                                       @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
-                                       @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
-                                       @RequestParam(value = "sortProperties", defaultValue = "name") String sortProperties){
-        return roleService.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.fromString(sortDirection),  sortProperties)));
+    public Page<RoleDTO> getRolesWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
+                                          @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
+                                          @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
+                                          @RequestParam(value = "sortField", defaultValue = "name") String sortField,
+                                          @RequestParam(value = "filter", defaultValue = "") String filter){
+        Page<Role> roles;
+        PageRequest pr = new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.fromString(sortDirection), sortField));
+
+        if(filter.isEmpty()){
+            roles =  this.roleService.findAll(pr);
+        }else{
+            SearchSpecificationsBuilder<Role> builder = new SearchSpecificationsBuilder<>();
+            roles =  this.roleService.findAll(builder.build(filter), pr);
+        }
+        return roles.map(new RoleDTOConverter());
     }
 
     /**

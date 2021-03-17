@@ -3,6 +3,7 @@ package pw.ewen.WLPT.services;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pw.ewen.WLPT.domains.entities.Role;
@@ -50,6 +51,10 @@ public class RoleService {
      */
     public Page<Role> findAll(PageRequest pr)  {
         return this.roleRepository.findAll(pr);
+    }
+
+    public Page<Role> findAll(Specification<Role> spec, PageRequest pr) {
+        return this.roleRepository.findAll(spec, pr);
     }
 
     /**

@@ -10,6 +10,7 @@ import pw.ewen.WLPT.domains.DTOs.UserDTO;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
+import pw.ewen.WLPT.services.RoleService;
 import pw.ewen.WLPT.services.UserService;
 
 import java.util.Arrays;
@@ -19,17 +20,17 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
-	private UserService userService;
-	private RoleRepository roleRepository;
+	private final UserService userService;
+	private final RoleService roleService;
 
 	@Autowired
-	public UserController(UserService userService, RoleRepository roleRepository){
-		this.roleRepository = roleRepository;
+	public UserController(UserService userService, RoleService roleService){
+		this.roleService = roleService;
 		this.userService = userService;
 	}
 
 	//将user对象转为DTO对象的内部辅助类
-	class UserDTOConverter implements Converter<User, UserDTO>{
+	static class UserDTOConverter implements Converter<User, UserDTO>{
 		@Override
 		public UserDTO convert(User source) {
 			return  UserDTO.convertFromUser(source);
@@ -41,7 +42,6 @@ public class UserController {
 										  @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
 										  @RequestParam(value = "filter", defaultValue = "") String filter){
 		Page<User> userResults;
-		Page<UserDTO> dtoResult;
 
 		if(filter.isEmpty()){
 			userResults =  this.userService.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
@@ -60,7 +60,7 @@ public class UserController {
 
 	@RequestMapping(method=RequestMethod.POST, produces="application/json")
 	public UserDTO save(@RequestBody UserDTO dto){
-		User user = dto.convertToUser(this.roleRepository);
+		User user = dto.convertToUser(this.roleService);
 		return UserDTO.convertFromUser(this.userService.save(user));
     }
 
