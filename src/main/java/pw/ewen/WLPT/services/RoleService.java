@@ -30,7 +30,7 @@ public class RoleService {
     /**
      * 找到一个角色
      * @param id    角色id
-     * @return  角色
+     * @return  如果没有找到返回null
      */
     public Role findOne(String id) {
         return this.roleRepository.findOne(id);

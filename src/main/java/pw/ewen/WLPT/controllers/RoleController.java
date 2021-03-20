@@ -5,6 +5,8 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.domains.DTOs.RoleDTO;
 import pw.ewen.WLPT.domains.DTOs.UserDTO;
@@ -74,11 +76,23 @@ public class RoleController {
     /**
      * 获取一个角色
      * @param roleId 角色Id
-     * @return  角色数据
+     * @return  角色数据，如果找不到返回404
      */
     @RequestMapping(value="/{roleId}", method=RequestMethod.GET, produces="application/json")
-    public Role getOneRole(@PathVariable("roleId") String roleId){
-        return roleService.findOne(roleId);
+    public ResponseEntity<?> getOneRole(@PathVariable("roleId") String roleId){
+        Role role = roleService.findOne(roleId);
+        if(role == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(RoleDTO.convertFromRole(role), HttpStatus.OK);
+    }
+
+    /**
+     * 检查角色id是否存在
+     * @param roleId    角色id
+     * @return  true 角色存在 false 角色不存在
+     */
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json", value = "/check/{roleId}")
+    public boolean checkRoleExist(String roleId) {
+        return roleService.findOne(roleId) != null;
     }
 
     /**
