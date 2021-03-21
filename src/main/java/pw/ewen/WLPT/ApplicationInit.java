@@ -125,7 +125,7 @@ public class ApplicationInit implements ApplicationRunner {
         if(rolesAdminMenus.size() == 0) {
             rolesAdminMenu = new Menu();
             rolesAdminMenu.setName("角色管理");
-            rolesAdminMenu.setPath("/admin/roles/list");
+            rolesAdminMenu.setPath("/admin/roles");
             rolesAdminMenu.setParent(adminMenu);
             this.menuService.save(rolesAdminMenu);
         }

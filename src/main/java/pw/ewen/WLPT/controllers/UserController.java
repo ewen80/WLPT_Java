@@ -64,7 +64,7 @@ public class UserController {
 
 	// 获取指定角色的用户清单
 	@RequestMapping(value="/role/{roleId}", method=RequestMethod.GET, produces="application/json")
-	public Page<UserDTO> getByRoleId(@PathVariable("roleId") String roleId, PageInfo pageInfo) {
+	public Page<UserDTO> getByRoleIdWithPage(@PathVariable("roleId") String roleId, PageInfo pageInfo) {
 		Page<User> users;
 		PageRequest pr;
 		if (pageInfo.getSortField().isEmpty()) {
@@ -76,6 +76,15 @@ public class UserController {
 		String filter = "role.id:" + roleId + "," + pageInfo.getFilter();
 		SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
 		users = this.userService.findAll(builder.build(filter), pr);
+		return users.map(new UserDTOConverter());
+	}
+
+	// 获取指定角色的用户清单（不分页）
+	@RequestMapping(value = "/role/nopage/{roleId}", method = RequestMethod.GET, produces = "application/json")
+	public List<UserDTO> getByRoleId(@PathVariable("roldId") String roleId, @RequestParam(value = "filter", defaultValue = "") String filter) {
+		String filterStr = "role.id:" + roleId + "," + filter;
+		SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
+		List<User> users = this.userService.findAll(builder.build(filterStr));
 		return users.map(new UserDTOConverter());
 	}
 

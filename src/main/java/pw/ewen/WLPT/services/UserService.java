@@ -50,6 +50,10 @@ public class UserService {
         return this.userRepository.findAll();
     }
 
+    public List<User> findAll(Specification<User> spec) {
+        return this.userRepository.findAll(spec);
+    }
+
     /**
      * 返回一个用户
      * @param id
