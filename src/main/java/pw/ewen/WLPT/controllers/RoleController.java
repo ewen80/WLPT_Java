@@ -91,7 +91,7 @@ public class RoleController {
      * @return  true 角色存在 false 角色不存在
      */
     @RequestMapping(method = RequestMethod.GET, produces = "application/json", value = "/check/{roleId}")
-    public boolean checkRoleExist(String roleId) {
+    public boolean checkRoleExist(@PathVariable("roleId") String roleId) {
         return roleService.findOne(roleId) != null;
     }
 

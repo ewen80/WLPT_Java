@@ -40,14 +40,17 @@ public class UserController {
 	@RequestMapping(method = RequestMethod.GET, produces="application/json")
 	public Page<UserDTO> getUsersWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
 										  @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
+										  @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
+										  @RequestParam(value = "sortField", defaultValue = "name") String sortField,
 										  @RequestParam(value = "filter", defaultValue = "") String filter){
 		Page<User> userResults;
+		PageRequest pr = new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.fromString(sortDirection), sortField));
 
 		if(filter.isEmpty()){
-			userResults =  this.userService.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
+			userResults =  this.userService.findAll(pr);
 		}else{
 			SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
-			userResults =  this.userService.findAll(builder.build(filter), new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
+			userResults =  this.userService.findAll(builder.build(filter), pr);
 		}
 		return userResults.map(new UserDTOConverter());
 	}
