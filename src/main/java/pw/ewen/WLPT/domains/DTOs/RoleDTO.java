@@ -11,6 +11,8 @@ public class RoleDTO {
     private String name;
     private String description;
 
+    public RoleDTO() {  }
+
     public RoleDTO(String id, String name) {
         this.id = id;
         this.name = name;

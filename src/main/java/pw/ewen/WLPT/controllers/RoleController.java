@@ -59,7 +59,7 @@ public class RoleController {
     public Page<RoleDTO> getRolesWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
                                           @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
                                           @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
-                                          @RequestParam(value = "sortField", defaultValue = "name") String sortField,
+                                          @RequestParam(value = "sortField", defaultValue = "id") String sortField,
                                           @RequestParam(value = "filter", defaultValue = "") String filter){
         Page<Role> roles;
         PageRequest pr = new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.fromString(sortDirection), sortField));
@@ -97,12 +97,13 @@ public class RoleController {
 
     /**
      * 保存角色信息
-     * @param role  角色数据
+     * @param roleDTO  角色DTO
      * @return  保存的角色数据
      */
     @RequestMapping(method=RequestMethod.POST, produces = "application/json")
-    public Role save(@RequestBody Role role){
-        return this.roleService.save(role);
+    public RoleDTO save(@RequestBody RoleDTO roleDTO) {
+        Role role = RoleDTO.convertToRole(roleDTO);
+        return RoleDTO.convertFromRole(this.roleService.save(role));
     }
 
     /**
