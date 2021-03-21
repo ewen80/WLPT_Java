@@ -14,6 +14,7 @@ import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder
 import pw.ewen.WLPT.services.RoleService;
 import pw.ewen.WLPT.services.UserService;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -81,11 +82,24 @@ public class UserController {
 
 	// 获取指定角色的用户清单（不分页）
 	@RequestMapping(value = "/role/nopage/{roleId}", method = RequestMethod.GET, produces = "application/json")
-	public List<UserDTO> getByRoleId(@PathVariable("roldId") String roleId, @RequestParam(value = "filter", defaultValue = "") String filter) {
+	public List<UserDTO> getByRoleId(@PathVariable("roleId") String roleId, @RequestParam(value = "filter", defaultValue = "") String filter) {
 		String filterStr = "role.id:" + roleId + "," + filter;
 		SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
 		List<User> users = this.userService.findAll(builder.build(filterStr));
-		return users.map(new UserDTOConverter());
+		List<UserDTO> userDTOS = new ArrayList<>();
+		users.forEach( (user -> userDTOS.add(UserDTO.convertFromUser(user))));
+		return userDTOS;
+	}
+
+	// 获取所有有效用户（未删除）
+	@RequestMapping(value = "/nopage", method = RequestMethod.GET, produces = "application/json")
+	public List<UserDTO> getAllValidUsers() {
+		String filter = "deleted:false";
+		SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
+		List<User> users = this.userService.findAll(builder.build(filter));
+		List<UserDTO> userDTOS = new ArrayList<>();
+		users.forEach( (user -> userDTOS.add(UserDTO.convertFromUser(user))));
+		return userDTOS;
 	}
 
 	@RequestMapping(method=RequestMethod.POST, produces="application/json")
