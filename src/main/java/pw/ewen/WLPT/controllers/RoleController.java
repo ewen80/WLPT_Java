@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.domains.DTOs.RoleDTO;
 import pw.ewen.WLPT.domains.DTOs.UserDTO;
 import pw.ewen.WLPT.domains.entities.Role;
@@ -16,7 +17,9 @@ import pw.ewen.WLPT.exceptions.domain.DeleteRoleException;
 import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 import pw.ewen.WLPT.services.RoleService;
+import pw.ewen.WLPT.services.UserService;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -24,10 +27,12 @@ import java.util.Set;
 @RequestMapping(value = "/roles")
 public class RoleController {
     private final RoleService roleService;
+    private final UserService userService;
 
     @Autowired
-    public RoleController(RoleService roleService) {
+    public RoleController(RoleService roleService, UserService userService) {
         this.roleService = roleService;
+        this.userService = userService;
     }
 
     //将role对象转为DTO对象的内部辅助类
@@ -125,6 +130,29 @@ public class RoleController {
                 }
             }
         }
+    }
 
+    /**
+     * 设置角色的用户
+     */
+    @RequestMapping(value = "/setusers/{roleId}", method = RequestMethod.PUT)
+    public void setUsers(@PathVariable("roleId") String roleId, @RequestBody String[] userIds) {
+        Role anonymousRole = roleService.findOne(BizConfig.getAnonymousRoleId());
+
+        Role role = roleService.findOne(roleId);
+        if( role != null ) {
+            // 清空该角色原本的用户,被清空的用户角色归入anonymous组
+            Set<User> users = role.getUsers();
+            users.forEach( (user -> {
+                user.setRole(anonymousRole);
+            }));
+            // 将指定用户加入该角色
+            for (String userId : userIds ) {
+                User user = this.userService.findOne(userId);
+                user.setRole(role);
+                this.userService.save(user);
+            }
+        }
+        roleService.save(role);
     }
 }

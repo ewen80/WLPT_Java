@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 public class RoleService {
 
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
     public RoleService(RoleRepository roleRepository) {
@@ -88,6 +88,7 @@ public class RoleService {
             throw new DeleteRoleException("删除角色失败，该角色可能还有用户或者权限配置。");
         }
     }
+
 
     // 检查角色下面是否有用户和权限配置
     private boolean checkCanDelete(String roleId) {

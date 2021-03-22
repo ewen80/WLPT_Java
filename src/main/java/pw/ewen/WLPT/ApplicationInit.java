@@ -6,6 +6,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.domains.entities.Role;
@@ -49,31 +50,31 @@ public class ApplicationInit implements ApplicationRunner {
     // 初始化用户和角色，生成角色："admin"、"anonymous".生成用户："admin"
     private void initUserAndRole() {
         // 检查角色表中是否有anonymous角色,没有就新建
-        Role anonymousRole = roleService.findOne("anonymous");
+        Role anonymousRole = roleService.findOne(BizConfig.getAnonymousRoleId());
         if(anonymousRole == null) {
-            anonymousRole = roleService.save(new Role("anonymous", "anonymous"));
+            anonymousRole = roleService.save(new Role(BizConfig.getAnonymousRoleId(), BizConfig.getAnonymousRoleId()));
         }
 
-        Role adminRole = roleService.findOne("admin");
+        Role adminRole = roleService.findOne(BizConfig.getAdminRoleId());
         if(adminRole == null) {
             // 新建admin角色
-            adminRole = roleService.save(new Role("admin", "admin"));
+            adminRole = roleService.save(new Role(BizConfig.getAdminRoleId(), BizConfig.getAdminRoleId()));
         }
 
         // 检查是否存在admin用户，没有就新建，默认加入admin角色
-        User adminUser = userService.findOne("admin");
+        User adminUser = userService.findOne(BizConfig.getAdminUserId());
         if(adminUser == null) {
             //新建用户admin
-            User user = new User("admin", "管理员", "admin", adminRole);
+            User user = new User(BizConfig.getAdminUserId(), "管理员", "admin", adminRole);
             adminRole.getUsers().add(user);
             userService.save(user);
         }
 
         // 检查是否存在guest用户，没有就新建，默认加入anonymous角色
-        User guestUser = userService.findOne("guest");
+        User guestUser = userService.findOne(BizConfig.getGuestUserId());
         if(guestUser == null) {
             // 新建用户guest
-            User user = new User("guest", "guest", "guest", anonymousRole);
+            User user = new User(BizConfig.getGuestUserId(), "guest", "guest", anonymousRole);
             anonymousRole.getUsers().add(user);
             userService.save(user);
         }

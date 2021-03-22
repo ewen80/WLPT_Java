@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.repositories.UserRepository;
 
@@ -56,7 +57,7 @@ public class UserService {
 
     /**
      * 返回一个用户
-     * @param id
+     * @param id 用户id
      * @return 如果没有找到返回null
      */
     public User findOne(String id){
@@ -69,10 +70,11 @@ public class UserService {
 
     /**
      * 删除用户
-     * @param userIds
+     * @param userIds 用户id数组
      * @return
      */
     public int delete(List<String> userIds){
         return this.userRepository.softdelete(userIds);
     }
+
 }
