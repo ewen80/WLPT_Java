@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import pw.ewen.WLPT.domains.entities.User;
 
+import java.util.List;
+
 /**
  * update by wenliang on 20210226
  */

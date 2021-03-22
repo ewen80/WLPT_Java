@@ -53,13 +53,14 @@ public class RoleService {
         return this.roleRepository.findAll(pr);
     }
 
-    public Page<Role> findAll(Specification<Role> spec, PageRequest pr) {
-        return this.roleRepository.findAll(spec, pr);
+    public Page<Role> findAll(String filter, PageRequest pr) {
+        SearchSpecificationsBuilder<Role> builder = new SearchSpecificationsBuilder<>();
+        return this.roleRepository.findAll(builder.build(filter), pr);
     }
 
     /**
      * 保存
-     * @param role
+     * @param role 角色
      * @return
      */
     public Role save(Role role) {

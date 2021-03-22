@@ -72,8 +72,7 @@ public class RoleController {
         if(filter.isEmpty()){
             roles =  this.roleService.findAll(pr);
         }else{
-            SearchSpecificationsBuilder<Role> builder = new SearchSpecificationsBuilder<>();
-            roles =  this.roleService.findAll(builder.build(filter), pr);
+            roles =  this.roleService.findAll(filter, pr);
         }
         return roles.map(new RoleDTOConverter());
     }

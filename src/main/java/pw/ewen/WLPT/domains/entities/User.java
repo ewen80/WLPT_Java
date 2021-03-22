@@ -36,6 +36,10 @@ public class User implements Serializable {
 
 	private boolean deleted = false;	//软删除标志
 
+	public boolean isDeleted() {
+		return deleted;
+	}
+
 	protected  User(){}
 	public User(String id, String name, String password, Role role){
 		this.id = id;

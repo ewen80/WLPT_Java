@@ -5,11 +5,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.repositories.UserRepository;
+import pw.ewen.WLPT.repositories.specifications.core.SearchSpecification;
+import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 
+import javax.persistence.criteria.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by wenliang on 17-4-14.
@@ -24,35 +27,37 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public Page<User> findAll(String filter, PageRequest pr) {
+        // 默认过滤已删除用户
+        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
+        String filterStr = "deleted:false," + filter;
+        return  this.userRepository.findAll(builder.build(filterStr), pr);
+    }
+
     /**
      * 返回翻页格式用户列表
-     * @param spec 过滤表达式
      * @param pr    分页对象
-     * @return
      */
-    public Page<User> findAll(Specification<User> spec, PageRequest pr){
+    public Page<User> findAll(PageRequest pr){
+        // 默认过滤已删除用户
+        Specification<User> spec = (root, query, cb) -> cb.isFalse(root.get("deleted"));
         return this.userRepository.findAll(spec, pr);
     }
 
     /**
-     * 返回翻页格式用户列表
-     * @param pr    分页对象
-     * @return
-     */
-    public Page<User> findAll(PageRequest pr){
-        return this.userRepository.findAll(pr);
-    }
-
-    /**
      * 返回所有用户，没有过滤条件
-     * @return
      */
     public List<User> findAll() {
-        return this.userRepository.findAll();
+        // 默认过滤已删除用户
+        Specification<User> spec = (root, query, cb) -> cb.isFalse(root.get("deleted"));
+        return this.userRepository.findAll(spec);
     }
 
-    public List<User> findAll(Specification<User> spec) {
-        return this.userRepository.findAll(spec);
+    public List<User> findAll(String filter) {
+        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
+        String filterStr = "deleted:false," + filter;
+        // 默认过滤已删除用户
+        return this.userRepository.findAll(builder.build(filterStr));
     }
 
     /**
@@ -71,7 +76,7 @@ public class UserService {
     /**
      * 删除用户
      * @param userIds 用户id数组
-     * @return
+     * @return 删除的行数
      */
     public int delete(List<String> userIds){
         return this.userRepository.softdelete(userIds);

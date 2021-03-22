@@ -51,8 +51,7 @@ public class UserController {
 		if(filter.isEmpty()){
 			userResults =  this.userService.findAll(pr);
 		}else{
-			SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
-			userResults =  this.userService.findAll(builder.build(filter), pr);
+			userResults =  this.userService.findAll(filter, pr);
 		}
 		return userResults.map(new UserDTOConverter());
 	}
@@ -75,8 +74,7 @@ public class UserController {
 		}
 
 		String filter = "role.id:" + roleId + "," + pageInfo.getFilter();
-		SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
-		users = this.userService.findAll(builder.build(filter), pr);
+		users = this.userService.findAll(filter, pr);
 		return users.map(new UserDTOConverter());
 	}
 
@@ -84,8 +82,7 @@ public class UserController {
 	@RequestMapping(value = "/role/nopage/{roleId}", method = RequestMethod.GET, produces = "application/json")
 	public List<UserDTO> getByRoleId(@PathVariable("roleId") String roleId, @RequestParam(value = "filter", defaultValue = "") String filter) {
 		String filterStr = "role.id:" + roleId + "," + filter;
-		SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
-		List<User> users = this.userService.findAll(builder.build(filterStr));
+		List<User> users = this.userService.findAll(filterStr);
 		List<UserDTO> userDTOS = new ArrayList<>();
 		users.forEach( (user -> userDTOS.add(UserDTO.convertFromUser(user))));
 		return userDTOS;
@@ -95,8 +92,7 @@ public class UserController {
 	@RequestMapping(value = "/nopage", method = RequestMethod.GET, produces = "application/json")
 	public List<UserDTO> getAllValidUsers() {
 		String filter = "deleted:false";
-		SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
-		List<User> users = this.userService.findAll(builder.build(filter));
+		List<User> users = this.userService.findAll(filter);
 		List<UserDTO> userDTOS = new ArrayList<>();
 		users.forEach( (user -> userDTOS.add(UserDTO.convertFromUser(user))));
 		return userDTOS;
