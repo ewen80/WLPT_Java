@@ -1,4 +1,4 @@
-package pw.ewen.WLPT.domains.DTOs;
+package pw.ewen.WLPT.domains.dtoconvertors;
 
 /**
  * Created by wen on 17-4-9.
@@ -13,5 +13,5 @@ public interface DTOConvert<DTO,D> {
     /**
      * D To DTOs 转化
      */
-    DTO doBackward(D d);
+     DTO doBackward(D d);
 }

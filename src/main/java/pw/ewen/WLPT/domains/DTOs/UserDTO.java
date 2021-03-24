@@ -1,9 +1,10 @@
 package pw.ewen.WLPT.domains.DTOs;
 
 import org.springframework.util.Assert;
+import pw.ewen.WLPT.domains.dtoconvertors.DTOConvert;
+import pw.ewen.WLPT.domains.dtoconvertors.UserDTOConvertor;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
-import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.services.RoleService;
 
 /**
@@ -15,46 +16,8 @@ public class UserDTO {
     private String id;
     private String name;
     private String roleId;
-    private String password;
-    private String avatar;
-
-    private static class UserConverter implements DTOConvert<UserDTO, User>{
-        private RoleService roleService;
-
-        public UserConverter() {
-        }
-
-        public UserConverter(RoleService roleService) {
-            this.roleService = roleService;
-        }
-
-        @Override
-        public User doForward(UserDTO dto) {
-            Assert.notNull(this.roleService);
-
-            Role role = roleService.findOne(dto.getRoleId());
-            User user = new User(dto.getId(), dto.getName(), dto.getPassword(), role);
-            if(!dto.getAvatar().isEmpty()) {
-                user.setAvatar(dto.getAvatar());
-            }
-
-            return user;
-        }
-
-        @Override
-        public UserDTO doBackward(User user) {
-            UserDTO dto = new UserDTO();
-            dto.setId(user.getId());
-            dto.setName(user.getName());
-            dto.setPassword(user.getPassword());
-            dto.setAvatar(user.getAvatar());
-            if(user.getRole() != null){
-                dto.setRoleId(user.getRole().getId());
-            }
-
-            return dto;
-        }
-    }
+    private String passwordMD5;
+    private String avatar = "";
 
     /**
      * 转化User对象为UserDTO对象
@@ -62,15 +25,14 @@ public class UserDTO {
      * @return 用户DTO对象
      */
     public static UserDTO convertFromUser(User user){
-        UserConverter converter = new UserConverter();
-        return converter.doBackward(user);
+        return new UserDTOConvertor().doBackward(user);
     }
 
     /**
      * 转化UserDTO对象为User对象
      */
-    public User convertToUser(RoleService roleService){
-        UserConverter converter = new UserConverter(roleService);
+    public User convertToUser(){
+        UserDTOConvertor converter = new UserDTOConvertor();
         return converter.doForward(this);
     }
 
@@ -98,12 +60,12 @@ public class UserDTO {
         this.roleId = roleId;
     }
 
-    protected String getPassword() {
-        return password;
+    public String getPasswordMD5() {
+        return passwordMD5;
     }
 
-    protected void setPassword(String password) {
-        this.password = password;
+    public void setPasswordMD5(String passwordMD5) {
+        this.passwordMD5 = passwordMD5;
     }
 
     public String getAvatar() {

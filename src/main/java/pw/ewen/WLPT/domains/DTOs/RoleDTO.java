@@ -1,6 +1,9 @@
 package pw.ewen.WLPT.domains.DTOs;
 
+import pw.ewen.WLPT.domains.dtoconvertors.RoleDTOConvertor;
 import pw.ewen.WLPT.domains.entities.Role;
+
+import java.util.Set;
 
 /**
  * created by wenliang on 2021-03-17
@@ -10,6 +13,7 @@ public class RoleDTO {
     private String id;
     private String name;
     private String description;
+    private Set<UserDTO> users;
 
     public RoleDTO() {  }
 
@@ -48,28 +52,21 @@ public class RoleDTO {
         this.description = description;
     }
 
-    private static class RoleConverter implements DTOConvert<RoleDTO, Role> {
-        public RoleConverter() {
-        }
+    public Set<UserDTO> getUsers() {
+        return users;
+    }
 
-        @Override
-        public Role doForward(RoleDTO roleDTO) {
-            return new Role(roleDTO.getId(), roleDTO.getName(), roleDTO.getDescription());
-        }
-
-        @Override
-        public RoleDTO doBackward(Role role) {
-            return new RoleDTO(role.getId(), role.getName(), role.getDescription());
-        }
+    public void setUsers(Set<UserDTO> users) {
+        this.users = users;
     }
 
     public static RoleDTO convertFromRole(Role role) {
-        RoleConverter converter = new RoleConverter();
+        RoleDTOConvertor converter = new RoleDTOConvertor();
         return converter.doBackward(role);
     }
 
     public static Role convertToRole(RoleDTO roleDTO) {
-        RoleConverter converter = new RoleConverter();
+        RoleDTOConvertor converter = new RoleDTOConvertor();
         return converter.doForward(roleDTO);
     }
 }

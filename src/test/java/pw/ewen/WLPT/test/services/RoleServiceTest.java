@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 /**
@@ -137,6 +138,6 @@ public class RoleServiceTest {
 
         entityManager.flush();
 
-        assertEquals(2, userService.findAll().size());
+        assertThat(roleService.findOne("r1").getUsers()).contains(u2);
     }
 }

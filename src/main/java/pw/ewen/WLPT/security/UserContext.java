@@ -54,7 +54,7 @@ public class UserContext {
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getId());
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
-                user.getPassword(),userDetails.getAuthorities());
+                user.getPasswordMD5(),userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

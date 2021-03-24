@@ -7,12 +7,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.repositories.UserRepository;
-import pw.ewen.WLPT.repositories.specifications.core.SearchSpecification;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 
-import javax.persistence.criteria.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by wenliang on 17-4-14.

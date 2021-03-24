@@ -2,7 +2,7 @@ package pw.ewen.WLPT.domains.DTOs.permissions;
 
 import org.springframework.security.acls.model.Permission;
 import org.springframework.util.Assert;
-import pw.ewen.WLPT.domains.DTOs.DTOConvert;
+import pw.ewen.WLPT.domains.dtoconvertors.DTOConvert;
 import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.repositories.ResourceRangeRepository;

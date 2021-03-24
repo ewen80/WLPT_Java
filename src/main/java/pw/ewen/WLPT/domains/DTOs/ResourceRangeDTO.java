@@ -1,6 +1,7 @@
 package pw.ewen.WLPT.domains.DTOs;
 
 import org.springframework.util.Assert;
+import pw.ewen.WLPT.domains.dtoconvertors.DTOConvert;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.domains.entities.Role;
@@ -22,7 +23,7 @@ public class ResourceRangeDTO implements Serializable {
     private String resourceTypeClassName;
 
     //实现DTOConvert接口的内部类
-    private static class ResourceRangeConverter implements DTOConvert<ResourceRangeDTO, ResourceRange>{
+    private static class ResourceRangeConverter implements DTOConvert<ResourceRangeDTO, ResourceRange> {
 
         private RoleRepository roleRepository;
         private ResourceTypeRepository resourceTypeRepository;

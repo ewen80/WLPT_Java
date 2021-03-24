@@ -44,8 +44,7 @@ public class RoleController {
     }
 
     /**
-     * 获取全部角色
-     * @return
+     * @return 获取全部角色(不分页)
      */
     @RequestMapping(value="/all", method=RequestMethod.GET, produces="application/json")
     public List<Role> getAllRoles(){

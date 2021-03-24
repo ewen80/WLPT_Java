@@ -9,7 +9,6 @@ import java.io.Serializable;
  * 系统用户
  * 一个用户只能且必须属于一个角色（后期可以扩展至属于多个角色）
  */
-// TODO: 修改password的明文保存
 @Entity
 //@JsonIdentityInfo(
 //		generator = ObjectIdGenerators.PropertyGenerator.class,
@@ -29,7 +28,7 @@ public class User implements Serializable {
 	private Role role;	// 用户角色
 
 	@Column(nullable = false)
-	private String password;
+	private String passwordMD5;
 
 	@Column(nullable = true)
 	private String avatar;
@@ -41,10 +40,10 @@ public class User implements Serializable {
 	}
 
 	protected  User(){}
-	public User(String id, String name, String password, Role role){
+	public User(String id, String name, String passwordMD5, Role role){
 		this.id = id;
 		this.name = name;
-		this.password = password;
+		this.passwordMD5 = passwordMD5;
 		this.role = role;
 	}
 
@@ -63,8 +62,8 @@ public class User implements Serializable {
 		this.name = name;
 	}
 
-	public String getPassword(){ return password;}
-	public void setPassword(String password){ this.password = password;}
+	public String getPasswordMD5(){ return passwordMD5;}
+	public void setPasswordMD5(String passwordMD5){ this.passwordMD5 = passwordMD5;}
 
 	public String getAvatar() {
 		return avatar;

@@ -2,7 +2,7 @@ package pw.ewen.WLPT.domains.DTOs.permissions;
 
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.model.Permission;
-import pw.ewen.WLPT.domains.DTOs.DTOConvert;
+import pw.ewen.WLPT.domains.dtoconvertors.DTOConvert;
 
 /**
  * Created by wenliang on 17-4-24.

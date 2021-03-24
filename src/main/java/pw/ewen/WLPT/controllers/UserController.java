@@ -100,7 +100,7 @@ public class UserController {
 
 	@RequestMapping(method=RequestMethod.POST, produces="application/json")
 	public UserDTO save(@RequestBody UserDTO dto){
-		User user = dto.convertToUser(this.roleService);
+		User user = dto.convertToUser();
 		return UserDTO.convertFromUser(this.userService.save(user));
     }
 

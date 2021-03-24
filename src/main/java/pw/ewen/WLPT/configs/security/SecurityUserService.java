@@ -38,7 +38,7 @@ public class SecurityUserService implements UserDetailsService {
                 authorities.add(new SimpleGrantedAuthority(role.getId()));
             }
 
-            return new org.springframework.security.core.userdetails.User(user.getId(), user.getPassword(), authorities);
+            return new org.springframework.security.core.userdetails.User(user.getId(), user.getPasswordMD5(), authorities);
         }
 
         throw new UsernameNotFoundException("User id: '" + userId + "' not found");
