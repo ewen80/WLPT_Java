@@ -113,13 +113,13 @@ public class RoleController {
 
     /**
      * 删除角色
-     * @param roleIds   角色Id
+     * @param roleIds   角色Id数字
      */
-    @RequestMapping(value = "/{roleIds}", method=RequestMethod.DELETE, produces = "application/json")
-    public void delete(@PathVariable("roleIds") String roleIds){
-        String[] arrRoleIds = roleIds.split(",");
+    @RequestMapping(method=RequestMethod.DELETE, value = "/{roleIds}")
+    public void delete(@PathVariable String roleIds){
+        String[] arrRoldIds = roleIds.split(",");
         //检查角色下是否有用户，有则不允许删除
-        for(String id : arrRoleIds){
+        for(String id : arrRoldIds){
             Role role = this.roleService.findOne(id);
             if(role != null ){
                 Set<User> users = role.getUsers();
