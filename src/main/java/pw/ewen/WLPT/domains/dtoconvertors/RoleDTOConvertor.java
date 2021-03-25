@@ -7,6 +7,7 @@ import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.services.UserService;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -20,13 +21,22 @@ public class RoleDTOConvertor  implements DTOConvert<RoleDTO, Role> {
     @Override
     public Role doForward(RoleDTO roleDTO) {
         Role role = new Role(roleDTO.getId(), roleDTO.getName(), roleDTO.getDescription());
-        Set<User> users = roleDTO.getUsers().stream().map(UserDTO::convertToUser).collect(Collectors.toSet());
-        role.setUsers(users);
+        if(roleDTO.getUsers() != null) {
+            Set<User> users = roleDTO.getUsers().stream().map(UserDTO::convertToUser).collect(Collectors.toSet());
+            role.setUsers(users);
+        }
         return role;
     }
 
     @Override
     public RoleDTO doBackward(Role role) {
-        return new RoleDTO(role.getId(), role.getName(), role.getDescription());
+        RoleDTO roleDTO = new RoleDTO(role.getId(), role.getName(), role.getDescription());
+        Set<User> users = role.getUsers();
+        HashSet<UserDTO> userDTOs = new HashSet<>();
+        users.forEach( (User u) -> {
+            userDTOs.add(UserDTO.convertFromUser(u));
+        });
+        roleDTO.setUsers(userDTOs);
+        return  roleDTO;
     }
 }

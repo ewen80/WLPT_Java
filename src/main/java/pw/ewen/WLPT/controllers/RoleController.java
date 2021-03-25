@@ -39,6 +39,7 @@ public class RoleController {
     static class RoleDTOConverter implements Converter<Role, RoleDTO> {
         @Override
         public RoleDTO convert(Role source) {
+//            Set<User> users = source.getUsers(); // 加载用户信息
             return  RoleDTO.convertFromRole(source);
         }
     }
@@ -73,6 +74,7 @@ public class RoleController {
         }else{
             roles =  this.roleService.findAll(filter, pr);
         }
+
         return roles.map(new RoleDTOConverter());
     }
 
