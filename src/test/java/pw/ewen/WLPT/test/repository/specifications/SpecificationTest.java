@@ -55,7 +55,7 @@ public class SpecificationTest {
         role1 = new Role("role1", "role1");
         roleRepository.save(role1);
 
-        this.user1 = new User("user1", "用户1", "15", role1);
+        this.user1 = new User("user1", "user1", "15", role1);
         this.user2 = new User("user2", "user2", "20", role1);
         this.user3 = new User("user3", "user3", "25", role1);
         userRepository.save(user1);
@@ -92,42 +92,6 @@ public class SpecificationTest {
 
         assertThat(user2).isIn(results);
         assertThat(user1).isNotIn(results);
-    }
-
-    @Test
-    public void testGreaterThan(){
-        String filter = "password>15";
-        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
-        List<User> results = userRepository.findAll(builder.build(filter));
-        assertThat(user1).isNotIn(results);
-        assertThat(user2).isIn(results);
-    }
-
-    @Test
-    public void testGreaterThanEqual(){
-        String filter = "password>:20";
-        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
-        List<User> results = userRepository.findAll(builder.build(filter));
-        assertThat(user1).isNotIn(results);
-        assertThat(user2).isIn(results);
-    }
-
-    @Test
-    public void testLessThan(){
-        String filter = "password<16";
-        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
-        List<User> results = userRepository.findAll(builder.build(filter));
-        assertThat(user2).isNotIn(results);
-        assertThat(user1).isIn(results);
-    }
-
-    @Test
-    public void testLessThanEqual(){
-        String filter = "password<:15";
-        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
-        List<User> results = userRepository.findAll(builder.build(filter));
-        assertThat(user2).isNotIn(results);
-        assertThat(user1).isIn(results);
     }
 
     @Test
@@ -220,6 +184,21 @@ public class SpecificationTest {
         List<ResourceRange> results4 = resourceRangeService.findAll(builder.build(filter));
         assertThat(results4).isEmpty();
         builder.reset();
+    }
+
+    @Test
+    public void testUserRoleId() {
+        Role r1 = new Role("r1", "r1");
+        User u1 = new User("u1", "u1", "", r1);
+        r1.getUsers().add(u1);
+        this.roleRepository.save(r1);
+
+        SearchSpecificationsBuilder<User> builder = new SearchSpecificationsBuilder<>();
+
+        String filter = "role.id:*r1*";
+        List<User> users = this.userRepository.findAll(builder.build(filter));
+
+        assertThat(users).hasSize(1);
     }
 
     @Test

@@ -62,6 +62,11 @@ public class UserController {
 		return user == null ? null : UserDTO.convertFromUser(user);
 	}
 
+	@RequestMapping(method = RequestMethod.GET, produces = "application/json", value = "/check/{userId}")
+	public boolean checkUserExist(@PathVariable("userId") String userId) {
+		return userService.findOne(userId) != null;
+	}
+
 	// 获取指定角色的用户清单
 	@RequestMapping(value="/role/{roleId}", method=RequestMethod.GET, produces="application/json")
 	public Page<UserDTO> getByRoleIdWithPage(@PathVariable("roleId") String roleId, PageInfo pageInfo) {
@@ -100,7 +105,7 @@ public class UserController {
 
 	@RequestMapping(method=RequestMethod.POST, produces="application/json")
 	public UserDTO save(@RequestBody UserDTO dto){
-		User user = dto.convertToUser();
+		User user = dto.convertToUser(this.roleService);
 		return UserDTO.convertFromUser(this.userService.save(user));
     }
 

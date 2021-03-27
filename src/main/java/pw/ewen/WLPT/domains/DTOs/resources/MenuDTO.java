@@ -1,7 +1,6 @@
 package pw.ewen.WLPT.domains.DTOs.resources;
 
 import org.springframework.util.Assert;
-import pw.ewen.WLPT.domains.dtoconvertors.DTOConvert;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
 import pw.ewen.WLPT.repositories.resources.MenuRepository;
 
@@ -19,7 +18,7 @@ public class MenuDTO {
     private String iconClass;
     private long parentId; //默认0,表示无上级节点
 
-    private static class MenuConverter implements DTOConvert<MenuDTO, Menu>  {
+    private static class MenuConverter {
 
         private MenuRepository menuRepository;
 
@@ -28,8 +27,7 @@ public class MenuDTO {
             this.menuRepository = menuRepository;
         }
 
-        @Override
-        public Menu doForward(MenuDTO menuDTO) {
+        public Menu toMenu(MenuDTO menuDTO) {
             Assert.notNull(this.menuRepository);
 
             Menu menu = new Menu();
@@ -54,8 +52,7 @@ public class MenuDTO {
             return menu;
         }
 
-        @Override
-        public MenuDTO doBackward(Menu menu) {
+        public MenuDTO toDTO(Menu menu) {
             MenuDTO dto = new MenuDTO();
             dto.setId(menu.getId());
             dto.setName(menu.getName());
@@ -76,7 +73,7 @@ public class MenuDTO {
      */
     public Menu convertToMenu(MenuRepository menuRepository) {
         MenuConverter converter = new MenuConverter(menuRepository);
-        return converter.doForward(this);
+        return converter.toMenu(this);
     }
 
     /**
@@ -86,7 +83,7 @@ public class MenuDTO {
      */
     public static MenuDTO convertFromMenu(Menu menu) {
         MenuConverter converter = new MenuConverter();
-        return converter.doBackward(menu);
+        return converter.toDTO(menu);
     }
 
     public long getId() {

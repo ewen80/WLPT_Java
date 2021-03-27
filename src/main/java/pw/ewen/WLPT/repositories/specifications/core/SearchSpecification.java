@@ -41,27 +41,26 @@ public class SearchSpecification<T> implements Specification<T> {
             case EQUALITY:
                 return builder.equal(property, criteria.getValue());
             case NEGATION:
-                return builder.notEqual(root.get(criteria.getKey()), criteria.getValue());
+                return builder.notEqual(property, criteria.getValue());
             case GREATER_THAN:
-                return builder.greaterThan(root.get(criteria.getKey()), criteria.getValue().toString());
+                return builder.greaterThan(property, criteria.getValue().toString());
             case GREATER_THAN_EQUALITY:
-                return builder.greaterThanOrEqualTo(root.<String>get(criteria.getKey()), criteria.getValue().toString());
+                return builder.greaterThanOrEqualTo(property, criteria.getValue().toString());
             case LESS_THAN:
-                return builder.lessThan(root.get(criteria.getKey()), criteria.getValue().toString());
+                return builder.lessThan(property, criteria.getValue().toString());
             case LESS_THAN_EQUALITY:
-                return builder.lessThanOrEqualTo(root.get(criteria.getKey()), criteria.getValue().toString());
+                return builder.lessThanOrEqualTo(property, criteria.getValue().toString());
             case LIKE:
-                return builder.like(root.get(criteria.getKey()), criteria.getValue().toString());
+                return builder.like(property, criteria.getValue().toString());
             case STARTS_WITH:
-                return builder.like(root.get(criteria.getKey()), criteria.getValue() + "%");
+                return builder.like(property, criteria.getValue() + "%");
             case ENDS_WITH:
-                return builder.like(root.get(criteria.getKey()), "%" + criteria.getValue());
+                return builder.like(property, "%" + criteria.getValue());
             case CONTAINS:
-                return builder.like(root.get(
-                        criteria.getKey()), "%" + criteria.getValue() + "%");
+                return builder.like(property, "%" + criteria.getValue() + "%");
             case IN:
                 // criteria.getValue() 内保存in()内部的值，以HashSet存在
-                CriteriaBuilder.In<String> inClause = builder.in(root.get(criteria.getKey()));
+                CriteriaBuilder.In<String> inClause = builder.in(property);
                 if ( criteria.getValue() instanceof HashSet) {
                     HashSet inValues = (HashSet) criteria.getValue();
                     for (Object v : inValues) {

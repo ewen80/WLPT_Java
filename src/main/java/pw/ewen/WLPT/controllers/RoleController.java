@@ -107,7 +107,7 @@ public class RoleController {
      */
     @RequestMapping(method=RequestMethod.POST, produces = "application/json")
     public RoleDTO save(@RequestBody RoleDTO roleDTO) {
-        Role role = RoleDTO.convertToRole(roleDTO);
+        Role role = RoleDTO.convertToRole(roleDTO, roleService);
         return RoleDTO.convertFromRole(this.roleService.save(role));
     }
 

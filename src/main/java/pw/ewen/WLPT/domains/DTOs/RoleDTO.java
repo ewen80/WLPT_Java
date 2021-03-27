@@ -2,6 +2,7 @@ package pw.ewen.WLPT.domains.DTOs;
 
 import pw.ewen.WLPT.domains.dtoconvertors.RoleDTOConvertor;
 import pw.ewen.WLPT.domains.entities.Role;
+import pw.ewen.WLPT.services.RoleService;
 
 import java.util.Set;
 
@@ -62,11 +63,11 @@ public class RoleDTO {
 
     public static RoleDTO convertFromRole(Role role) {
         RoleDTOConvertor converter = new RoleDTOConvertor();
-        return converter.doBackward(role);
+        return converter.toDTO(role);
     }
 
-    public static Role convertToRole(RoleDTO roleDTO) {
+    public static Role convertToRole(RoleDTO roleDTO, RoleService roleService) {
         RoleDTOConvertor converter = new RoleDTOConvertor();
-        return converter.doForward(roleDTO);
+        return converter.toRole(roleDTO, roleService);
     }
 }
