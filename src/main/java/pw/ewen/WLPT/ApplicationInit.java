@@ -6,6 +6,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.DigestUtils;
 import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.domains.entities.ResourceType;
@@ -18,7 +19,9 @@ import pw.ewen.WLPT.services.resources.MenuService;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -65,7 +68,7 @@ public class ApplicationInit implements ApplicationRunner {
         User adminUser = userService.findOne(BizConfig.getAdminUserId());
         if(adminUser == null) {
             //新建用户admin
-            User user = new User(BizConfig.getAdminUserId(), "管理员", "admin", adminRole);
+            User user = new User(BizConfig.getAdminUserId(), "管理员", DigestUtils.md5DigestAsHex("admin".getBytes()).toUpperCase(), adminRole);
             adminRole.getUsers().add(user);
             userService.save(user);
         }
@@ -74,7 +77,7 @@ public class ApplicationInit implements ApplicationRunner {
         User guestUser = userService.findOne(BizConfig.getGuestUserId());
         if(guestUser == null) {
             // 新建用户guest
-            User user = new User(BizConfig.getGuestUserId(), "guest", "guest", anonymousRole);
+            User user = new User(BizConfig.getGuestUserId(), "guest", DigestUtils.md5DigestAsHex("guest".getBytes()).toUpperCase(), anonymousRole);
             anonymousRole.getUsers().add(user);
             userService.save(user);
         }

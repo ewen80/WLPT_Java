@@ -5,40 +5,39 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
+import pw.ewen.WLPT.controllers.utils.PageInfo;
 import pw.ewen.WLPT.domains.entities.ResourceType;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
+import pw.ewen.WLPT.services.ResourceTypeService;
 
 /**
  * Created by wen on 17-3-12.
- * TODO:移植逻辑到services层
  */
 @RestController
 @RequestMapping(value = "/resourcetypes")
 public class ResourceTypeController {
-    private ResourceTypeRepository resourceTypeRepository;
+    private final ResourceTypeService resourceTypeService;
 
     @Autowired
-    public ResourceTypeController(ResourceTypeRepository resourceTypeRepository) {
-        this.resourceTypeRepository = resourceTypeRepository;
+    public ResourceTypeController(ResourceTypeService resourceTypeService) {
+        this.resourceTypeService = resourceTypeService;
     }
 
     /**
      * 获取资源类型（分页，查询）
-     * @param pageIndex 第几页
-     * @param pageSize  每页多少条
      */
     @RequestMapping(method = RequestMethod.GET, produces="application/json")
-    public Page<ResourceType> getResourcesWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
-                                                   @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
-                                                   @RequestParam(value = "filter", defaultValue = "") String filter){
-        SearchSpecificationsBuilder<ResourceType> builder = new SearchSpecificationsBuilder<>();
-        if(filter.isEmpty()){
-            return resourceTypeRepository.findAll(new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
-        }else{
-            return resourceTypeRepository.findAll(builder.build(filter), new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.ASC, "name")));
-        }
+    public Page<ResourceType> getResourcesWithPage(PageInfo pageInfo){
+        Page<ResourceType> resourceTypes;
+        PageRequest pr = pageInfo.getPageRequest();
 
+        if(pageInfo.getFilter().isEmpty()){
+            resourceTypes =  this.resourceTypeService.findAll(pr);
+        }else{
+            resourceTypes =  this.resourceTypeService.findAll(pageInfo.getFilter(), pr);
+        }
+        return resourceTypes;
     }
 
     /**
@@ -47,7 +46,7 @@ public class ResourceTypeController {
      */
     @RequestMapping(value="/{className}", method=RequestMethod.GET, produces="application/json")
     public ResourceType getOne(@PathVariable("className") String className){
-        return resourceTypeRepository.findOne(className);
+        return resourceTypeService.findOne(className);
     }
 
     /**
@@ -56,7 +55,7 @@ public class ResourceTypeController {
      */
     @RequestMapping(method=RequestMethod.POST, produces = "application/json")
     public ResourceType save(@RequestBody ResourceType resourceType){
-        return this.resourceTypeRepository.save(resourceType);
+        return this.resourceTypeService.save(resourceType);
     }
 
     /**
@@ -65,14 +64,7 @@ public class ResourceTypeController {
     @RequestMapping(value = "/{resourceTypes}", method=RequestMethod.DELETE, produces = "application/json")
     public void delete(@PathVariable("resourceTypes") String resourceTypes){
         String[] arrClassNames = resourceTypes.split(",");
-        //TODO:检查该资源当前是否有效，只能软删除
-        for(String className : arrClassNames){
-            ResourceType rt = this.resourceTypeRepository.findOne(className);
-            if(rt != null ){
-                rt.setDeleted(true);
-                this.resourceTypeRepository.save(rt);
-            }
-        }
+        this.resourceTypeService.delete(arrClassNames);
 
     }
 }

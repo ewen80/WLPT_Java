@@ -15,6 +15,7 @@ import org.springframework.security.acls.model.AclService;
 import org.springframework.security.acls.model.ObjectIdentityRetrievalStrategy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import pw.ewen.WLPT.configs.biz.BizConfig;
 
 import javax.sql.DataSource;
 
@@ -73,7 +74,7 @@ public class SecurityAclConfig {
      */
     @Bean
     AclAuthorizationStrategy getAclAuthorizationStrategy(){
-        return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority("admin"));
+        return new AclAuthorizationStrategyImpl(new SimpleGrantedAuthority(BizConfig.getAdminRoleId()));
     }
 
 }

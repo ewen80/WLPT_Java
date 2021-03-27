@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.configs.biz.BizConfig;
+import pw.ewen.WLPT.controllers.utils.PageInfo;
 import pw.ewen.WLPT.domains.DTOs.RoleDTO;
 import pw.ewen.WLPT.domains.DTOs.UserDTO;
 import pw.ewen.WLPT.domains.entities.Role;
@@ -39,7 +40,6 @@ public class RoleController {
     static class RoleDTOConverter implements Converter<Role, RoleDTO> {
         @Override
         public RoleDTO convert(Role source) {
-//            Set<User> users = source.getUsers(); // 加载用户信息
             return  RoleDTO.convertFromRole(source);
         }
     }
@@ -54,25 +54,17 @@ public class RoleController {
 
     /**
      * 获取角色（分页）
-     * @param pageIndex 第几页
-     * @param pageSize  每页多少条
-     * @param sortDirection ASC正序  DESC倒序
-     * @param sortField 排序字段名
      * @return 角色数据
      */
     @RequestMapping(method = RequestMethod.GET, produces="application/json")
-    public Page<RoleDTO> getRolesWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
-                                          @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
-                                          @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
-                                          @RequestParam(value = "sortField", defaultValue = "id") String sortField,
-                                          @RequestParam(value = "filter", defaultValue = "") String filter){
+    public Page<RoleDTO> getRolesWithPage(PageInfo pageInfo){
         Page<Role> roles;
-        PageRequest pr = new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.fromString(sortDirection), sortField));
+        PageRequest pr = pageInfo.getPageRequest();
 
-        if(filter.isEmpty()){
+        if(pageInfo.getFilter().isEmpty()){
             roles =  this.roleService.findAll(pr);
         }else{
-            roles =  this.roleService.findAll(filter, pr);
+            roles =  this.roleService.findAll(pageInfo.getFilter(), pr);
         }
 
         return roles.map(new RoleDTOConverter());
@@ -118,18 +110,7 @@ public class RoleController {
     @RequestMapping(method=RequestMethod.DELETE, value = "/{roleIds}")
     public void delete(@PathVariable String roleIds){
         String[] arrRoldIds = roleIds.split(",");
-        //检查角色下是否有用户，有则不允许删除
-        for(String id : arrRoldIds){
-            Role role = this.roleService.findOne(id);
-            if(role != null ){
-                Set<User> users = role.getUsers();
-                if(users.isEmpty()){
-                    this.roleService.delete(id);
-                }else{
-                    throw new DeleteRoleException("试图删除角色:"+role.toString()+"失败，因为该角色下有用户");
-                }
-            }
-        }
+        this.roleService.delete(arrRoldIds);
     }
 
     /**

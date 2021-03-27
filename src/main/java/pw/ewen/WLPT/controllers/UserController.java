@@ -40,18 +40,14 @@ public class UserController {
 	}
 	//获取用户（分页,查询）
 	@RequestMapping(method = RequestMethod.GET, produces="application/json")
-	public Page<UserDTO> getUsersWithPage(@RequestParam(value = "pageIndex", defaultValue = "0") int pageIndex,
-										  @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
-										  @RequestParam(value = "sortDirection", defaultValue = "ASC") String sortDirection,
-										  @RequestParam(value = "sortField", defaultValue = "id") String sortField,
-										  @RequestParam(value = "filter", defaultValue = "") String filter){
+	public Page<UserDTO> getUsersWithPage(PageInfo pageInfo){
 		Page<User> userResults;
-		PageRequest pr = new PageRequest(pageIndex, pageSize, new Sort(Sort.Direction.fromString(sortDirection), sortField));
+		PageRequest pr = pageInfo.getPageRequest();
 
-		if(filter.isEmpty()){
+		if(pageInfo.getFilter().isEmpty()){
 			userResults =  this.userService.findAll(pr);
 		}else{
-			userResults =  this.userService.findAll(filter, pr);
+			userResults =  this.userService.findAll(pageInfo.getFilter(), pr);
 		}
 		return userResults.map(new UserDTOConverter());
 	}
@@ -71,12 +67,7 @@ public class UserController {
 	@RequestMapping(value="/role/{roleId}", method=RequestMethod.GET, produces="application/json")
 	public Page<UserDTO> getByRoleIdWithPage(@PathVariable("roleId") String roleId, PageInfo pageInfo) {
 		Page<User> users;
-		PageRequest pr;
-		if (pageInfo.getSortField().isEmpty()) {
-			pr = new PageRequest(pageInfo.getPageIndex(), pageInfo.getPageSize());
-		} else {
-			pr = new PageRequest(pageInfo.getPageIndex(), pageInfo.getPageSize(), Sort.Direction.fromString(pageInfo.getSortDirection()), pageInfo.getSortField());
-		}
+		PageRequest pr = pageInfo.getPageRequest();
 
 		String filter = "role.id:" + roleId + "," + pageInfo.getFilter();
 		users = this.userService.findAll(filter, pr);

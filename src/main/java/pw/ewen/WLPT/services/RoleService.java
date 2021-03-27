@@ -82,7 +82,7 @@ public class RoleService {
      * @param roleId    角色id
      * @throws DeleteRoleException
      */
-    public  void delete(String roleId) throws DeleteRoleException {
+    public void delete(String roleId) throws DeleteRoleException {
         if(checkCanDelete(roleId)) {
             this.roleRepository.delete(roleId);
         } else {

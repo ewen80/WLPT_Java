@@ -1,5 +1,8 @@
 package pw.ewen.WLPT.controllers.utils;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
 /**
  * created by wenliang on 2021/3/21
  * 作为分页查询时候匹配参数值的辅助类
@@ -10,6 +13,15 @@ public class PageInfo {
     String sortDirection = "ASC";
     String sortField = "";
     String filter = "";
+
+    public PageRequest getPageRequest() {
+        if(this.sortField.isEmpty()) {
+            return new PageRequest(this.getPageIndex(), this.getPageSize());
+        } else {
+            return new PageRequest(this.getPageIndex(), this.getPageSize(), new Sort(Sort.Direction.fromString(this.getSortDirection()), this.getSortField()));
+        }
+
+    }
 
     public int getPageIndex() {
         return pageIndex;
