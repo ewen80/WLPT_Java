@@ -4,6 +4,7 @@ import pw.ewen.WLPT.domains.dtoconvertors.RoleDTOConvertor;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.services.RoleService;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -14,7 +15,7 @@ public class RoleDTO {
     private String id;
     private String name;
     private String description;
-    private Set<UserDTO> users;
+    private Set<UserDTO> users = new HashSet<>();
 
     public RoleDTO() {  }
 

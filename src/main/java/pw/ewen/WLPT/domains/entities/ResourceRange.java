@@ -29,9 +29,9 @@ public class ResourceRange {
 
     private long id;
     private String filter;
-    @JsonBackReference(value = "range")
+//    @JsonBackReference(value = "range")
     private Role role;
-    @JsonBackReference(value = "type")
+//    @JsonBackReference(value = "type")
     private ResourceType resourceType;
 
 //    private boolean matchAll = false;

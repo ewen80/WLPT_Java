@@ -22,13 +22,13 @@ import java.util.Set;
 public class ResourceType implements Serializable {
 
     private static final long serialVersionUID = -2617247962702444217L;
+
     private String className;
     private String name;
     private String description;
     private boolean deleted = false;
-    @JsonManagedReference(value = "type")
-    private Set<ResourceRange> resourceRanges;
-//    private Set<MyResource> resources;
+//    @JsonManagedReference(value = "type")
+    private Set<ResourceRange> resourceRanges = new HashSet<>();
 
     protected ResourceType(){}
 
@@ -37,8 +37,6 @@ public class ResourceType implements Serializable {
         this.name = name;
         this.description = description;
         this.deleted = deleted;
-        this.resourceRanges = new HashSet<>();
-//        this.resources = new HashSet<>();
     }
 
     public ResourceType(String className, String name){

@@ -7,6 +7,8 @@ import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.services.ResourceRangeService;
+import pw.ewen.WLPT.services.ResourceTypeService;
+import pw.ewen.WLPT.services.RoleService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,22 +20,22 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/resourceranges")
 public class ResourceRangeController {
 
-   private ResourceRangeService service;
-   private RoleRepository roleRepository;
-   private ResourceTypeRepository resourceTypeRepository;
+   private final ResourceRangeService resourceRangeService;
+   private final RoleService roleService;
+   private final ResourceTypeService resourceTypeService;
 
     @Autowired
-    public ResourceRangeController(ResourceRangeService service,
-                                   RoleRepository roleRepository,
-                                   ResourceTypeRepository resourceTypeRepository) {
-       this.service = service;
-       this.roleRepository = roleRepository;
-       this.resourceTypeRepository = resourceTypeRepository;
+    public ResourceRangeController(ResourceRangeService resourceRangeService,
+                                   RoleService roleService,
+                                   ResourceTypeService resourceTypeService) {
+       this.resourceRangeService = resourceRangeService;
+       this.roleService = roleService;
+       this.resourceTypeService = resourceTypeService;
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public List<ResourceRangeDTO> getByResourceType(@RequestParam(value = "resourceclassname", defaultValue = "") String resourceTypeClassName){
-        return service.findByResourceType(resourceTypeClassName)
+        return resourceRangeService.findByResourceType(resourceTypeClassName)
                 .stream()
                 .map( ResourceRangeDTO::convertFromResourceRange)
                 .collect(Collectors.toList());
@@ -41,15 +43,15 @@ public class ResourceRangeController {
 
     @RequestMapping(method = RequestMethod.POST, produces = "application/json")
     public ResourceRangeDTO save(@RequestBody ResourceRangeDTO dto){
-        ResourceRange range = dto.convertToResourceRange(this.roleRepository, this.resourceTypeRepository);
-        range =  this.service.save(range);
+        ResourceRange range = dto.convertToResourceRange(this.roleService, this.resourceTypeService);
+        range =  this.resourceRangeService.save(range);
         return ResourceRangeDTO.convertFromResourceRange(range);
     }
 
     @RequestMapping(value = "/{resourceRangeIds}", method=RequestMethod.DELETE, produces = "application/json")
     public void delete(@PathVariable("resourceRangeIds") String resourceRangeIds){
         String[] arrResourceRangeIds = resourceRangeIds.split(",");
-        this.service.delete(arrResourceRangeIds);
+        this.resourceRangeService.delete(arrResourceRangeIds);
     }
 
 }
