@@ -61,7 +61,7 @@ public class ResourceTypeController {
      * 获取一个资源类型
      * @param className 资源类全限定名
      */
-    @RequestMapping(value="/{className}", method=RequestMethod.GET, produces="application/json")
+    @RequestMapping(value="/{className}/", method=RequestMethod.GET, produces="application/json")
     public ResourceType getOne(@PathVariable("className") String className){
         return resourceTypeService.findOne(className);
     }
@@ -85,7 +85,7 @@ public class ResourceTypeController {
         this.resourceTypeService.delete(arrClassNames);
     }
 
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json", value = "/check/{className}")
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json", value = "/check/{className}/")
     public boolean checkClassNameExist(@PathVariable("className") String className) {
         return resourceTypeService.findOne(className) != null;
     }

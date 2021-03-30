@@ -19,6 +19,9 @@ public class ResourceTypeDTO {
     private boolean deleted = false;
     private Set<ResourceRangeDTO> resourceRanges = new HashSet<>();
 
+    public ResourceTypeDTO() {
+    }
+
     public ResourceTypeDTO(String className, String name, boolean deleted) {
         this.className = className;
         this.name = name;
