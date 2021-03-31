@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import pw.ewen.WLPT.domains.entities.User;
+import pw.ewen.WLPT.exceptions.domain.FindUserException;
 import pw.ewen.WLPT.repositories.UserRepository;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 
@@ -68,6 +69,17 @@ public class UserService {
 
     public User save(User user){
         return this.userRepository.save(user);
+    }
+
+    // 修改密码
+    public void setPassWord(String userId, String passwordMD5) throws  FindUserException {
+        User user = this.userRepository.findOne(userId);
+        if (user != null) {
+            user.setPasswordMD5(passwordMD5);
+            this.userRepository.save(user);
+        } else {
+            throw new FindUserException("找不到指定的用户");
+        }
     }
 
     /**

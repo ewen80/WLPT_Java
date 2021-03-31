@@ -22,13 +22,13 @@ public class User implements Serializable {
 	@Column(nullable = false)
 	private String name;	//用户姓名
 
-	@JsonBackReference(value = "user")
+//	@JsonBackReference(value = "user")
 	@ManyToOne
 	@JoinColumn(name="role_Id", nullable = false)
 	private Role role;	// 用户角色
 
 	@Column(nullable = false)
-	private String passwordMD5;
+	private String passwordMD5 = "";
 
 	@Column(nullable = true)
 	private String avatar;
@@ -40,10 +40,9 @@ public class User implements Serializable {
 	}
 
 	protected  User(){}
-	public User(String id, String name, String passwordMD5, Role role){
+	public User(String id, String name, Role role){
 		this.id = id;
 		this.name = name;
-		this.passwordMD5 = passwordMD5;
 		this.role = role;
 	}
 

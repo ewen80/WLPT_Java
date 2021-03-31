@@ -12,7 +12,7 @@ public class UserDTO {
     private String id;
     private String name;
     private String roleId;
-    private String passwordMD5;
+//    private String passwordMD5;
     private String avatar = "";
 
     /**
@@ -56,13 +56,13 @@ public class UserDTO {
         this.roleId = roleId;
     }
 
-    public String getPasswordMD5() {
-        return passwordMD5;
-    }
-
-    public void setPasswordMD5(String passwordMD5) {
-        this.passwordMD5 = passwordMD5;
-    }
+//    public String getPasswordMD5() {
+//        return passwordMD5;
+//    }
+//
+//    public void setPasswordMD5(String passwordMD5) {
+//        this.passwordMD5 = passwordMD5;
+//    }
 
     public String getAvatar() {
         return avatar;

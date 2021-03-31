@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.controllers.utils.PageInfo;
 import pw.ewen.WLPT.domains.DTOs.UserDTO;
 import pw.ewen.WLPT.domains.entities.User;
+import pw.ewen.WLPT.exceptions.domain.FindUserException;
 import pw.ewen.WLPT.repositories.RoleRepository;
 import pw.ewen.WLPT.repositories.specifications.core.SearchSpecificationsBuilder;
 import pw.ewen.WLPT.services.RoleService;
@@ -99,6 +100,11 @@ public class UserController {
 		User user = dto.convertToUser(this.roleService);
 		return UserDTO.convertFromUser(this.userService.save(user));
     }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/{userId}")
+    public void setPassWord(@PathVariable("userId") String userId, @RequestBody String passwordMD5) throws FindUserException {
+		this.userService.setPassWord(userId, passwordMD5);
+	}
 
     @RequestMapping(value = "/{userIds}", method=RequestMethod.DELETE, produces = "application/json")
     public void delete(@PathVariable("userIds") String userIds){

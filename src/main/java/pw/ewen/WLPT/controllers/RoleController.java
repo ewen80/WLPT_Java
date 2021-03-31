@@ -12,6 +12,7 @@ import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.controllers.utils.PageInfo;
 import pw.ewen.WLPT.domains.DTOs.RoleDTO;
 import pw.ewen.WLPT.domains.DTOs.UserDTO;
+import pw.ewen.WLPT.domains.dtoconvertors.RoleDTOConvertor;
 import pw.ewen.WLPT.domains.entities.Role;
 import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.exceptions.domain.DeleteRoleException;
@@ -23,6 +24,7 @@ import pw.ewen.WLPT.services.UserService;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/roles")
@@ -48,8 +50,8 @@ public class RoleController {
      * @return 获取全部角色(不分页)
      */
     @RequestMapping(value="/all", method=RequestMethod.GET, produces="application/json")
-    public List<Role> getAllRoles(){
-        return  this.roleService.findAll();
+    public List<RoleDTO> getAllRoles(){
+        return this.roleService.findAll().stream().map(RoleDTO::convertFromRole).collect(Collectors.toList());
     }
 
     /**

@@ -17,7 +17,7 @@ public class UserDTOConvertor {
     public User toUser(UserDTO dto, RoleService roleService) {
 
         Role role = roleService.findOne(dto.getRoleId());
-        User user = new User(dto.getId(), dto.getName(), dto.getPasswordMD5(), role);
+        User user = new User(dto.getId(), dto.getName(), role);
         if(!dto.getAvatar().isEmpty()) {
             user.setAvatar(dto.getAvatar());
         }
@@ -29,7 +29,6 @@ public class UserDTOConvertor {
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());
         dto.setName(user.getName());
-        dto.setPasswordMD5(user.getPasswordMD5());
         dto.setAvatar(user.getAvatar());
         if(user.getRole() != null){
             dto.setRoleId(user.getRole().getId());
