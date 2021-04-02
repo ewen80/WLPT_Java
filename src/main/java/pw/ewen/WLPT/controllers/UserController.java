@@ -5,6 +5,8 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pw.ewen.WLPT.controllers.utils.PageInfo;
 import pw.ewen.WLPT.domains.DTOs.UserDTO;
@@ -54,9 +56,10 @@ public class UserController {
 	}
 
 	@RequestMapping(value="/{userId}", method=RequestMethod.GET, produces="application/json")
-	public UserDTO getOne(@PathVariable("userId") String userId){
+	public ResponseEntity<UserDTO> getOne(@PathVariable("userId") String userId){
 		User user = this.userService.findOne(userId);
-		return user == null ? null : UserDTO.convertFromUser(user);
+
+		return user == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(UserDTO.convertFromUser(user), HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json", value = "/check/{userId}")
