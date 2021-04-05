@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import pw.ewen.WLPT.configs.biz.BizConfig;
 import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.domains.entities.ResourceType;
@@ -24,11 +25,11 @@ import java.util.List;
 @RestController
 public class OnceInitController {
 
-    private ResourceTypeService resourceTypeService;
-    private PermissionService permissionService;
-    private RoleService roleService;
-    private ResourceRangeService resourceRangeService;
-    private MenuService menuService;
+    private final ResourceTypeService resourceTypeService;
+    private final PermissionService permissionService;
+    private final RoleService roleService;
+    private final ResourceRangeService resourceRangeService;
+    private final MenuService menuService;
 
     @Autowired
     public OnceInitController(ResourceTypeService resourceTypeService,
@@ -70,7 +71,7 @@ public class OnceInitController {
     @RequestMapping(value = "/adminmenuinit", method = RequestMethod.PUT, produces = "application/json" )
     @Transactional
     public List<Menu> adminMenuInit() {
-        Role adminRole = this.roleService.findOne("admin");
+        Role adminRole = this.roleService.findOne(BizConfig.getAdminRoleId());
         this.authorizeMenu(adminRole);
         return this.menuService.findPermissionMenuTree(adminRole);
     }
