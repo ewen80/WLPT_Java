@@ -1,7 +1,6 @@
 package pw.ewen.WLPT.domains.DTOs;
 
 import org.springframework.util.Assert;
-import pw.ewen.WLPT.domains.dtoconvertors.DTOConvert;
 import pw.ewen.WLPT.domains.dtoconvertors.ResourceRangeDTOConvertor;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.domains.entities.ResourceType;

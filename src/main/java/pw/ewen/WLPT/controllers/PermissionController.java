@@ -30,10 +30,10 @@ import java.util.Set;
 @RequestMapping(value = "/permissions")
 public class PermissionController {
 
-    private PermissionService permissionService;
-    private ResourceTypeService resourceTypeService;
-    private ResourceRangeService resourceRangeService;
-    private RoleService roleService;
+    private final PermissionService permissionService;
+    private final ResourceTypeService resourceTypeService;
+    private final ResourceRangeService resourceRangeService;
+    private final RoleService roleService;
 
     public static final Permission[] SUPPORT_PERMISSIONS = { BasePermission.READ, BasePermission.WRITE };
 
