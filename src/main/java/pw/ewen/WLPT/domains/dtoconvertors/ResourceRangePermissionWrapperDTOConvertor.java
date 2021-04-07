@@ -1,6 +1,7 @@
 package pw.ewen.WLPT.domains.dtoconvertors;
 
 import org.springframework.security.acls.model.Permission;
+import pw.ewen.WLPT.domains.DTOs.ResourceRangeDTO;
 import pw.ewen.WLPT.domains.DTOs.permissions.PermissionDTO;
 import pw.ewen.WLPT.domains.DTOs.permissions.ResourceRangePermissionWrapperDTO;
 import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
@@ -18,7 +19,7 @@ public class ResourceRangePermissionWrapperDTOConvertor {
 
     // 无法转换返回null
     public ResourceRangePermissionWrapper toResourceRangePermissionWrapper(ResourceRangePermissionWrapperDTO dto, ResourceRangeService resourceRangeService) {
-        ResourceRange range = resourceRangeService.findOne(dto.getResourceRangeId());
+        ResourceRange range = resourceRangeService.findOne(dto.getResourceRangeDTO().getId());
         if(range != null) {
             Set<Permission> permissions = new HashSet<>();
             for(PermissionDTO pDTO : dto.getPermissions()) {
@@ -32,9 +33,11 @@ public class ResourceRangePermissionWrapperDTOConvertor {
 
     public ResourceRangePermissionWrapperDTO toResourceRangePermissionWrapperDTO(ResourceRangePermissionWrapper wrapper) {
         ResourceRangePermissionWrapperDTO dto = new ResourceRangePermissionWrapperDTO();
-        dto.setResourceRangeId(wrapper.getResourceRange().getId());
+        ResourceRangeDTOConvertor rangeDTOConvertor = new ResourceRangeDTOConvertor();
+        ResourceRangeDTO rangeDTO = rangeDTOConvertor.toDTO(wrapper.getResourceRange());
+        dto.setResourceRangeDTO(rangeDTO);
         Set<PermissionDTO> pDTO = wrapper.getPermissions().stream()
-                .map( permission -> PermissionDTO.convertFromPermission(permission))
+                .map(PermissionDTO::convertFromPermission)
                 .collect(Collectors.toSet());
         dto.setPermissions(pDTO);
         return dto;

@@ -43,8 +43,8 @@ public class ResourceRangeController {
                 .collect(Collectors.toList());
     }
 
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<ResourceRangeDTO> getByResourceTypeAndRole(@RequestParam(value = "resourceClassName") String resourceTypeClassName, @RequestParam(value = "roleId") String roleId) {
+    @RequestMapping(method = RequestMethod.GET, value= "/{resourceClassName}/{roleId}", produces = "application/json")
+    public ResponseEntity<ResourceRangeDTO> getByResourceTypeAndRole(@PathVariable(value = "resourceClassName") String resourceTypeClassName, @PathVariable(value = "roleId") String roleId) {
         ResourceRange range = this.resourceRangeService.findByResourceTypeAndRole(resourceTypeClassName, roleId);
         return range == null ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(ResourceRangeDTO.convertFromResourceRange(range), HttpStatus.OK);
     }

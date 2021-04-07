@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.web.bind.annotation.*;
+import pw.ewen.WLPT.domains.DTOs.ResourceRangeDTO;
 import pw.ewen.WLPT.domains.DTOs.permissions.PermissionDTO;
 import pw.ewen.WLPT.domains.DTOs.permissions.ResourceRangePermissionWrapperDTO;
 import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
@@ -80,8 +81,15 @@ public class PermissionController {
     @RequestMapping(method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     @Transactional
     public int save(@RequestBody ResourceRangePermissionWrapperDTO wrapperDTO) {
+        // 检查ResourceRange是否已经保存，如果没保存先保存
+        ResourceRangeDTO rangeDTO = wrapperDTO.getResourceRangeDTO();
+        ResourceRange range = rangeDTO.convertToResourceRange(this.roleService, this.resourceTypeService);
+        if(rangeDTO.getId() == 0) {
+            // 保存ResourceRange
+            this.resourceRangeService.save(range);
+        }
 
-        this.permissionService.deleteResourceRangeAllPermissions(wrapperDTO.getResourceRangeId());
+        this.permissionService.deleteResourceRangeAllPermissions(wrapperDTO.getResourceRangeDTO().getId());
 
         int insertNumber = 0;
 
@@ -91,7 +99,7 @@ public class PermissionController {
                     .findFirst();
             if(permission.isPresent()) {
                 try {
-                    this.permissionService.insertPermission(wrapperDTO.getResourceRangeId(), permission.get());
+                    this.permissionService.insertPermission(wrapperDTO.getResourceRangeDTO().getId(), permission.get());
                     insertNumber++;
                 } catch (Exception e ) {
 

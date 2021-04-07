@@ -2,6 +2,7 @@ package pw.ewen.WLPT.domains.DTOs.permissions;
 
 import org.springframework.security.acls.model.Permission;
 import org.springframework.util.Assert;
+import pw.ewen.WLPT.domains.DTOs.ResourceRangeDTO;
 import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
 import pw.ewen.WLPT.domains.dtoconvertors.ResourceRangePermissionWrapperDTOConvertor;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
@@ -18,13 +19,14 @@ import java.util.stream.Collectors;
  */
 public class ResourceRangePermissionWrapperDTO {
 
-    private long resourceRangeId;
+//    private long resourceRangeId;
+    private ResourceRangeDTO resourceRangeDTO;
     private Set<PermissionDTO> permissions;
 
     /**
      * 转化DTO为PermissionWrapper对象
      */
-    public ResourceRangePermissionWrapper convertToPermissionWrapper(ResourceRangeRepository resourceRangeRepository, ResourceRangeService resourceRangeService){
+    public ResourceRangePermissionWrapper convertToPermissionWrapper(ResourceRangeService resourceRangeService){
         ResourceRangePermissionWrapperDTOConvertor converter = new ResourceRangePermissionWrapperDTOConvertor();
         return converter.toResourceRangePermissionWrapper(this, resourceRangeService);
     }
@@ -37,12 +39,12 @@ public class ResourceRangePermissionWrapperDTO {
         return converter.toResourceRangePermissionWrapperDTO(wrapper);
     }
 
-    public long getResourceRangeId() {
-        return resourceRangeId;
+    public ResourceRangeDTO getResourceRangeDTO() {
+        return resourceRangeDTO;
     }
 
-    public void setResourceRangeId(long resourceRangeId) {
-        this.resourceRangeId = resourceRangeId;
+    public void setResourceRangeDTO(ResourceRangeDTO resourceRangeDTO) {
+        this.resourceRangeDTO = resourceRangeDTO;
     }
 
     public Set<PermissionDTO> getPermissions() {
