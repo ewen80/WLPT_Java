@@ -6,6 +6,7 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl;
 import org.springframework.security.acls.model.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import pw.ewen.WLPT.domains.Resource;
 import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.exceptions.security.AuthorizationException;
@@ -23,13 +24,13 @@ import java.util.*;
 public class PermissionService {
 
     private final MutableAclService aclService;
-    private ResourceRangeRepository resourceRangeRepository;
+    private final ResourceRangeService resourceRangeService;
 
     @Autowired
     public PermissionService(MutableAclService aclService,
-                             ResourceRangeRepository resourceRangeRepository) {
+                             ResourceRangeService resourceRangeService) {
         this.aclService = aclService;
-        this.resourceRangeRepository = resourceRangeRepository;
+        this.resourceRangeService = resourceRangeService;
     }
 
     /**
@@ -38,7 +39,7 @@ public class PermissionService {
      * @return  如果ResourceRange和Role根据id值没有找到对应对象，或者没有对应权限则返回null
      */
     public ResourceRangePermissionWrapper getByResourceRange(long resourceRangeId) {
-        ResourceRange range = this.resourceRangeRepository.findOne(resourceRangeId);
+        ResourceRange range = this.resourceRangeService.findOne(resourceRangeId);
         if(range != null){
             Set<Permission> permissions = new HashSet<>();
             ObjectIdentityImpl oi = new ObjectIdentityImpl(range);
@@ -64,7 +65,7 @@ public class PermissionService {
         Assert.notNull(permission);
 
         MutableAcl mutableAcl;
-        ResourceRange resourceRange = this.resourceRangeRepository.findOne(resourceRangeId);
+        ResourceRange resourceRange = this.resourceRangeService.findOne(resourceRangeId);
         if(resourceRange != null) {
             Sid sid = new GrantedAuthoritySid(resourceRange.getRole().getId());
             if(isThisResourceRangeExist(resourceRange)){
@@ -105,7 +106,7 @@ public class PermissionService {
         Assert.notNull(permission);
 
         MutableAcl mutableAcl;
-        ResourceRange resourceRange = this.resourceRangeRepository.findOne(resourceRangeId);
+        ResourceRange resourceRange = this.resourceRangeService.findOne(resourceRangeId);
         if(resourceRange != null) {
             Sid sid = new GrantedAuthoritySid(resourceRange.getRole().getId());
             if(isThisPermissionExist(resourceRange, sid, permission)){
@@ -132,7 +133,6 @@ public class PermissionService {
 
     /**
      * 删除ResourceRange和Role的所有权限
-     * @param resourceRangeId
      *
      */
     public void deleteResourceRangeAllPermissions(long resourceRangeId) {
@@ -162,7 +162,7 @@ public class PermissionService {
             ObjectIdentityImpl oi = new ObjectIdentityImpl(resourceRange);
             try{
                 Acl existedAcl = aclService.readAclById(oi);
-                Boolean isGranted =  existedAcl.isGranted(Collections.singletonList(permission), Collections.singletonList(sid), true);
+                boolean isGranted =  existedAcl.isGranted(Collections.singletonList(permission), Collections.singletonList(sid), true);
                 if(isGranted) {
                     //当前已经存在此规则
                     return true;

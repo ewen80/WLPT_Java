@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.model.Permission;
 import org.springframework.web.bind.annotation.*;
+import pw.ewen.WLPT.controllers.utils.PageInfo;
 import pw.ewen.WLPT.domains.DTOs.ResourceRangeDTO;
 import pw.ewen.WLPT.domains.DTOs.permissions.PermissionDTO;
 import pw.ewen.WLPT.domains.DTOs.permissions.ResourceRangePermissionWrapperDTO;
@@ -18,10 +19,7 @@ import pw.ewen.WLPT.services.ResourceTypeService;
 import pw.ewen.WLPT.services.RoleService;
 
 import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by wen on 17-3-5.
@@ -50,18 +48,32 @@ public class PermissionController {
     }
 
     /**
+     * 根据ResourceType得到对应ResourceRange权限
+     */
+    @RequestMapping(value = "/ResourceTypeAndRole", method = RequestMethod.GET, produces = "application/json")
+    public Set<ResourceRangePermissionWrapperDTO> getByResourceTypeAndRole(@RequestParam(value = "className",defaultValue = "") String resourceTypeClassName, @RequestParam(value = "roleId", defaultValue = "") String roleId) {
+        List<ResourceRange> ranges = this.resourceRangeService.findByResourceType(resourceTypeClassName);
+        if(ranges.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            ranges.forEach( (range) -> { sb.append(range.getId()).append(',');});
+            return this.getByResourceRanges(sb.toString());
+        }
+        return new HashSet<>();
+    }
+
+    /**
      * 获取一个或者多个ResourceRange权限
      * 多个ResourceRange用,分割
      */
-    @RequestMapping(value = "/{resourceRangeIds}", method = RequestMethod.GET, produces = "application/json")
-    public Set<ResourceRangePermissionWrapperDTO> getByResourceRanges(@PathVariable("resourceRangeIds") String resourceRangeIds) throws PermissionNotFoundException,IllegalArgumentException{
+    @RequestMapping(value = "/ResourceRange", method = RequestMethod.GET, produces = "application/json")
+    public Set<ResourceRangePermissionWrapperDTO> getByResourceRanges(@RequestParam("resourceRangeIds") String resourceRangeIds) throws IllegalArgumentException{
         Set<ResourceRangePermissionWrapperDTO> wrappers = new HashSet<>();
 
         String[] arrResourceRangeIds = resourceRangeIds.split(",");
 
         for(String id : arrResourceRangeIds){
             try{
-                long resourceRangeId = Long.valueOf(id);
+                long resourceRangeId = Long.parseLong(id);
                 ResourceRangePermissionWrapper wrapper = this.permissionService.getByResourceRange(resourceRangeId);
                 if(wrapper != null) {
                     ResourceRangePermissionWrapperDTO dto = ResourceRangePermissionWrapperDTO.convertFromPermissionWrapper(wrapper);
@@ -99,9 +111,9 @@ public class PermissionController {
                     .findFirst();
             if(permission.isPresent()) {
                 try {
-                    this.permissionService.insertPermission(wrapperDTO.getResourceRangeDTO().getId(), permission.get());
+                    this.permissionService.insertPermission(range.getId(), permission.get());
                     insertNumber++;
-                } catch (Exception e ) {
+                } catch (Exception ignored) {
 
                 }
             }
@@ -109,22 +121,22 @@ public class PermissionController {
         return insertNumber;
     }
 
-    /**
-     * 系统权限初始化，使用admin用户执行该API
-     * @return
-     */
-    @Transactional
-    @RequestMapping(method = RequestMethod.GET, value = "init", produces = "application/json")
-    public void init() {
-        ResourceType menuResourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.Menu", "menu", "菜单");
-        this.resourceTypeService.save((menuResourceType));
-
-        Role adminRole = this.roleService.findOne("admin");
-
-        ResourceRange haveAllMenuPermission = new ResourceRange("", adminRole, menuResourceType);
-        haveAllMenuPermission.setMatchAll();
-        this.resourceRangeService.save(haveAllMenuPermission);
-
-        this.permissionService.insertPermissions(haveAllMenuPermission.getId(), Arrays.asList(SUPPORT_PERMISSIONS));
-    }
+//    /**
+//     * 系统权限初始化，使用admin用户执行该API
+//     * @return
+//     */
+//    @Transactional
+//    @RequestMapping(method = RequestMethod.GET, value = "init", produces = "application/json")
+//    public void init() {
+//        ResourceType menuResourceType = new ResourceType("pw.ewen.WLPT.domains.entities.resources.Menu", "menu", "菜单");
+//        this.resourceTypeService.save((menuResourceType));
+//
+//        Role adminRole = this.roleService.findOne("admin");
+//
+//        ResourceRange haveAllMenuPermission = new ResourceRange("", adminRole, menuResourceType);
+//        haveAllMenuPermission.setMatchAll();
+//        this.resourceRangeService.save(haveAllMenuPermission);
+//
+//        this.permissionService.insertPermissions(haveAllMenuPermission.getId(), Arrays.asList(SUPPORT_PERMISSIONS));
+//    }
 }
