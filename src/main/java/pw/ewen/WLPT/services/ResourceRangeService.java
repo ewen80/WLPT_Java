@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import pw.ewen.WLPT.domains.Resource;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
+import pw.ewen.WLPT.domains.entities.User;
 import pw.ewen.WLPT.repositories.ResourceRangeRepository;
 import pw.ewen.WLPT.repositories.ResourceTypeRepository;
 import pw.ewen.WLPT.repositories.RoleRepository;
@@ -42,6 +44,11 @@ public class ResourceRangeService {
 
     public List<ResourceRange> findAll(Specification<ResourceRange> spec) {
         return this.resourceRangeRepository.findAll(spec);
+    }
+
+    public List<ResourceRange> findAll(String filter) {
+        SearchSpecificationsBuilder<ResourceRange> builder = new SearchSpecificationsBuilder<>();
+        return this.resourceRangeRepository.findAll(builder.build(filter));
     }
 
     /**

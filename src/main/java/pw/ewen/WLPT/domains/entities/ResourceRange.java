@@ -34,8 +34,6 @@ public class ResourceRange {
 //    @JsonBackReference(value = "type")
     private ResourceType resourceType;
 
-//    private boolean matchAll = false;
-
     @Id
     @GeneratedValue
     public long getId() {

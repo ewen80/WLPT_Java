@@ -47,12 +47,23 @@ public class PermissionController {
         this.roleService = roleService;
     }
 
-    /**
-     * 根据ResourceType得到对应ResourceRange权限
-     */
-    @RequestMapping(value = "/ResourceTypeAndRole", method = RequestMethod.GET, produces = "application/json")
-    public Set<ResourceRangePermissionWrapperDTO> getByResourceTypeAndRole(@RequestParam(value = "className",defaultValue = "") String resourceTypeClassName, @RequestParam(value = "roleId", defaultValue = "") String roleId) {
-        List<ResourceRange> ranges = this.resourceRangeService.findByResourceType(resourceTypeClassName);
+//    /**
+//     * 根据ResourceType得到对应ResourceRange权限
+//     */
+//    @RequestMapping(value = "/ResourceTypeAndRole", method = RequestMethod.GET, produces = "application/json")
+//    public Set<ResourceRangePermissionWrapperDTO> getByResourceTypeAndRole(@RequestParam(value = "className",defaultValue = "") String resourceTypeClassName, @RequestParam(value = "roleId", defaultValue = "") String roleId) {
+//        List<ResourceRange> ranges = this.resourceRangeService.findByResourceType(resourceTypeClassName);
+//        if(ranges.size() > 0) {
+//            StringBuilder sb = new StringBuilder();
+//            ranges.forEach( (range) -> { sb.append(range.getId()).append(',');});
+//            return this.getByResourceRanges(sb.toString());
+//        }
+//        return new HashSet<>();
+//    }
+
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    public Set<ResourceRangePermissionWrapperDTO> getPermissionWrappers(String filter) {
+        List<ResourceRange> ranges = this.resourceRangeService.findAll(filter);
         if(ranges.size() > 0) {
             StringBuilder sb = new StringBuilder();
             ranges.forEach( (range) -> { sb.append(range.getId()).append(',');});
