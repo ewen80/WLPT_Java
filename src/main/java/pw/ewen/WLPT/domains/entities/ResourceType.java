@@ -26,25 +26,21 @@ public class ResourceType implements Serializable {
     private String className;
     private String name;
     private String description;
-    private boolean deleted = false;
+//    private boolean deleted = false;
 //    @JsonManagedReference(value = "type")
     private Set<ResourceRange> resourceRanges = new HashSet<>();
 
     protected ResourceType(){}
 
-    public ResourceType(String className, String name, String description, boolean deleted) {
+    public ResourceType(String className, String name, String description) {
         this.className = className;
         this.name = name;
         this.description = description;
-        this.deleted = deleted;
+//        this.deleted = deleted;
     }
 
     public ResourceType(String className, String name){
-        this(className,name,"",false);
-    }
-
-    public ResourceType(String className,String name, String description){
-        this(className,name,description,false);
+        this(className,name,"");
     }
 
     /**
@@ -76,16 +72,6 @@ public class ResourceType implements Serializable {
     }
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    /**
-     * 软删除标记
-     */
-    public boolean isDeleted() {
-        return deleted;
-    }
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
     }
 
     /**

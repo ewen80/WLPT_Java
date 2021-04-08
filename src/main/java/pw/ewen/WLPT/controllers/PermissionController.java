@@ -132,6 +132,18 @@ public class PermissionController {
         return insertNumber;
     }
 
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{resourceRangeIds}")
+    @Transactional
+    public void delete(@PathVariable(value = "resourceRangeIds") String resourceRangeIds) {
+        String[] arrResourceRangeIds = resourceRangeIds.split(",");
+        // 删除所有权限
+        for(String id : arrResourceRangeIds) {
+            this.permissionService.deleteResourceRangeAllPermissions(Long.parseLong(id));
+        }
+        // 删除资源范围
+        this.resourceRangeService.delete(arrResourceRangeIds);
+    }
+
 //    /**
 //     * 系统权限初始化，使用admin用户执行该API
 //     * @return

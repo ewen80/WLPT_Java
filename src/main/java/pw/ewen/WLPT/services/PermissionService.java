@@ -117,6 +117,11 @@ public class PermissionService {
                 try{
                     int matchedIndex = findAceIndex(aces, permission);
                     mutableAcl.deleteAce(matchedIndex);
+                    aclService.updateAcl(mutableAcl);
+                    // 检查mutableAcl的aces是否已经全部被删除，如果已经全部删除，连同acl一起删除
+                    if(aces.size() == 1) {
+                        aclService.deleteAcl(oi, false);
+                    }
                     return true;
                 }catch(RuntimeException e){
                     //没有找到规则

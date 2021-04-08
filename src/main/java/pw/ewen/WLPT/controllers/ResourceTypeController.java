@@ -61,9 +61,9 @@ public class ResourceTypeController {
      * 获取一个资源类型
      * @param className 资源类全限定名
      */
-    @RequestMapping(value="/{className}/", method=RequestMethod.GET, produces="application/json")
-    public ResourceType getOne(@PathVariable("className") String className){
-        return resourceTypeService.findOne(className);
+    @RequestMapping(value="/{className}", method=RequestMethod.GET, produces="application/json")
+    public ResourceTypeDTO getOne(@PathVariable("className") String className){
+        return ResourceTypeDTO.convertFromResourceType(resourceTypeService.findOne(className));
     }
 
     /**
@@ -71,14 +71,11 @@ public class ResourceTypeController {
      * @param resourceTypeDTO 资源类型DTO
      */
     @RequestMapping(method=RequestMethod.POST, produces = "application/json")
-    public ResourceType save(@RequestBody ResourceTypeDTO resourceTypeDTO){
+    public ResourceTypeDTO save(@RequestBody ResourceTypeDTO resourceTypeDTO){
         ResourceType resourceType = ResourceTypeDTO.convertToResourceType(resourceTypeDTO, roleService, resourceTypeService);
-        return this.resourceTypeService.save(resourceType);
+        return ResourceTypeDTO.convertFromResourceType(this.resourceTypeService.save(resourceType));
     }
 
-    /**
-     * 软删除
-     */
     @RequestMapping(value = "/{resourceTypes}", method=RequestMethod.DELETE, produces = "application/json")
     public void delete(@PathVariable("resourceTypes") String resourceTypes){
         String[] arrClassNames = resourceTypes.split(",");

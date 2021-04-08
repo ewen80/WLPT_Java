@@ -16,16 +16,16 @@ public class ResourceTypeDTO {
     private String className;
     private String name;
     private String description;
-    private boolean deleted = false;
+//    private boolean deleted = false;
     private Set<ResourceRangeDTO> resourceRanges = new HashSet<>();
 
     public ResourceTypeDTO() {
     }
 
-    public ResourceTypeDTO(String className, String name, boolean deleted) {
+    public ResourceTypeDTO(String className, String name) {
         this.className = className;
         this.name = name;
-        this.deleted = deleted;
+//        this.deleted = deleted;
     }
 
     public static ResourceTypeDTO convertFromResourceType(ResourceType resourceType) {
@@ -60,14 +60,6 @@ public class ResourceTypeDTO {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
     }
 
     public Set<ResourceRangeDTO> getResourceRanges() {

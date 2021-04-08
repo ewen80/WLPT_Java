@@ -27,16 +27,12 @@ public class ResourceTypeService {
     }
 
     public Page<ResourceType> findAll(String filter, PageRequest pr) {
-        // 默认过滤已删除资源类型
         SearchSpecificationsBuilder<ResourceType> builder = new SearchSpecificationsBuilder<>();
-        String filterStr = "deleted:false," + filter;
-        return this.resourceTypeRepository.findAll(builder.build(filterStr), pr);
+        return this.resourceTypeRepository.findAll(builder.build(filter), pr);
     }
 
     public Page<ResourceType> findAll(PageRequest pr) {
-        // 默认过滤已删除资源类型
-        SearchSpecificationsBuilder<ResourceType> builder = new SearchSpecificationsBuilder<>();
-        return this.resourceTypeRepository.findAll(builder.build("deleted:false"), pr);
+        return this.resourceTypeRepository.findAll(pr);
     }
 
     public ResourceType findOne(String className) {
@@ -47,7 +43,7 @@ public class ResourceTypeService {
         if(checkCanDelete(className)) {
             this.resourceTypeRepository.delete(className);
         } else {
-            throw new DeleteResourceTypeException("删除ResourceType错误：可能存在关联的ResourceRange");
+            throw new DeleteResourceTypeException("删除ResourceType错误：ResourceType不存在或存在关联的ResourceRange");
         }
     }
 
