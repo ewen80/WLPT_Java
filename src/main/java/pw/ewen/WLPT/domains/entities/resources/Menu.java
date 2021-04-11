@@ -60,7 +60,6 @@ public class Menu extends Resource implements Serializable {
 
     /**
      * 菜单名
-     * @return
      */
     @Column(nullable = false)
     public String getName() {
@@ -72,7 +71,6 @@ public class Menu extends Resource implements Serializable {
 
     /**
      * 菜单路径
-     * @return
      */
     @Column
     public String getPath() {
@@ -84,7 +82,6 @@ public class Menu extends Resource implements Serializable {
 
     /**
      * 菜单图标类
-     * @return
      */
     public String getIconClass() {
         return iconClass;
@@ -96,7 +93,6 @@ public class Menu extends Resource implements Serializable {
 
     /**
      * 排序号
-     * @return
      */
     @Column
     public int getOrderId() {
@@ -108,7 +104,6 @@ public class Menu extends Resource implements Serializable {
 
     /**
      * 子节点
-     * @return
      */
     @OneToMany(mappedBy = "parent", orphanRemoval = true)
     @OrderBy("orderId")
@@ -121,15 +116,14 @@ public class Menu extends Resource implements Serializable {
 
     /**
      * 父节点
-     * @return
      */
     @ManyToOne
     @JoinColumn(name = "parent_Id")
-    @JsonIgnore
+//    @JsonIgnore
     public Menu getParent() {
         return parent;
     }
-    @JsonProperty
+//    @JsonProperty
     public void setParent(Menu parent) {
         this.parent = parent;
     }

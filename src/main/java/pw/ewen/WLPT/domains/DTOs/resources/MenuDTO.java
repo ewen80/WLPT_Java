@@ -1,9 +1,12 @@
 package pw.ewen.WLPT.domains.DTOs.resources;
 
 import org.springframework.util.Assert;
+import pw.ewen.WLPT.domains.dtoconvertors.resources.MenuDTOConvertor;
 import pw.ewen.WLPT.domains.entities.resources.Menu;
 import pw.ewen.WLPT.repositories.resources.MenuRepository;
+import pw.ewen.WLPT.services.resources.MenuService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,73 +19,22 @@ public class MenuDTO {
     private String path;
     private int orderId;
     private String iconClass;
+    private List<MenuDTO> children = new ArrayList<>();
     private long parentId; //默认0,表示无上级节点
-
-    private static class MenuConverter {
-
-        private MenuRepository menuRepository;
-
-        MenuConverter(){}
-        MenuConverter(MenuRepository menuRepository) {
-            this.menuRepository = menuRepository;
-        }
-
-        public Menu toMenu(MenuDTO menuDTO) {
-            Assert.notNull(this.menuRepository);
-
-            Menu menu = new Menu();
-            menu.setId(menuDTO.getId());
-            menu.setName(menuDTO.getName());
-            menu.setOrderId(menuDTO.getOrderId());
-            menu.setIconClass(menuDTO.getIconClass());
-            menu.setPath(menuDTO.getPath());
-
-            Menu parent = null;
-            if(menuDTO.getParentId() != 0 ) {
-                parent = this.menuRepository.findOne(menuDTO.getParentId());
-                if(parent != null) {
-                    menu.setParent(parent);
-                }
-            }
-
-            List<Menu> children = this.menuRepository.findByParent_id(menuDTO.getId());
-            if(children != null) {
-                menu.setChildren(children);
-            }
-            return menu;
-        }
-
-        public MenuDTO toDTO(Menu menu) {
-            MenuDTO dto = new MenuDTO();
-            dto.setId(menu.getId());
-            dto.setName(menu.getName());
-            dto.setOrderId(menu.getOrderId());
-            dto.setIconClass(menu.getIconClass());
-            dto.setPath(menu.getPath());
-            if(menu.getParent() != null){
-                dto.setParentId(menu.getParent().getId());
-            }
-
-            return dto;
-        }
-    }
 
     /**
      * 转化为Menu对象
-     * @return
      */
-    public Menu convertToMenu(MenuRepository menuRepository) {
-        MenuConverter converter = new MenuConverter(menuRepository);
-        return converter.toMenu(this);
+    public Menu convertToMenu(MenuService menuService) {
+        MenuDTOConvertor converter = new MenuDTOConvertor();
+        return converter.toMenu(this, menuService);
     }
 
     /**
      * 转换为MenuDTO对象
-     * @param menu
-     * @return
      */
     public static MenuDTO convertFromMenu(Menu menu) {
-        MenuConverter converter = new MenuConverter();
+        MenuDTOConvertor converter = new MenuDTOConvertor();
         return converter.toDTO(menu);
     }
 
@@ -132,5 +84,13 @@ public class MenuDTO {
 
     public void setParentId(long parentId) {
         this.parentId = parentId;
+    }
+
+    public List<MenuDTO> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<MenuDTO> children) {
+        this.children = children;
     }
 }

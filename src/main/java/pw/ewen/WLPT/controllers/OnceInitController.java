@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import pw.ewen.WLPT.configs.biz.BizConfig;
+import pw.ewen.WLPT.domains.DTOs.resources.MenuDTO;
 import pw.ewen.WLPT.domains.ResourceRangePermissionWrapper;
 import pw.ewen.WLPT.domains.entities.ResourceRange;
 import pw.ewen.WLPT.domains.entities.ResourceType;
@@ -17,6 +18,7 @@ import pw.ewen.WLPT.services.*;
 import pw.ewen.WLPT.services.resources.MenuService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 系统首次运行初始化.
@@ -70,10 +72,10 @@ public class OnceInitController {
      */
     @RequestMapping(value = "/adminmenuinit", method = RequestMethod.PUT, produces = "application/json" )
     @Transactional
-    public List<Menu> adminMenuInit() {
+    public List<MenuDTO> adminMenuInit() {
         Role adminRole = this.roleService.findOne(BizConfig.getAdminRoleId());
         this.authorizeMenu(adminRole);
-        return this.menuService.findPermissionMenuTree(adminRole);
+        return this.menuService.findPermissionMenuTree(adminRole).stream().map(MenuDTO::convertFromMenu).collect(Collectors.toList());
     }
 
 }

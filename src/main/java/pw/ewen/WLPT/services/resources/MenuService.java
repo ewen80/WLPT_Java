@@ -28,22 +28,23 @@ import java.util.List;
 @Service
 public class MenuService {
 
+    private final MenuRepository menuRepository;
+    private final MutableAclService aclService;
+    private final UserService userService;
+    private final EntityManager entityManager;
+    private final ObjectIdentityRetrievalStrategyWLPTImpl objectIdentityRetrieval;
+
     @Autowired
-    private MenuRepository menuRepository;
-    @Autowired
-    private PermissionService permissionService;
-    @Autowired
-    private MutableAclService aclService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private EntityManager entityManager;
-    @Autowired
-    private ObjectIdentityRetrievalStrategyWLPTImpl objectIdentityRetrieval;
+    public MenuService(MenuRepository menuRepository, MutableAclService aclService, UserService userService, EntityManager entityManager, ObjectIdentityRetrievalStrategyWLPTImpl objectIdentityRetrieval) {
+        this.menuRepository = menuRepository;
+        this.aclService = aclService;
+        this.userService = userService;
+        this.entityManager = entityManager;
+        this.objectIdentityRetrieval = objectIdentityRetrieval;
+    }
 
     /**
      * 获取所有菜单
-     * @return
      */
     public List<Menu> findAll() {
         return this.menuRepository.findAll(new Sort("orderId"));
@@ -52,7 +53,6 @@ public class MenuService {
     /**
      * 获取符合条件的菜单
      * @param spec  过滤表达式
-     * @return
      */
     public List<Menu> findAll(Specification<Menu> spec) {
         return menuRepository.findAll(spec);
@@ -61,15 +61,18 @@ public class MenuService {
     /**
      * 获取一个菜单
      * @param id    菜单id
-     * @return
      */
     public Menu findOne(long id) {
         return this.menuRepository.findOne(id);
     }
 
+    // 获取子节点
+    public List<Menu> findChildren(long pid) {
+        return this.menuRepository.findByParent_id(pid);
+    }
+
     /**
      * 获取所有顶级菜单
-     * @return
      */
     public List<Menu> findTree() {
         return this.menuRepository.findByParentOrderByOrderId(null);
@@ -82,7 +85,6 @@ public class MenuService {
      *      3.根据2产生的节点，生成叶子节点
      *      4.根据叶子节点生成对应树形
      * @param role 角色
-     * @return
      */
     public List<Menu> findPermissionMenuTree(Role role){
         List<Menu> allMenus = this.findAll();
@@ -93,7 +95,6 @@ public class MenuService {
     /**
      * 获取用户有权限的菜单节点
      * @param user  用户
-     * @return
      */
     public List<Menu> findPermissionMenuTree(User user){
         return this.findPermissionMenuTree(user.getRole());
@@ -221,7 +222,6 @@ public class MenuService {
 
     /**
      * 菜单(s)是否已经被授权
-     * @param menus
      * @return  被授权的菜单列表
      */
     private List<Menu> authorizedmenus(List<Menu> menus, Role myRole, List<Permission> permissions) {
