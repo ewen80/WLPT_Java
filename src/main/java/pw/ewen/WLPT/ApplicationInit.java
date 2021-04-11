@@ -94,7 +94,6 @@ public class ApplicationInit implements ApplicationRunner {
         if(bizMenus.size() == 0) {
             bizMenu = new Menu();
             bizMenu.setName("业务区");
-            bizMenu.setIconClass("anticon-appstore");
             this.menuService.save(bizMenu);
         }
 
@@ -104,6 +103,7 @@ public class ApplicationInit implements ApplicationRunner {
             homeMenu = new Menu();
             homeMenu.setName("首页");
             homeMenu.setPath("/home");
+            homeMenu.setIconClass("dashboard");
             homeMenu.setParent(bizMenu);
             this.menuService.save(homeMenu);
         }
@@ -122,6 +122,7 @@ public class ApplicationInit implements ApplicationRunner {
             usersAdminMenu = new Menu();
             usersAdminMenu.setName("用户管理");
             usersAdminMenu.setPath("/admin/users");
+            usersAdminMenu.setIconClass("user");
             usersAdminMenu.setParent(adminMenu);
             this.menuService.save(usersAdminMenu);
         }
@@ -132,6 +133,7 @@ public class ApplicationInit implements ApplicationRunner {
             rolesAdminMenu = new Menu();
             rolesAdminMenu.setName("角色管理");
             rolesAdminMenu.setPath("/admin/roles");
+            rolesAdminMenu.setIconClass("team");
             rolesAdminMenu.setParent(adminMenu);
             this.menuService.save(rolesAdminMenu);
         }
@@ -142,6 +144,7 @@ public class ApplicationInit implements ApplicationRunner {
             resourcesAdminMenu = new Menu();
             resourcesAdminMenu.setName("资源管理");
             resourcesAdminMenu.setPath("/admin/resources");
+            resourcesAdminMenu.setIconClass("appstore");
             resourcesAdminMenu.setParent(adminMenu);
             this.menuService.save(resourcesAdminMenu);
         }
@@ -152,6 +155,7 @@ public class ApplicationInit implements ApplicationRunner {
             menusAdminMenu = new Menu();
             menusAdminMenu.setName("菜单管理");
             menusAdminMenu.setPath("/admin/resources/menus");
+            menusAdminMenu.setIconClass("menu");
             menusAdminMenu.setParent(adminMenu);
             this.menuService.save(menusAdminMenu);
         }
