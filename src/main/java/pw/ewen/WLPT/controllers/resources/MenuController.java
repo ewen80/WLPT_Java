@@ -48,6 +48,17 @@ public class MenuController {
         return MenuDTO.convertFromMenu(this.menuService.save(menu));
     }
 
+//    /**
+//     * 批量修改菜单
+//     * @param menuDTOs 菜单DTO数组
+//     */
+//    @RequestMapping(method = RequestMethod.PUT, produces = "application/json")
+//    public void save(@RequestBody MenuDTO[] menuDTOs) {
+//        for (MenuDTO dto: menuDTOs) {
+//            this.save(dto);
+//        }
+//    }
+
     @RequestMapping(method=RequestMethod.DELETE, value="/{menuId}")
     public void delete(@PathVariable("menuId") String menuId) throws NumberFormatException{
         long longMenuId = Long.parseLong(menuId);
