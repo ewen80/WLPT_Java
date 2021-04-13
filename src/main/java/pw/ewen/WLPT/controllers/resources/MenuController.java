@@ -7,7 +7,9 @@ import pw.ewen.WLPT.domains.entities.resources.Menu;
 import pw.ewen.WLPT.repositories.resources.MenuRepository;
 import pw.ewen.WLPT.services.resources.MenuService;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -48,16 +50,18 @@ public class MenuController {
         return MenuDTO.convertFromMenu(this.menuService.save(menu));
     }
 
-//    /**
-//     * 批量修改菜单
-//     * @param menuDTOs 菜单DTO数组
-//     */
-//    @RequestMapping(method = RequestMethod.PUT, produces = "application/json")
-//    public void save(@RequestBody MenuDTO[] menuDTOs) {
-//        for (MenuDTO dto: menuDTOs) {
-//            this.save(dto);
-//        }
-//    }
+    /**
+     * 批量修改菜单
+     * @param menuDTOs 菜单DTO数组
+     */
+    @RequestMapping(method = RequestMethod.PUT, produces = "application/json")
+    public void save(@RequestBody MenuDTO[] menuDTOs) {
+        Set<Menu> menus = new HashSet<>();
+        for (MenuDTO dto: menuDTOs) {
+            menus.add(dto.convertToMenu(this.menuService));
+        }
+        this.menuService.batchSave(menus);
+    }
 
     @RequestMapping(method=RequestMethod.DELETE, value="/{menuId}")
     public void delete(@PathVariable("menuId") String menuId) throws NumberFormatException{

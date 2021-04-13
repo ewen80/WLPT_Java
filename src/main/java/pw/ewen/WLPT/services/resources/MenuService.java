@@ -17,10 +17,7 @@ import pw.ewen.WLPT.services.PermissionService;
 import pw.ewen.WLPT.services.UserService;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by wenliang on 17-5-9.
@@ -116,23 +113,29 @@ public class MenuService {
     public Menu save(Menu  menu) {
         Menu parent = menu.getParent();
         Long parentId = parent == null ? null : parent.getId();
-        if(menu.getOrderId() != -1){
-            //如果新增的菜单的orderId不等于-1,则将数据库中已经存在的orderId大于等于当前menu orderId的菜单项顺序id往后顺移一位
-            List<Menu> afterCurMenus = this.menuRepository.findByOrderIdGreaterThanEqualAndParent_id(menu.getOrderId(), parentId);
-            for(Menu m: afterCurMenus){
-                m.setOrderId(m.getOrderId()+1);
-            }
-
-            this.menuRepository.save(afterCurMenus);
-        } else {
-            //如果当前menu orderId 等于-1,则新增menu顺序为最后一位
-            Menu lastOrderMenu = this.menuRepository.findTopByParent_idOrderByOrderIdDesc(parentId);
-            if(lastOrderMenu != null){
-                menu.setOrderId(lastOrderMenu.getOrderId()+1);
-            }
-        }
-
+//        if(menu.getOrderId() != -1){
+//            //如果新增的菜单的orderId不等于-1,则将数据库中已经存在的orderId大于等于当前menu orderId的菜单项顺序id往后顺移一位
+//            List<Menu> afterCurMenus = this.menuRepository.findByOrderIdGreaterThanEqualAndParent_id(menu.getOrderId(), parentId);
+//            for(Menu m: afterCurMenus){
+//                m.setOrderId(m.getOrderId()+1);
+//            }
+//
+//            this.menuRepository.save(afterCurMenus);
+//        } else {
+//            //如果当前menu orderId 等于-1,则新增menu顺序为最后一位
+//            Menu lastOrderMenu = this.menuRepository.findTopByParent_idOrderByOrderIdDesc(parentId);
+//            if(lastOrderMenu != null){
+//                menu.setOrderId(lastOrderMenu.getOrderId()+1);
+//            }
+//
         return this.menuRepository.save(menu);
+    }
+
+    /**
+     * 批量保存
+     */
+    public void batchSave(Set<Menu> menus) {
+        this.menuRepository.save(menus);
     }
 
     public void delete(long id) {
