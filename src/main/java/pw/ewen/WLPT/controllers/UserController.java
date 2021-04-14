@@ -105,8 +105,13 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/{userId}")
-    public void setPassWord(@PathVariable("userId") String userId, @RequestBody String passwordMD5) throws FindUserException {
+    public void setPassword(@PathVariable("userId") String userId, @RequestBody String passwordMD5) throws FindUserException {
 		this.userService.setPassWord(userId, passwordMD5);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/checkPassword")
+	public boolean checkPassword(@RequestParam(value = "userId") String userId, @RequestParam(value = "passwordMD5") String passwordMD5) {
+		return this.userService.findOne(userId).getPasswordMD5().equals(passwordMD5);
 	}
 
     @RequestMapping(value = "/{userIds}", method=RequestMethod.DELETE, produces = "application/json")
